@@ -33,6 +33,31 @@ pacemaker_primitive drbd do
 end
 ```
 
+clone
+-----
+TBU
+
+ms
+--
+TBU
+
+location
+--------
+TBU
+
+colocation
+----------
+TBU
+
+order
+-----
+TBU
+
+node
+----
+TBU
+
+
 License and Author
 ==================
 
