@@ -23,10 +23,10 @@ action :create do
   name = new_resource.name
   rsc = new_resource.rsc
   priority = new_resource.priority
-  node = new_resource.node
+  loc = new_resource.loc
 
   unless resource_exists?(name)
-    cmd = "crm configure location #{name} #{rsc} #{priority}: #{node}" 
+    cmd = "crm configure location #{name} #{rsc} #{priority}: #{loc}" 
 
     e = execute "configure location #{name}" do
       command cmd

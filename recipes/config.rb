@@ -42,17 +42,19 @@ node['pacemaker']['nodes'].each do |node|
   end
 end
 
-node['pacemaker']['primitive'].each do |name, attr|
-  Chef::Log.debug "Pacemaker::primitive #{name}"
-  Chef::Log.debug "Attrs: #{attr}"
+# Get cinder-volume's myip which might have been set by 'ktc-cinder' cookbook.
+if node['pacemaker']['primitive'].include?('vip') and node['cinder']['services']['volume']['myip']
+  node.default['pacemaker']['primitive']['vip']['params']['ip'] = node['cinder']['services']['volume']['myip']
+end
 
+node['pacemaker']['primitive'].each do |name, attr|
   pacemaker_primitive name do
     agent attr['agent']
     params attr['params']
     meta attr['meta']
     op attr['op']
     action :create
-    only_if attr['active'].include?(node.name)
+    only_if { attr['active'].include?(node.name) }
   end
 end
 
@@ -60,9 +62,9 @@ node['pacemaker']['location'].each do |name, attr|
   pacemaker_location name do
     rsc attr['rsc_name']
     priority attr['priority']
-    node attr['node']
+    loc attr['loc']
     action :create
-    only_if attr['active'].include?(node.name)
+    only_if { attr['active'].include?(node.name) }
   end
 end
 
@@ -71,7 +73,7 @@ node['pacemaker']['ms'].each do |name, attr|
     rsc attr['rsc_name']
     meta attr['meta']
     action :create
-    only_if attr['active'].include?(node.name)
+    only_if { attr['active'].include?(node.name) }
   end
 end
 
@@ -80,7 +82,7 @@ node['pacemaker']['clone'].each do |name, attr|
     rsc attr['rsc_name']
     meta attr['meta']
     action :create
-    only_if attr['active'].include?(node.name)
+    only_if { attr['active'].include?(node.name) }
   end
 end
 

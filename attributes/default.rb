@@ -1,7 +1,7 @@
 default['pacemaker']['nodes'] = ['node1', 'node2']
 
 default['pacemaker']['primitive']['drbd']['agent'] = "ocf:linbit:drbd"
-default['pacemaker']['primitive']['drbd']['params']['drbd_resource'] = "pair"
+default['pacemaker']['primitive']['drbd']['params']['drbd_resource'] = "r0"
 default['pacemaker']['primitive']['drbd']['op']['monitor']['interval'] = "5s"
 default['pacemaker']['primitive']['drbd']['op']['monitor']['role'] = "Master"
 default['pacemaker']['primitive']['drbd']['active'] = ["node1", "node2"]
@@ -14,7 +14,8 @@ default['pacemaker']['primitive']['cinder-volume']['active'] = ["node1", "node2"
 
 default['pacemaker']['primitive']['clvm']['agent'] = "ocf:lvm2:clvmd"
 default['pacemaker']['primitive']['clvm']['params']['daemon_timeout'] = "30"
-default['pacemaker']['primitive']['clvm']['op']['monitor']['interval'] = "10s"
+default['pacemaker']['primitive']['clvm']['op']['monitor']['interval'] = "5s"
+default['pacemaker']['primitive']['clvm']['op']['monitor']['on-fail'] = "restart"
 default['pacemaker']['primitive']['clvm']['active'] = ["node1", "node2"]
 
 # Temporary attribute for vip resource.
@@ -37,12 +38,12 @@ default['pacemaker']['primitive']['st-node2']['active'] = ["node1"]
 
 default['pacemaker']['location']['l-st-node1']['rsc_name'] = "st-node1"
 default['pacemaker']['location']['l-st-node1']['priority'] = "-inf"
-default['pacemaker']['location']['l-st-node1']['node'] = "node1"
+default['pacemaker']['location']['l-st-node1']['loc'] = "node1"
 default['pacemaker']['location']['l-st-node1']['active'] = ["node2"]
 
 default['pacemaker']['location']['l-st-node2']['rsc_name'] = "st-node2"
 default['pacemaker']['location']['l-st-node2']['priority'] = "-inf"
-default['pacemaker']['location']['l-st-node2']['node'] = "node2"
+default['pacemaker']['location']['l-st-node2']['loc'] = "node2"
 default['pacemaker']['location']['l-st-node2']['active'] = ["node1"]
 
 default['pacemaker']['ms']['drbd-cluster']['rsc_name'] = "drbd"
