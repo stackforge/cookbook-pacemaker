@@ -54,7 +54,7 @@ node['pacemaker']['primitive'].each do |name, attr|
     meta attr['meta']
     op attr['op']
     action :create
-    only_if { attr['active'].include?(node.name) }
+    only_if attr['active'].include?(node.name)
   end
 end
 
@@ -64,7 +64,7 @@ node['pacemaker']['location'].each do |name, attr|
     priority attr['priority']
     loc attr['loc']
     action :create
-    only_if { attr['active'].include?(node.name) }
+    only_if attr['active'].include?(node.name)
   end
 end
 
@@ -73,7 +73,7 @@ node['pacemaker']['ms'].each do |name, attr|
     rsc attr['rsc_name']
     meta attr['meta']
     action :create
-    only_if { attr['active'].include?(node.name) }
+    only_if attr['active'].include?(node.name)
   end
 end
 
@@ -82,7 +82,7 @@ node['pacemaker']['clone'].each do |name, attr|
     rsc attr['rsc_name']
     meta attr['meta']
     action :create
-    only_if { attr['active'].include?(node.name) }
+    only_if attr['active'].include?(node.name)
   end
 end
 
@@ -94,7 +94,7 @@ node['pacemaker']['colocation'].each do |name, attr|
       with_rsc attr['with_rsc']
       multiple_rscs attr['multiple_rscs']
       action :create
-      only_if { attr['active'].include?(node.name) }
+      only_if attr['active'].include?(node.name)
     end
 end
 
@@ -103,6 +103,6 @@ node['pacemaker']['order'].each do |name, attr|
       priority attr['priority']
       resources attr['resources']
       action :create
-      only_if { attr['active'].include?(node.name) }
+      only_if attr['active'].include?(node.name)
     end
 end
