@@ -29,11 +29,11 @@ default['pacemaker']['primitive']['vip']['meta']['target-role'] = "Started"
 default['pacemaker']['primitive']['vip']['active'] = "#{pacemaker['nodes']}"
 
 default['pacemaker']['primitive']['st-node1']['agent'] = "stonith:null"
-default['pacemaker']['primitive']['st-node1']['params']['hostlist'] = "node1"
+default['pacemaker']['primitive']['st-node1']['params']['hostlist'] = "#{pacemaker['nodes'][0]}"
 default['pacemaker']['primitive']['st-node1']['active'] = ["#{pacemaker['nodes'][1]}"]
 
 default['pacemaker']['primitive']['st-node2']['agent'] = "stonith:null"
-default['pacemaker']['primitive']['st-node2']['params']['hostlist'] = "node2"
+default['pacemaker']['primitive']['st-node2']['params']['hostlist'] = "#{pacemaker['nodes'][1]}"
 default['pacemaker']['primitive']['st-node2']['active'] = ["#{pacemaker['nodes'][0]}"]
 
 default['pacemaker']['location']['l-st-node1']['rsc_name'] = "st-node1"
