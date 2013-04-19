@@ -1,3 +1,4 @@
+# Only use short hostname (not FQDN)
 default['pacemaker']['nodes'] = ['node1', 'node2']
 
 default['pacemaker']['primitive']['drbd']['agent'] = "ocf:linbit:drbd"
@@ -18,8 +19,7 @@ default['pacemaker']['primitive']['clvm']['op']['monitor']['interval'] = "5s"
 default['pacemaker']['primitive']['clvm']['op']['monitor']['on-fail'] = "restart"
 default['pacemaker']['primitive']['clvm']['active'] = "#{pacemaker['nodes']}"
 
-# Temporary attribute for vip resource.
-# Later, vip address will be set by 'ktc-cinder' cookcook and be fetched here.
+# Vip address might be replaced by cinder-volume's myip specified in the environment.
 default['pacemaker']['primitive']['vip']['agent'] = "ocf:heartbeat:IPaddr2"
 default['pacemaker']['primitive']['vip']['params']['ip'] = "10.5.2.200"
 default['pacemaker']['primitive']['vip']['params']['cidr_netmask'] = "24"
