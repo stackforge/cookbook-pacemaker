@@ -18,7 +18,7 @@
 # limitations under the License.
 #
 
-include_recipe "pacemaker::default"
+include_recipe "pacemaker::setup"
 
 directory "/usr/lib/ocf/resource.d/openstack" do
   owner "root"

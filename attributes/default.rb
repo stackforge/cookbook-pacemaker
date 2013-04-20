@@ -1,6 +1,15 @@
 # Only use short hostname (not FQDN)
 default['pacemaker']['nodes'] = ['node1', 'node2']
 
+# Stonith resources should be configured first!
+default['pacemaker']['primitive']['st-node1']['agent'] = "stonith:null"
+default['pacemaker']['primitive']['st-node1']['params']['hostlist'] = "#{pacemaker['nodes'][0]}"
+default['pacemaker']['primitive']['st-node1']['active'] = ["#{pacemaker['nodes'][1]}"]
+
+default['pacemaker']['primitive']['st-node2']['agent'] = "stonith:null"
+default['pacemaker']['primitive']['st-node2']['params']['hostlist'] = "#{pacemaker['nodes'][1]}"
+default['pacemaker']['primitive']['st-node2']['active'] = ["#{pacemaker['nodes'][0]}"]
+
 default['pacemaker']['primitive']['drbd']['agent'] = "ocf:linbit:drbd"
 default['pacemaker']['primitive']['drbd']['params']['drbd_resource'] = "r0"
 default['pacemaker']['primitive']['drbd']['op']['monitor']['interval'] = "5s"
@@ -27,14 +36,6 @@ default['pacemaker']['primitive']['vip']['op']['monitor']['interval'] = "3s"
 default['pacemaker']['primitive']['vip']['op']['monitor']['nic'] = "eth0"
 default['pacemaker']['primitive']['vip']['meta']['target-role'] = "Started"
 default['pacemaker']['primitive']['vip']['active'] = "#{pacemaker['nodes']}"
-
-default['pacemaker']['primitive']['st-node1']['agent'] = "stonith:null"
-default['pacemaker']['primitive']['st-node1']['params']['hostlist'] = "#{pacemaker['nodes'][0]}"
-default['pacemaker']['primitive']['st-node1']['active'] = ["#{pacemaker['nodes'][1]}"]
-
-default['pacemaker']['primitive']['st-node2']['agent'] = "stonith:null"
-default['pacemaker']['primitive']['st-node2']['params']['hostlist'] = "#{pacemaker['nodes'][1]}"
-default['pacemaker']['primitive']['st-node2']['active'] = ["#{pacemaker['nodes'][0]}"]
 
 default['pacemaker']['location']['l-st-node1']['rsc_name'] = "st-node1"
 default['pacemaker']['location']['l-st-node1']['priority'] = "-inf"

@@ -1,7 +1,7 @@
 #
 # Author:: Robert Choi
 # Cookbook Name:: pacemaker
-# Recipe:: default
+# Recipe:: setup
 #
 # Copyright 2013, Robert Choi
 #
@@ -18,4 +18,14 @@
 # limitations under the License.
 #
 
-include_recipe "pacemaker::config"
+package "pacemaker" do
+  action :install
+  notifies :restart, "service[corosync]", :immediately
+end
+
+execute "sleep 2"
+
+service "pacemaker" do
+  action [ :enable, :start ]
+  notifies :restart, "service[clvm]", :immediately
+end
