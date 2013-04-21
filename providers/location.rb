@@ -28,12 +28,16 @@ action :create do
   unless resource_exists?(name)
     cmd = "crm configure location #{name} #{rsc} #{priority}: #{loc}" 
 
-    e = execute "configure location #{name}" do
-      command cmd
+    cmd_ = Mixlib::ShellOut.new(cmd)
+    cmd_.environment['HOME'] = ENV.fetch('HOME', '/root')
+    cmd_.run_command
+    begin
+      cmd.error!
+      new_resource.updated_by_last_action(true)
+      Chef::Log.info "Successfully configured location '#{name}'."
+    rescue
+      Chef::Log.error "Failed to configure location #{name}."
     end
-
-    new_resource.updated_by_last_action(true)
-    Chef::Log.info "Configured location '#{name}'."
   end
 end
 

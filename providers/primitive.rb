@@ -53,18 +53,18 @@ action :create do
       end
     end
 
-    e = execute "configure primitive #{name}" do
-      command cmd
+# 'Execute' resource doesn't throw exception even when command fails..
+# So, Mixlib::ShellOut was used instead.
+    cmd_ = Mixlib::ShellOut.new(cmd)
+    cmd_.environment['HOME'] = ENV.fetch('HOME', '/root')
+    cmd_.run_command
+    begin
+      cmd.error!
+      new_resource.updated_by_last_action(true)
+      Chef::Log.info "Successfully configured primitive '#{name}'."
+    rescue
+      Chef::Log.error "Failed to configure primitive #{name}."
     end
-
-#   With the below commands, 'e.updated?' is always 'false' even though the execute command ran successfully.
-#    new_resource.updated_by_last_action(e.updated?)
-#    if e.updated?
-#      Chef::Log.info "Done creating primitive '#{name}'."
-#    end
-
-    new_resource.updated_by_last_action(true)
-    Chef::Log.info "Configured primitive '#{name}'."
   end
 end
 

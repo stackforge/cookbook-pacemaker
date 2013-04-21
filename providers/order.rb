@@ -25,17 +25,21 @@ action :create do
   resources = new_resource.resources
 
   unless resource_exists?(name)
-      cmd = "crm configure order #{name} #{priority}:" 
-      resources.each do |rsc|
-        cmd << " #{rsc}"
-      end
+    cmd = "crm configure order #{name} #{priority}:" 
+    resources.each do |rsc|
+      cmd << " #{rsc}"
+    end
 
-      e = execute "configure order #{name}" do
-        command cmd
-      end
-
+    cmd_ = Mixlib::ShellOut.new(cmd)
+    cmd_.environment['HOME'] = ENV.fetch('HOME', '/root')
+    cmd_.run_command
+    begin
+      cmd.error!
       new_resource.updated_by_last_action(true)
-      Chef::Log.info "Configured order '#{name}'."
+      Chef::Log.info "Successfully configured order '#{name}'."
+    rescue
+      Chef::Log.error "Failed to configure order #{name}."
+    end
   end
 end
 

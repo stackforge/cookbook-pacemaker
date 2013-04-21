@@ -33,12 +33,16 @@ action :create do
       end
     end
 
-    e = execute "configure clone #{name}" do
-      command cmd
+    cmd_ = Mixlib::ShellOut.new(cmd)
+    cmd_.environment['HOME'] = ENV.fetch('HOME', '/root')
+    cmd_.run_command
+    begin
+      cmd.error!
+      new_resource.updated_by_last_action(true)
+      Chef::Log.info "Successfully configured clone '#{name}'."
+    rescue
+      Chef::Log.error "Failed to configure clone #{name}."
     end
-
-    new_resource.updated_by_last_action(true)
-    Chef::Log.info "configured clone '#{name}'."
   end
 end
 
@@ -53,5 +57,4 @@ action :delete do
 
     new_resource.updated_by_last_action(true)
     Chef::Log.info "Deleted clone '#{name}'."
-
 end

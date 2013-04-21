@@ -25,12 +25,16 @@ action :add do
   unless resource_exists?(name)
     cmd = "crm configure node #{name}"
 
-    e = execute "add node #{name}" do
-      command cmd
+    cmd_ = Mixlib::ShellOut.new(cmd)
+    cmd_.environment['HOME'] = ENV.fetch('HOME', '/root')
+    cmd_.run_command
+    begin
+      cmd.error!
+      new_resource.updated_by_last_action(true)
+      Chef::Log.info "Successfully configured node '#{name}'."
+    rescue
+      Chef::Log.error "Failed to configure node #{name}."
     end
-
-    new_resource.updated_by_last_action(true)
-    Chef::Log.info "Node '#{name}' has been added.."
   end
 end
 

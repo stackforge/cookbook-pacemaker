@@ -32,24 +32,22 @@ action :create do
       multiple_rscs.each do |rsc|
         cmd << " #{rsc}"
       end
-
-      e = execute "configure colocation #{name}" do
-        command cmd
-      end
-
-      new_resource.updated_by_last_action(true)
-      Chef::Log.info "Configured colocation '#{name}'."
     else
       rsc = new_resource.rsc
       with_rsc = new_resource.with_rsc
 
       cmd = "crm configure colocation #{name} #{priority}: #{rsc} #{with_rsc}" 
-      e = execute "configure colocation #{name}" do
-        command cmd
-      end
+    end
 
+    cmd_ = Mixlib::ShellOut.new(cmd)
+    cmd_.environment['HOME'] = ENV.fetch('HOME', '/root')
+    cmd_.run_command
+    begin
+      cmd.error!
       new_resource.updated_by_last_action(true)
-      Chef::Log.info "Configured colocation '#{name}'."
+      Chef::Log.info "Successfully configured colocation '#{name}'."
+    rescue
+      Chef::Log.error "Failed to configure colocation #{name}."
     end
   end
 end
