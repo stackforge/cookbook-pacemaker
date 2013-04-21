@@ -59,7 +59,7 @@ action :create do
     cmd_.environment['HOME'] = ENV.fetch('HOME', '/root')
     cmd_.run_command
     begin
-      cmd.error!
+      cmd_.error!
       new_resource.updated_by_last_action(true)
       Chef::Log.info "Successfully configured primitive '#{name}'."
     rescue
