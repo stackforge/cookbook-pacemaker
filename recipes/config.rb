@@ -43,7 +43,7 @@ node['pacemaker']['nodes'].each do |node|
 end
 
 # Get cinder-volume's myip which might have been set by 'ktc-cinder' cookbook.
-if node['pacemaker']['primitive'].include?('vip') and node['cinder']['services']['volume']['myip']
+if node['pacemaker']['primitive'].include?('vip') and node['cinder'] and node['cinder']['services']['volume']['myip']
   node.default['pacemaker']['primitive']['vip']['params']['ip'] = node['cinder']['services']['volume']['myip']
 end
 
