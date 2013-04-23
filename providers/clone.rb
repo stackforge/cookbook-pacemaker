@@ -38,8 +38,12 @@ action :create do
     cmd_.run_command
     begin
       cmd_.error!
-      new_resource.updated_by_last_action(true)
-      Chef::Log.info "Successfully configured clone '#{name}'."
+      if resource_exists?(name)
+        new_resource.updated_by_last_action(true)
+        Chef::Log.info "Successfully configured clone '#{name}'."
+      else
+        Chef::Log.error "Failed to configure clone #{name}."
+      end
     rescue
       Chef::Log.error "Failed to configure clone #{name}."
     end
