@@ -53,6 +53,7 @@ default['pacemaker']['ms']['drbd-cluster']['meta']['master-node-max'] = "1"
 default['pacemaker']['ms']['drbd-cluster']['meta']['clone-max'] = "2"
 default['pacemaker']['ms']['drbd-cluster']['meta']['clone-node-max'] = "1"
 default['pacemaker']['ms']['drbd-cluster']['meta']['notify'] = "true"
+default['pacemaker']['ms']['drbd-cluster']['meta']['resource-stickiness'] = "100"
 default['pacemaker']['ms']['drbd-cluster']['meta']['target-role'] = "Started"
 default['pacemaker']['ms']['drbd-cluster']['active'] = "#{pacemaker['nodes']}"
 
