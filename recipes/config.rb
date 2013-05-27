@@ -106,3 +106,10 @@ node['pacemaker']['order'].each do |name, attr|
     only_if { attr['active'].include?(node.name.partition(".")[0]) }
   end
 end
+
+node['pacemaker']['property'].each do |name, val|
+  pacemaker_property name do
+    value val
+    action :create
+  end
+end

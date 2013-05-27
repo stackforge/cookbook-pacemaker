@@ -77,3 +77,5 @@ default['pacemaker']['colocation']['c-cinder-volume']['active'] = "#{pacemaker['
 default['pacemaker']['order']['o-lvm']['priority'] = "inf"
 default['pacemaker']['order']['o-lvm']['resources'] = ['drbd-cluster', 'clvm-clone', 'vip', 'cinder-volume']
 default['pacemaker']['order']['o-lvm']['active'] = "#{pacemaker['nodes']}"
+
+default['pacemaker']['property']['no-quorum-policy'] = "ignore"
