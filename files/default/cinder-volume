@@ -230,9 +230,9 @@ cinder_volume_monitor() {
       # We are sure to hit the scheduler process and not other nova process with the same connection behavior (for example nova-cert)
       # check the connections according to the PID
 
-      # [Robert] This isn't working because it greps wrong pid. Need to look into it later. #
-      # volume_amqp_check=`netstat -punt | grep -s "$OCF_RESKEY_amqp_server_port" | grep -s "$pid" | grep -qs "ESTABLISHED"`
-      volume_amqp_check=`netstat -punt | grep -s "$OCF_RESKEY_amqp_server_port" | grep -qs "ESTABLISHED"`
+      # [Robert] Fixed: Need to grep child_pid instead of pid.
+      child_pid=`ps -o pid --no-headers --ppid $pid`
+      volume_amqp_check=`netstat -punt | grep -s "$OCF_RESKEY_amqp_server_port" | grep -s "$child_pid" | grep -qs "ESTABLISHED"`
       rc=$?
       if [ $rc -ne 0 ]; then
           ocf_log err "Cinder Volume is not connected to the AMQP server: $rc"
