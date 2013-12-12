@@ -1,4 +1,4 @@
-Description
+DESCRIPTION
 ===========
 This is a cookbook for installing and configuring pacemaker.
 
