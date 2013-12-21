@@ -93,4 +93,4 @@ default['pacemaker']['order']['o-lvm']['resources'] = ['drbd-cluster', 'clvm-clo
 default['pacemaker']['order']['o-lvm']['active'] = "#{pacemaker['nodes']}"
 
 default['pacemaker']['property']['no-quorum-policy'] = "ignore"
-default['pacemaker']['services'] = {}
+default['pacemaker']['platform']['service_name'] = 'openais'
