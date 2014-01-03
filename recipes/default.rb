@@ -18,4 +18,4 @@
 # limitations under the License.
 #
 
-include_recipe "pacemaker::config"
+include_recipe "pacemaker::setup"
