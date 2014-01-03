@@ -18,9 +18,10 @@
 # limitations under the License.
 #
 
-package "pacemaker" do
-  action :install
-  notifies :restart, "service[corosync]", :immediately
+node[:pacemaker][:platform][:packages].each do |pkg|
+  package pkg do
+    action :install
+  end
 end
 
 execute "sleep 2"

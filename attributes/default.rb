@@ -12,6 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+case node.platform
+when 'suse'
+  default[:pacemaker][:platform][:packages] = %w(pacemaker)
+else
+  default[:pacemaker][:platform][:packages] = %w()
+end
+
 # Only use short hostname (not FQDN)
 default['pacemaker']['nodes'] = ['node1', 'node2']
 
