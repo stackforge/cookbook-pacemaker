@@ -18,6 +18,19 @@
 # limitations under the License.
 #
 
+crm_conf = node[:pacemaker][:crm][:initial_config_file]
+template crm_conf do
+  source "crm-initial.conf.erb"
+  owner "root"
+  group "root"
+  mode 0600
+end
+
+execute "crm initial configuration" do
+  user "root"
+  command "crm configure load replace #{crm_conf}"
+end
+
 node[:pacemaker][:platform][:packages].each do |pkg|
   package pkg do
     action :install
