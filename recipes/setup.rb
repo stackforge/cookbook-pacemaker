@@ -37,8 +37,6 @@ node[:pacemaker][:platform][:packages].each do |pkg|
   end
 end
 
-execute "sleep 2"
-
 if platform_family? "rhel"
   execute "sleep 2"
 
