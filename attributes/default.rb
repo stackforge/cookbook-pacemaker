@@ -22,15 +22,6 @@ end
 
 default[:pacemaker][:crm][:initial_config_file] = "/etc/corosync/crm-initial.conf"
 
-# Stonith resources should be configured first!
-default['pacemaker']['primitive']['st-node1']['agent'] = "stonith:null"
-default['pacemaker']['primitive']['st-node1']['params']['hostlist'] = "#{pacemaker['nodes'][0]}"
-default['pacemaker']['primitive']['st-node1']['active'] = ["#{pacemaker['nodes'][1]}"]
-
-default['pacemaker']['primitive']['st-node2']['agent'] = "stonith:null"
-default['pacemaker']['primitive']['st-node2']['params']['hostlist'] = "#{pacemaker['nodes'][1]}"
-default['pacemaker']['primitive']['st-node2']['active'] = ["#{pacemaker['nodes'][0]}"]
-
 default['pacemaker']['primitive']['drbd']['agent'] = "ocf:linbit:drbd"
 default['pacemaker']['primitive']['drbd']['params']['drbd_resource'] = "r0"
 default['pacemaker']['primitive']['drbd']['op']['monitor']['interval'] = "5s"
