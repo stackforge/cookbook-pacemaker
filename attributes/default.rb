@@ -23,11 +23,6 @@ end
 
 default[:pacemaker][:crm][:initial_config_file] = "/etc/corosync/crm-initial.conf"
 
-default['pacemaker']['primitive']['drbd']['agent'] = "ocf:linbit:drbd"
-default['pacemaker']['primitive']['drbd']['params']['drbd_resource'] = "r0"
-default['pacemaker']['primitive']['drbd']['op']['monitor']['interval'] = "5s"
-default['pacemaker']['primitive']['drbd']['op']['monitor']['role'] = "Master"
-default['pacemaker']['primitive']['drbd']['active'] = "#{pacemaker['nodes']}"
 
 default['pacemaker']['primitive']['cinder-volume']['agent'] = "ocf:openstack:cinder-volume"
 default['pacemaker']['primitive']['cinder-volume']['meta']['is-managed'] = "true"
@@ -59,16 +54,6 @@ default['pacemaker']['location']['l-st-node2']['rsc_name'] = "st-node2"
 default['pacemaker']['location']['l-st-node2']['priority'] = "-inf"
 default['pacemaker']['location']['l-st-node2']['loc'] = "#{pacemaker['nodes'][1]}"
 default['pacemaker']['location']['l-st-node2']['active'] = ["#{pacemaker['nodes'][0]}"]
-
-default['pacemaker']['ms']['drbd-cluster']['rsc_name'] = "drbd"
-default['pacemaker']['ms']['drbd-cluster']['meta']['master-max'] = "2"
-default['pacemaker']['ms']['drbd-cluster']['meta']['master-node-max'] = "1"
-default['pacemaker']['ms']['drbd-cluster']['meta']['clone-max'] = "2"
-default['pacemaker']['ms']['drbd-cluster']['meta']['clone-node-max'] = "1"
-default['pacemaker']['ms']['drbd-cluster']['meta']['notify'] = "true"
-default['pacemaker']['ms']['drbd-cluster']['meta']['resource-stickiness'] = "100"
-default['pacemaker']['ms']['drbd-cluster']['meta']['target-role'] = "Started"
-default['pacemaker']['ms']['drbd-cluster']['active'] = "#{pacemaker['nodes']}"
 
 default['pacemaker']['clone']['clvm-clone']['rsc_name'] = "clvm"
 default['pacemaker']['clone']['clvm-clone']['meta']['globally-unique'] = "false"
