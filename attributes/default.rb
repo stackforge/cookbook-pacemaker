@@ -22,9 +22,6 @@ end
 
 default[:pacemaker][:crm][:initial_config_file] = "/etc/corosync/crm-initial.conf"
 
-# Only use short hostname (not FQDN)
-default['pacemaker']['nodes'] = ['node1', 'node2']
-
 # Stonith resources should be configured first!
 default['pacemaker']['primitive']['st-node1']['agent'] = "stonith:null"
 default['pacemaker']['primitive']['st-node1']['params']['hostlist'] = "#{pacemaker['nodes'][0]}"
