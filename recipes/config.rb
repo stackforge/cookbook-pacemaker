@@ -20,22 +20,6 @@
 
 include_recipe "pacemaker::setup"
 
-directory "/usr/lib/ocf/resource.d/openstack" do
-  owner "root"
-  group "root"
-  mode 0755
-  action :create
-  notifies :create, "cookbook_file[/usr/lib/ocf/resource.d/openstack/cinder-volume]", :immediately
-end
-
-cookbook_file "/usr/lib/ocf/resource.d/openstack/cinder-volume" do
-  source "cinder-volume"
-  owner "root"
-  group "root"
-  mode 0755
-  action :nothing
-end
-
 # Get cinder-volume's myip which might have been set by 'ktc-cinder' cookbook.
 if node['pacemaker']['primitive'].include?('vip') and node['cinder'] and node['cinder']['services']['volume']['myip']
   node.default['pacemaker']['primitive']['vip']['params']['ip'] = node['cinder']['services']['volume']['myip']
