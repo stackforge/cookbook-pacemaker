@@ -17,7 +17,8 @@ case node.platform
 when 'suse'
   default[:pacemaker][:platform][:packages] = %w(pacemaker)
 else
-  default[:pacemaker][:platform][:packages] = %w()
+  Chef::Application.fatal! "FIXME: #{node.platform} platform not supported yet"
+  return
 end
 
 default[:pacemaker][:crm][:initial_config_file] = "/etc/corosync/crm-initial.conf"
