@@ -26,49 +26,49 @@ action :create do
   name = new_resource.name
   agent = new_resource.agent
 
-  unless resource_exists?(name)
-    cmd = "crm configure primitive #{name} #{agent}"
-  
-    if new_resource.params and !(new_resource.params.empty?)
-      cmd << " params"
-      new_resource.params.each do |key, value|
+  return if resource_exists?(name)
+
+  cmd = "crm configure primitive #{name} #{agent}"
+
+  if new_resource.params and !(new_resource.params.empty?)
+    cmd << " params"
+    new_resource.params.each do |key, value|
+      cmd << " #{key}=\"#{value}\""
+    end
+  end
+
+  if new_resource.meta and !(new_resource.meta.empty?)
+    cmd << " meta"
+    new_resource.meta.each do |key, value|
+      cmd << " #{key}=\"#{value}\""
+    end
+  end
+
+  if new_resource.op and !(new_resource.op.empty?)
+    cmd << " op"
+    new_resource.op.each do |op, attrs|
+      cmd << " #{op}"
+      attrs.each do |key, value|
         cmd << " #{key}=\"#{value}\""
       end
     end
+  end
 
-    if new_resource.meta and !(new_resource.meta.empty?)
-      cmd << " meta"
-      new_resource.meta.each do |key, value|
-        cmd << " #{key}=\"#{value}\""
-      end
-    end
-
-    if new_resource.op and !(new_resource.op.empty?)
-      cmd << " op"
-      new_resource.op.each do |op, attrs|
-        cmd << " #{op}"
-        attrs.each do |key, value|
-          cmd << " #{key}=\"#{value}\""
-        end
-      end
-    end
-
-# 'Execute' resource doesn't throw exception even when command fails..
-# So, Mixlib::ShellOut was used instead.
-    cmd_ = Mixlib::ShellOut.new(cmd)
-    cmd_.environment['HOME'] = ENV.fetch('HOME', '/root')
-    cmd_.run_command
-    begin
-      cmd_.error!
-      if resource_exists?(name)
-        new_resource.updated_by_last_action(true)
-        Chef::Log.info "Successfully configured primitive '#{name}'."
-      else
-        Chef::Log.error "Failed to configure primitive #{name}."
-      end
-    rescue
+  # 'Execute' resource doesn't throw exception even when command fails..
+  # So, Mixlib::ShellOut was used instead.
+  cmd_ = Mixlib::ShellOut.new(cmd)
+  cmd_.environment['HOME'] = ENV.fetch('HOME', '/root')
+  cmd_.run_command
+  begin
+    cmd_.error!
+    if resource_exists?(name)
+      new_resource.updated_by_last_action(true)
+      Chef::Log.info "Successfully configured primitive '#{name}'."
+    else
       Chef::Log.error "Failed to configure primitive #{name}."
     end
+  rescue
+    Chef::Log.error "Failed to configure primitive #{name}."
   end
 end
 
