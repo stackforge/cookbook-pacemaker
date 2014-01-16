@@ -84,3 +84,19 @@ action :delete do
   new_resource.updated_by_last_action(true)
   Chef::Log.info "Deleted primitive '#{name}'."
 end
+
+action :start do
+  name = new_resource.name
+  raise "no such resource #{name}" unless resource_exists?(name)
+  next if resource_running?(name)
+  shell_out! %w(crm resource start) + [name]
+  Chef::Log.info "Successfully started primitive '#{name}'."
+end
+
+action :stop do
+  name = new_resource.name
+  raise "no such resource #{name}" unless resource_exists?(name)
+  next unless resource_running?(name)
+  shell_out! %w(crm resource stop) + [name]
+  Chef::Log.info "Successfully stopped primitive '#{name}'."
+end
