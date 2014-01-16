@@ -45,3 +45,13 @@ if platform_family? "rhel"
     notifies :restart, "service[clvm]", :immediately
   end
 end
+
+# required to run hb_gui
+if platform_family? "suse"
+  cmd = "SuSEconfig --module gtk2"
+  execute cmd do
+    user "root"
+    command cmd
+    not_if { File.exists? "/etc/gtk-2.0/gdk-pixbuf64.loaders" }
+  end
+end

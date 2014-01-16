@@ -16,6 +16,12 @@
 case node.platform
 when 'suse'
   default[:pacemaker][:platform][:packages] = %w(pacemaker)
+
+  # pacemaker-mgmt-client provides hb_gui, which it's useful
+  # to run over ssh.
+  default[:pacemaker][:platform][:packages] += %w(
+    pacemaker-mgmt-client xorg-x11-xauth
+  )
 else
   Chef::Application.fatal! "FIXME: #{node.platform} platform not supported yet"
   return
