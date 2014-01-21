@@ -34,6 +34,36 @@ module Chef::Libraries
         cmd.stdout.include? "resource #{name} is running"
       end
 
+      def resource_params_string(params)
+        return "" if ! params or params.empty?
+        s = " params"
+        params.each do |key, value|
+          s << %' #{key}="#{value}"'
+        end
+        s
+      end
+
+      def resource_meta_string(meta)
+        return "" if ! meta or meta.empty?
+        s = " meta"
+        meta.each do |key, value|
+          s << %' #{key}="#{value}"'
+        end
+        s
+      end
+
+      def resource_op_string(ops)
+        return "" if ! ops or ops.empty?
+        s = " op"
+        ops.each do |op, attrs|
+          s << " #{op}"
+          attrs.each do |key, value|
+            s << %' #{key}="#{value}"'
+          end
+        end
+        s
+      end
+
       # CIB object definitions look something like:
       #
       # primitive keystone ocf:openstack:keystone \

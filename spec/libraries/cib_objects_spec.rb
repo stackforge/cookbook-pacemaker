@@ -96,6 +96,62 @@ describe Chef::Libraries::Pacemaker::CIBObjects do
     end
   end
 
+  describe "#resource_params_string" do
+    it "should return empty string with nil params" do
+      expect(resource_params_string(nil)).to eq("")
+    end
+
+    it "should return empty string with empty params" do
+      expect(resource_params_string({})).to eq("")
+    end
+
+    it "should return a resource params string" do
+      params = {
+        "foo" => "bar",
+        "baz" => "qux",
+      }
+      expect(resource_params_string(params)).to eq(%' params foo="bar" baz="qux"')
+    end
+  end
+
+  describe "#resource_meta_string" do
+    it "should return empty string with nil meta" do
+      expect(resource_meta_string(nil)).to eq("")
+    end
+
+    it "should return empty string with empty meta" do
+      expect(resource_meta_string({})).to eq("")
+    end
+
+    it "should return a resource meta string" do
+      meta = {
+        "foo" => "bar",
+        "baz" => "qux",
+      }
+      expect(resource_meta_string(meta)).to eq(%' meta foo="bar" baz="qux"')
+    end
+  end
+
+  describe "#resource_op_string" do
+    it "should return empty string with nil op" do
+      expect(resource_op_string(nil)).to eq("")
+    end
+
+    it "should return empty string with empty op" do
+      expect(resource_op_string({})).to eq("")
+    end
+
+    it "should return a resource op string" do
+      op = {
+        "monitor" => {
+          "foo" => "bar",
+          "baz" => "qux",
+        }
+      }
+      expect(resource_op_string(op)).to eq(%' op monitor foo="bar" baz="qux"')
+    end
+  end
+
   describe "#extract_hash" do
     include_context "keystone config"
 

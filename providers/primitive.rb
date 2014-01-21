@@ -31,30 +31,9 @@ action :create do
   next if cib_object_exists?(name)
 
   cmd = "crm configure primitive #{name} #{agent}"
-
-  if new_resource.params and !(new_resource.params.empty?)
-    cmd << " params"
-    new_resource.params.each do |key, value|
-      cmd << " #{key}=\"#{value}\""
-    end
-  end
-
-  if new_resource.meta and !(new_resource.meta.empty?)
-    cmd << " meta"
-    new_resource.meta.each do |key, value|
-      cmd << " #{key}=\"#{value}\""
-    end
-  end
-
-  if new_resource.op and !(new_resource.op.empty?)
-    cmd << " op"
-    new_resource.op.each do |op, attrs|
-      cmd << " #{op}"
-      attrs.each do |key, value|
-        cmd << " #{key}=\"#{value}\""
-      end
-    end
-  end
+  cmd << resource_params_string(new_resource.params)
+  cmd << resource_meta_string(new_resource.meta)
+  cmd << resource_op_string(new_resource.op)
 
   # 'Execute' resource doesn't throw exception even when command fails..
   # So, Mixlib::ShellOut was used instead.
