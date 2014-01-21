@@ -14,34 +14,20 @@ describe "Chef::Provider::PacemakerPrimitive" do
 
     @resource = Chef::Resource::PacemakerPrimitive.new("keystone", @run_context)
 
-    @resource.agent "ocf:openstack:keystone"
-    ra_params = {
-      "os_auth_url"    => "http://localhost:5000/v2.0",
-      "os_tenant_name" => "openstack",
-      "os_username"    => "admin",
-      "os_password"    => "adminpw",
-      "user"           => "openstack-keystone"
-    }
-    ra_meta = {
-      "target-role" => "Started",
-      "is-managed"  => "true"
-    }
-    ra_op = {
-      "monitor" => { "interval" => "10s" }
-    }
-
-    @resource.params ra_params
-    @resource.meta   ra_meta
-    @resource.op     ra_op
+    ra = Chef::RSpec::Pacemaker::Config::RA
+    @resource.agent  ra[:agent]
+    @resource.params Hash[ra[:params]]
+    @resource.meta   Hash[ra[:meta]]
+    @resource.op     Hash[ra[:op]]
   end
 
   describe ":create action" do
-    include_context "keystone config"
+    let(:ra) { Chef::RSpec::Pacemaker::Config::RA }
 
     it "should do nothing if the primitive already exists" do
       provider = Chef::Provider::PacemakerPrimitive.new(@resource, @run_context)
       expect(provider).to receive(:cib_object_exists?).at_least(:once).and_return(true)
-      expect(provider).to receive(:get_cib_object_definition).and_return(@config)
+      expect(provider).to receive(:get_cib_object_definition).and_return(ra[:config])
       expect(Mixlib::ShellOut).not_to receive(:new)
       provider.run_action :create
     end

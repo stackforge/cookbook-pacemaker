@@ -11,6 +11,9 @@ describe Chef::Libraries::Pacemaker::CIBObjects do
     end
   end
 
+  shared_context "keystone config" do
+    let(:ra) { Chef::RSpec::Pacemaker::Config::RA }
+  end
 
   shared_context "keystone primitive" do
     include_context "shellout stubs"
@@ -20,7 +23,7 @@ describe Chef::Libraries::Pacemaker::CIBObjects do
       Mixlib::ShellOut.any_instance.stub(:error!)
       expect_any_instance_of(Mixlib::ShellOut) \
         .to receive(:stdout) \
-        .and_return(@config)
+        .and_return(ra[:config])
     end
   end
 
@@ -37,7 +40,7 @@ describe Chef::Libraries::Pacemaker::CIBObjects do
     include_context "keystone primitive"
 
     it "should retrieve cluster config" do
-      expect(get_cib_object_definition("keystone")).to eq(@config)
+      expect(get_cib_object_definition("keystone")).to eq(ra[:config])
     end
   end
 
@@ -69,7 +72,7 @@ describe Chef::Libraries::Pacemaker::CIBObjects do
     include_context "keystone config"
 
     it "should return primitive" do
-      expect(cib_object_type(@config)).to eq("primitive")
+      expect(cib_object_type(ra[:config])).to eq("primitive")
     end
 
     it "should raise an error without valid config" do
@@ -156,7 +159,7 @@ describe Chef::Libraries::Pacemaker::CIBObjects do
     include_context "keystone config"
 
     it "should extract a hash from config" do
-      expect(extract_hash("keystone", @config, "params")).to eq(@params)
+      expect(extract_hash("keystone", ra[:config], "params")).to eq(Hash[ra[:params]])
     end
 
   end
