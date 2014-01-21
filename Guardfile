@@ -19,3 +19,9 @@ group :rspec do
     watch(%r{^spec/.+_spec\.rb$})
   end
 end
+
+group :bundler do
+  guard 'bundler' do
+    watch('Gemfile')
+  end
+end
