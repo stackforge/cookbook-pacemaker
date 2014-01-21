@@ -26,30 +26,15 @@ include Chef::Libraries::Pacemaker::CIBObjects
 
 action :create do
   name = new_resource.name
-  agent = new_resource.agent
 
-  next if cib_object_exists?(name)
-
-  cmd = "crm configure primitive #{name} #{agent}"
-  cmd << resource_params_string(new_resource.params)
-  cmd << resource_meta_string(new_resource.meta)
-  cmd << resource_op_string(new_resource.op)
-
-  # 'Execute' resource doesn't throw exception even when command fails..
-  # So, Mixlib::ShellOut was used instead.
-  cmd_ = Mixlib::ShellOut.new(cmd)
-  cmd_.environment['HOME'] = ENV.fetch('HOME', '/root')
-  cmd_.run_command
-  begin
-    cmd_.error!
-    if cib_object_exists?(name)
-      new_resource.updated_by_last_action(true)
-      Chef::Log.info "Successfully configured primitive '#{name}'."
-    else
-      Chef::Log.error "Failed to configure primitive #{name}."
+  if @current_resource_definition.nil?
+    create_resource(name)
+  else
+    if @current_resource.agent != new_resource.agent
+      raise "Existing primitive '#{name}' has agent but recipe wanted #{new_resource.agent}"
     end
-  rescue
-    Chef::Log.error "Failed to configure primitive #{name}."
+
+    modify_resource(name)
   end
 end
 
@@ -91,24 +76,68 @@ end
 def load_current_resource
   name = @new_resource.name
 
-  return unless cib_object_exists?(name)
-
   obj_definition = get_cib_object_definition(name)
-  if obj_definition.nil?
-    raise "CIB object '#{name}' existed but definition was nil?!"
-  end
-  if obj_definition.empty?
+  return unless obj_definition
+
+  if obj_definition.empty? # probably overly paranoid
     raise "CIB object '#{name}' existed but definition was empty?!"
   end
 
-  return unless cib_object_type(obj_definition) =~ /\Aprimitive #{name} (\S+)/
+  unless obj_definition =~ /\Aprimitive #{name} (\S+)/
+    Chef::Log.warn "Resource '#{name}' was not a primitive"
+    return
+  end
   agent = $1
 
+  @current_resource_definition = obj_definition
   @current_resource = Chef::Resource::PacemakerPrimitive.new(name)
   @current_resource.agent(agent)
 
-  %w(params meta op).each do |data_type|
-    extract_hash(obj_definition, data_type)
+  %w(params meta).each do |data_type|
+    h = extract_hash(name, obj_definition, data_type)
+    @current_resource.send(data_type.to_sym, h)
   end
 end
 
+def create_resource(name)
+  cmd = "crm configure primitive #{name} #{new_resource.agent}"
+  cmd << resource_params_string(new_resource.params)
+  cmd << resource_meta_string(new_resource.meta)
+  cmd << resource_op_string(new_resource.op)
+
+  Chef::Log.debug "creating new primitive #{name} via #{cmd}"
+
+  execute cmd do
+    action :nothing
+  end.run_action(:run)
+
+  if cib_object_exists?(name)
+    new_resource.updated_by_last_action(true)
+    Chef::Log.info "Successfully configured primitive '#{name}'."
+  else
+    Chef::Log.error "Failed to configure primitive #{name}."
+  end
+end
+
+def modify_resource(name)
+  configure_cmd_prefix = "crm_resource --resource keystone"
+
+  cmds = []
+  new_resource.params.each do |k, v|
+    if @current_resource.params[k] == v
+      Chef::Log.debug("#{name}'s #{k} param didn't change")
+    else
+      Chef::Log.info("#{name}'s #{k} param changed to #{v}")
+      cmds << configure_cmd_prefix + " --set-parameter #{k} --parameter-value #{v}"
+    end
+  end
+
+  cmds.each do |cmd|
+    converge_by("execute #{cmd}") do
+      result = shell_out!(cmd)
+      Chef::Log.info("#{cmd} ran successfully")
+    end
+  end
+
+  new_resource.updated_by_last_action(true) unless cmds.empty?
+end
