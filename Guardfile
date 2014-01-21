@@ -17,6 +17,9 @@ group :rspec do
   guard 'rspec', guard_opts do
     startup_guards { 'spec' }
     watch(%r{^spec/.+_spec\.rb$})
+    watch(%r{^(libraries|providers)/(.+)\.rb$}) do |m|
+      "spec/#{m[1]}/#{m[2]}_spec.rb"
+    end
   end
 end
 
