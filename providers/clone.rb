@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-require ::File.join(::File.dirname(__FILE__), 'helper')
+require ::File.join(::File.dirname(__FILE__), *%w(.. libraries cib_objects))
 
 action :create do
   name = new_resource.name

@@ -17,7 +17,6 @@
 # limitations under the License.
 #
 
-require ::File.join(::File.dirname(__FILE__), 'helper')
 
 # For vagrant env, switch to the following 'require' command.
 #require "/srv/chef/file_store/cookbooks/pacemaker/providers/helper"
