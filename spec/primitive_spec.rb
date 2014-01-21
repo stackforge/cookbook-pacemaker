@@ -1,5 +1,5 @@
 require 'chef/application'
-require_relative 'spec_helper'
+require_relative 'keystone_config'
 
 describe "Chef::Provider::PacemakerPrimitive" do
   before do
@@ -35,6 +35,8 @@ describe "Chef::Provider::PacemakerPrimitive" do
   end
 
   describe ":create action" do
+    include_context "keystone config"
+
     it "should do nothing if the primitive already exists" do
       provider = Chef::Provider::PacemakerPrimitive.new(@resource, @run_context)
       expect(provider).to receive(:cib_object_exists?).at_least(:once).and_return(true)
