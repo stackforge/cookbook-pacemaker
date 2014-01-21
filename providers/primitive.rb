@@ -17,6 +17,9 @@
 # limitations under the License.
 #
 
+require ::File.join(::File.dirname(__FILE__), *%w(.. libraries cib_objects))
+
+include Chef::Libraries::Pacemaker::CIBObjects
 
 # For vagrant env, switch to the following 'require' command.
 #require "/srv/chef/file_store/cookbooks/pacemaker/providers/helper"
@@ -25,7 +28,7 @@ action :create do
   name = new_resource.name
   agent = new_resource.agent
 
-  return if resource_exists?(name)
+  next if cib_object_exists?(name)
 
   cmd = "crm configure primitive #{name} #{agent}"
 
@@ -60,7 +63,7 @@ action :create do
   cmd_.run_command
   begin
     cmd_.error!
-    if resource_exists?(name)
+    if cib_object_exists?(name)
       new_resource.updated_by_last_action(true)
       Chef::Log.info "Successfully configured primitive '#{name}'."
     else
@@ -77,7 +80,7 @@ action :delete do
 
   e = execute "delete primitive #{name}" do
     command cmd
-    only_if { resource_exists?(name) }
+    only_if { cib_object_exists?(name) }
   end
 
   new_resource.updated_by_last_action(true)
@@ -86,7 +89,7 @@ end
 
 action :start do
   name = new_resource.name
-  raise "no such resource #{name}" unless resource_exists?(name)
+  raise "no such resource #{name}" unless cib_object_exists?(name)
   next if resource_running?(name)
   shell_out! %w(crm resource start) + [name]
   Chef::Log.info "Successfully started primitive '#{name}'."
@@ -94,8 +97,39 @@ end
 
 action :stop do
   name = new_resource.name
-  raise "no such resource #{name}" unless resource_exists?(name)
+  raise "no such resource #{name}" unless cib_object_exists?(name)
   next unless resource_running?(name)
   shell_out! %w(crm resource stop) + [name]
   Chef::Log.info "Successfully stopped primitive '#{name}'."
 end
+
+# Instantiate @current_resource and read details about the existing
+# primitive (if any) via "crm configure show" into it, so that we
+# can compare it against the resource requested by the recipe, and
+# create / delete / modify as necessary.
+
+# http://docs.opscode.com/lwrp_custom_provider_ruby.html#load-current-resource
+def load_current_resource
+  name = @new_resource.name
+
+  return unless cib_object_exists?(name)
+
+  obj_definition = get_cib_object_definition(name)
+  if obj_definition.nil?
+    raise "CIB object '#{name}' existed but definition was nil?!"
+  end
+  if obj_definition.empty?
+    raise "CIB object '#{name}' existed but definition was empty?!"
+  end
+
+  return unless cib_object_type(obj_definition) =~ /\Aprimitive #{name} (\S+)/
+  agent = $1
+
+  @current_resource = Chef::Resource::PacemakerPrimitive.new(name)
+  @current_resource.agent(agent)
+
+  %w(params meta op).each do |data_type|
+    extract_hash(obj_definition, data_type)
+  end
+end
+
