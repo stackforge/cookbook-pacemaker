@@ -18,7 +18,8 @@ module Chef::RSpec
           [ "is-managed", "true" ]
         ],
         :op     => [
-          [ "monitor", { "interval" => "10s" } ]
+          [ "monitor", { "timeout" =>  "60", "interval" => "10s" } ],
+          [ "start",   { "timeout" => "240", "interval" => "10s" } ]
         ],
       }
       RA[:params_string] = resource_params_string(RA[:params])

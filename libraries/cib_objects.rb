@@ -69,7 +69,8 @@ module Chef::Libraries
       # primitive keystone ocf:openstack:keystone \
       #         params os_username="crowbar" os_password="crowbar" os_tenant_name="openstack" \
       #         meta target-role="Started" is-managed="true" \
-      #         op monitor interval="10s"
+      #         op monitor interval="10" timeout=30s \
+      #         op start interval="10s" timeout="240" \
       #
       # This method extracts a Hash from one of the params / meta / op lines.
       def extract_hash(name, obj_definition, data_type)
