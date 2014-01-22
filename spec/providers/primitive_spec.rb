@@ -38,11 +38,4 @@ describe "Chef::Provider::PacemakerPrimitive" do
     # end
   end
 
-  # let(:chef_run) {
-  #   ChefSpec::Runner.new(step_into: ['my_lwrp']).converge('foo::default')
-  # }
-  # 
-  # it 'installs the foo package through my_lwrp' do
-  #   expect(chef_run).to install_package('foo')
-  # end
 end
