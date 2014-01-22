@@ -19,7 +19,8 @@ end
 
 group :rspec do
   guard 'rspec', guard_opts do
-    startup_guards { all_specs }
+    startup_guards                { all_specs }
+    watch(%r{^spec_helper\.rb$})  { all_specs }
     watch(%r{^helpers/(.+)\.rb$}) { all_specs }
     watch(%r{^spec/.+_spec\.rb$})
     watch(%r{^(libraries|providers)/(.+)\.rb$}) do |m|
