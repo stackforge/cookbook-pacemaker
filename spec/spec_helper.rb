@@ -27,4 +27,10 @@ RSpec.configure do |config|
 
   # Specify the operating version to mock Ohai data from (default: nil)
   config.version = '11.03'
+
+  # Disable deprecated "should" syntax
+  # https://github.com/rspec/rspec-expectations/blob/master/Should.md
+  config.expect_with :rspec do |c|
+    c.syntax = :expect
+  end
 end
