@@ -1,6 +1,6 @@
 require 'spec_helper'
 require_relative File.join(%w(.. .. libraries cib_objects))
-require_relative File.join(%w(.. keystone_config))
+require_relative File.join(%w(.. helpers keystone_config))
 
 describe Chef::Libraries::Pacemaker::CIBObjects do
   include Chef::Libraries::Pacemaker::CIBObjects

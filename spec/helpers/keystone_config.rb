@@ -1,4 +1,4 @@
-require ::File.join(::File.dirname(__FILE__), *%w(.. libraries cib_objects))
+require ::File.join(::File.dirname(__FILE__), *%w(.. .. libraries cib_objects))
 
 module Chef::RSpec
   module Pacemaker

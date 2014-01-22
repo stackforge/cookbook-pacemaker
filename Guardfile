@@ -13,9 +13,14 @@ def startup_guards
   watch(%r{^spec/spec_helper\.rb$})         { yield }
 end
 
+def all_specs
+  'spec'
+end
+
 group :rspec do
   guard 'rspec', guard_opts do
-    startup_guards { 'spec' }
+    startup_guards { all_specs }
+    watch(%r{^helpers/(.+)\.rb$}) { all_specs }
     watch(%r{^spec/.+_spec\.rb$})
     watch(%r{^(libraries|providers)/(.+)\.rb$}) do |m|
       "spec/#{m[1]}/#{m[2]}_spec.rb"
