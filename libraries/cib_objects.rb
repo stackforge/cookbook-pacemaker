@@ -82,7 +82,7 @@ module Chef::Libraries
           unless kvpair =~ /^(.+?)=(.+)$/
             raise "Couldn't understand '#{kvpair}' for #{data_type} section of '#{name}' primitive"
           end
-          h[$1] = $2
+          h[$1] = $2.sub(/^"(.*)"$/, "\1")
         end
         h
       end
