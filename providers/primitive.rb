@@ -41,12 +41,13 @@ end
 
 action :delete do
   name = new_resource.name
+  next unless @current_resource
+  raise "Cannot delete running resource #{name}" if pacemaker_resource_running?(name)
   cmd = "crm resource stop #{name}; crm configure delete #{name}"
   execute "delete primitive #{name}" do
     command cmd
-    only_if { cib_object_exists?(name) }
-  end
-
+    action :nothing
+  end.run_action(:run)
   new_resource.updated_by_last_action(true)
   Chef::Log.info "Deleted primitive '#{name}'."
 end
