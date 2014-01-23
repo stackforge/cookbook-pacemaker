@@ -78,11 +78,8 @@ def load_current_resource
   name = @new_resource.name
 
   obj_definition = get_cib_object_definition(name)
-  return unless obj_definition
-
-  if obj_definition.empty? # probably overly paranoid
-    raise "CIB object '#{name}' existed but definition was empty?!"
-  end
+  return if ! obj_definition or obj_definition.empty?
+  Chef::Log.debug "CIB object definition #{obj_definition}"
 
   unless obj_definition =~ /\Aprimitive #{name} (\S+)/
     Chef::Log.warn "Resource '#{name}' was not a primitive"

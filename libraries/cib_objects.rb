@@ -18,7 +18,8 @@ module Chef::Libraries
       end
 
       def cib_object_exists?(name)
-        ! get_cib_object_definition(name).nil?
+        dfn = get_cib_object_definition(name)
+        !! (dfn && ! dfn.empty?)
       end
 
       def cib_object_type(obj_definition)

@@ -54,8 +54,7 @@ describe "Chef::Provider::PacemakerPrimitive" do
 
       # get_cib_object_definition is invoked by load_current_resource
       # and later used to see whether to create or modify.
-      expect(provider).to receive(:get_cib_object_definition).and_return(nil)
-
+      expect(provider).to receive(:get_cib_object_definition).and_return("")
 
       # Later, the :create action calls cib_object_exists? to check
       # that creation succeeded.
