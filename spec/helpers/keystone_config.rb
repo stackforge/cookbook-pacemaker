@@ -11,7 +11,8 @@ module Chef::RSpec
           [ "os_password",    "adminpw"                ],
           [ "os_auth_url",    "http://node1:5000/v2.0" ],
           [ "os_username",    "admin"                  ],
-          [ "os_tenant_name", "openstack"              ]
+          [ "os_tenant_name", "openstack"              ],
+          [ "user",           "openstack-keystone"     ],
         ],
         :meta   => [
           [ "target-role", "Started" ],
