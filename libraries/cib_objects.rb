@@ -37,7 +37,7 @@ module Chef::Libraries
       def resource_params_string(params)
         return "" if ! params or params.empty?
         s = " params"
-        params.each do |key, value|
+        params.sort.each do |key, value|
           s << %' #{key}="#{value}"'
         end
         s
@@ -46,7 +46,7 @@ module Chef::Libraries
       def resource_meta_string(meta)
         return "" if ! meta or meta.empty?
         s = " meta"
-        meta.each do |key, value|
+        meta.sort.each do |key, value|
           s << %' #{key}="#{value}"'
         end
         s
@@ -55,9 +55,9 @@ module Chef::Libraries
       def resource_op_string(ops)
         return "" if ! ops or ops.empty?
         s = " op"
-        ops.each do |op, attrs|
+        ops.sort.each do |op, attrs|
           s << " #{op}"
-          attrs.each do |key, value|
+          attrs.sort.each do |key, value|
             s << %' #{key}="#{value}"'
           end
         end

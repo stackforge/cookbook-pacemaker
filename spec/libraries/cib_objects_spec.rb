@@ -113,7 +113,7 @@ describe Chef::Libraries::Pacemaker::CIBObjects do
         "foo" => "bar",
         "baz" => "qux",
       }
-      expect(resource_params_string(params)).to eq(%' params foo="bar" baz="qux"')
+      expect(resource_params_string(params)).to eq(%' params baz="qux" foo="bar"')
     end
   end
 
@@ -131,7 +131,7 @@ describe Chef::Libraries::Pacemaker::CIBObjects do
         "foo" => "bar",
         "baz" => "qux",
       }
-      expect(resource_meta_string(meta)).to eq(%' meta foo="bar" baz="qux"')
+      expect(resource_meta_string(meta)).to eq(%' meta baz="qux" foo="bar"')
     end
   end
 
@@ -151,7 +151,7 @@ describe Chef::Libraries::Pacemaker::CIBObjects do
           "baz" => "qux",
         }
       }
-      expect(resource_op_string(op)).to eq(%' op monitor foo="bar" baz="qux"')
+      expect(resource_op_string(op)).to eq(%' op monitor baz="qux" foo="bar"')
     end
   end
 
