@@ -53,8 +53,6 @@ describe "Chef::Provider::PacemakerPrimitive" do
       # and later used to see whether to create or modify.
       expect(provider).to receive(:get_cib_object_definition).and_return(nil)
 
-      cmd = "crm configure primitive keystone #{ra[:agent]}" + \
-            ra[:params_string] + ra[:meta_string] + ra[:op_string]
 
       # Later, the :create action calls cib_object_exists? to check
       # that creation succeeded.
@@ -62,7 +60,10 @@ describe "Chef::Provider::PacemakerPrimitive" do
 
       provider.run_action :create
 
+      cmd = "crm configure primitive keystone #{ra[:agent]}" + \
+            ra[:params_string] + ra[:meta_string] + ra[:op_string]
       expect(@chef_run).to run_execute(cmd)
+
       expect(@resource).to be_updated
     end
 
