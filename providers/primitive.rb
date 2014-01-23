@@ -44,7 +44,7 @@ action :delete do
   next unless @current_resource
   raise "Cannot delete running resource #{name}" if pacemaker_resource_running?(name)
   cmd = "crm resource stop #{name}; crm configure delete #{name}"
-  execute "delete primitive #{name}" do
+  execute "crm configure delete #{name}" do
     command cmd
     action :nothing
   end.run_action(:run)

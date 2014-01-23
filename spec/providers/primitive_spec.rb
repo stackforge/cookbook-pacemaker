@@ -82,6 +82,41 @@ describe "Chef::Provider::PacemakerPrimitive" do
         "but recipe wanted '#{@resource.agent}'"
       expect { provider.run_action :create }.to \
         raise_error(RuntimeError, expected_error)
+
+      expect(@resource).not_to be_updated
+    end
+  end
+
+  describe ":delete action" do
+    it "should not attempt to delete a non-existent resource" do
+      provider = Chef::Provider::PacemakerPrimitive.new(@resource, @run_context)
+      expect(provider).to receive(:get_cib_object_definition).once.and_return("")
+      cmd = "crm configure delete #{ra[:name]}"
+      provider.run_action :delete
+      expect(@chef_run).not_to run_execute(cmd)
+      expect(@resource).not_to be_updated
+    end
+
+    it "should not delete a running resource" do
+      provider = Chef::Provider::PacemakerPrimitive.new(@resource, @run_context)
+      expect(provider).to receive(:get_cib_object_definition).once.and_return(ra[:config])
+      expect(provider).to receive(:pacemaker_resource_running?).once.and_return(true)
+      cmd = "crm configure delete #{ra[:name]}"
+      expected_error = "Cannot delete running resource #{ra[:name]}"
+      expect { provider.run_action :delete }.to \
+        raise_error(RuntimeError, expected_error)
+      expect(@chef_run).not_to run_execute(cmd)
+      expect(@resource).not_to be_updated
+    end
+
+    it "should delete a non-running resource" do
+      provider = Chef::Provider::PacemakerPrimitive.new(@resource, @run_context)
+      expect(provider).to receive(:get_cib_object_definition).once.and_return(ra[:config])
+      expect(provider).to receive(:pacemaker_resource_running?).once.and_return(false)
+      cmd = "crm configure delete #{ra[:name]}"
+      provider.run_action :delete
+      expect(@chef_run).to run_execute(cmd)
+      expect(@resource).to be_updated
     end
   end
 end
