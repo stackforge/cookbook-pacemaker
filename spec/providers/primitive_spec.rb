@@ -71,7 +71,19 @@ describe "Chef::Provider::PacemakerPrimitive" do
     end
 
     it "should barf if the primitive has the wrong agent" do
-      pending "not implemented yet"
+      existing_agent = "ocf:openstack:something-else"
+      config = ra[:config].sub(ra[:agent], existing_agent)
+      provider = Chef::Provider::PacemakerPrimitive.new(@resource, @run_context)
+
+      # get_cib_object_definition is invoked by load_current_resource
+      # and later used to see whether to create or modify.
+      expect(provider).to receive(:get_cib_object_definition).and_return(config)
+
+      expected_error = \
+        "Existing primitive '#{ra[:name]}' has agent '#{existing_agent}' " \
+        "but recipe wanted '#{@resource.agent}'"
+      expect { provider.run_action :create }.to \
+        raise_error(RuntimeError, expected_error)
     end
   end
 end

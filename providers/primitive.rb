@@ -31,7 +31,8 @@ action :create do
     create_resource(name)
   else
     if @current_resource.agent != new_resource.agent
-      raise "Existing primitive '#{name}' has agent but recipe wanted #{new_resource.agent}"
+      raise "Existing primitive '#{name}' has agent '#{@current_resource.agent}' " \
+            "but recipe wanted '#{new_resource.agent}'"
     end
 
     modify_resource(name)
