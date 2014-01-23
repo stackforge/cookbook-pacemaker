@@ -3,7 +3,9 @@ require_relative File.join(%w(.. spec_helper))
 require_relative File.join(%w(.. helpers keystone_config))
 
 describe "Chef::Provider::PacemakerPrimitive" do
-  before do
+  let(:ra) { Chef::RSpec::Pacemaker::Config::RA }
+
+  before(:each) do
     runner_opts = {
       :step_into => ['pacemaker_primitive']
     }
@@ -12,7 +14,6 @@ describe "Chef::Provider::PacemakerPrimitive" do
     @node = @chef_run.node
     @run_context = @chef_run.run_context
 
-    ra = Chef::RSpec::Pacemaker::Config::RA
     @resource = Chef::Resource::PacemakerPrimitive.new(ra[:name], @run_context)
     @resource.agent  ra[:agent]
     @resource.params Hash[ra[:params]]
@@ -21,8 +22,6 @@ describe "Chef::Provider::PacemakerPrimitive" do
   end
 
   describe ":create action" do
-    let(:ra) { Chef::RSpec::Pacemaker::Config::RA }
-
     it "should modify the primitive if it already exists" do
       provider = Chef::Provider::PacemakerPrimitive.new(@resource, @run_context)
       new_params = Hash[ra[:params]].merge("os_password" => "newpasswd")
