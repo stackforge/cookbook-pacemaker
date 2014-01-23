@@ -55,7 +55,7 @@ end
 action :start do
   name = new_resource.name
   raise "no such resource #{name}" unless @current_resource
-  next if resource_running?(name)
+  next if pacemaker_resource_running?(name)
   shell_out! %w(crm resource start) + [name]
   Chef::Log.info "Successfully started primitive '#{name}'."
 end
@@ -63,7 +63,7 @@ end
 action :stop do
   name = new_resource.name
   raise "no such resource #{name}" unless @current_resource
-  next unless resource_running?(name)
+  next unless pacemaker_resource_running?(name)
   shell_out! %w(crm resource stop) + [name]
   Chef::Log.info "Successfully stopped primitive '#{name}'."
 end
