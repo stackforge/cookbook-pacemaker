@@ -12,9 +12,8 @@ describe "Chef::Provider::PacemakerPrimitive" do
     @node = @chef_run.node
     @run_context = @chef_run.run_context
 
-    @resource = Chef::Resource::PacemakerPrimitive.new("keystone", @run_context)
-
     ra = Chef::RSpec::Pacemaker::Config::RA
+    @resource = Chef::Resource::PacemakerPrimitive.new(ra[:name], @run_context)
     @resource.agent  ra[:agent]
     @resource.params Hash[ra[:params]]
     @resource.meta   Hash[ra[:meta]]
@@ -35,7 +34,7 @@ describe "Chef::Provider::PacemakerPrimitive" do
       # and later used to see whether to create or modify.
       expect(provider).to receive(:get_cib_object_definition).and_return(ra[:config])
 
-      configure_cmd_prefix = "crm_resource --resource keystone"
+      configure_cmd_prefix = "crm_resource --resource #{ra[:name]}"
       expected_configure_cmd_args = [
         %'--set-parameter "os_password" --parameter-value "newpasswd"',
         %'--delete-parameter "os_tenant_name"',
@@ -64,7 +63,7 @@ describe "Chef::Provider::PacemakerPrimitive" do
 
       provider.run_action :create
 
-      cmd = "crm configure primitive keystone #{ra[:agent]}" + \
+      cmd = "crm configure primitive #{ra[:name]} #{ra[:agent]}" + \
             ra[:params_string] + ra[:meta_string] + ra[:op_string]
       expect(@chef_run).to run_execute(cmd)
 

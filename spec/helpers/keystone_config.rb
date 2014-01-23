@@ -6,6 +6,7 @@ module Chef::RSpec
       extend Chef::Libraries::Pacemaker::CIBObjects
 
       RA = {
+        :name   => "keystone",
         :agent  => "ocf:openstack:keystone",
         :params => [
           [ "os_password",    "adminpw"                ],
