@@ -94,6 +94,7 @@ def load_current_resource
   %w(params meta).each do |data_type|
     h = extract_hash(name, obj_definition, data_type)
     @current_resource.send(data_type.to_sym, h)
+    Chef::Log.debug "detected #{name} has #{data_type} #{h}"
   end
 end
 
