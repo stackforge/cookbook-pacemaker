@@ -42,8 +42,7 @@ end
 action :delete do
   name = new_resource.name
   cmd = "crm resource stop #{name}; crm configure delete #{name}"
-
-  e = execute "delete primitive #{name}" do
+  execute "delete primitive #{name}" do
     command cmd
     only_if { cib_object_exists?(name) }
   end
