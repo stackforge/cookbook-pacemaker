@@ -26,6 +26,10 @@ describe "Chef::Provider::PacemakerPrimitive" do
 
     it "should modify the primitive if it already exists" do
       provider = Chef::Provider::PacemakerPrimitive.new(@resource, @run_context)
+      new_params = Hash[ra[:params]].merge("os_password" => "newpasswd")
+      new_params.delete("os_tenant_name")
+      @resource.params new_params
+      @resource.meta Hash[ra[:meta]].merge("target-role" => "Stopped")
 
       # get_cib_object_definition is invoked by load_current_resource
       # and later used to see whether to create or modify.
@@ -33,9 +37,9 @@ describe "Chef::Provider::PacemakerPrimitive" do
 
       configure_cmd_prefix = "crm_resource --resource keystone"
       expected_configure_cmd_args = [
-        "--set-parameter os_password --parameter-value newpasswd",
-        "--delete-parameter os_tenant_name",
-        "--set-parameter target-role --parameter-value Stopped --meta",
+        %'--set-parameter "os_password" --parameter-value "newpasswd"',
+        %'--delete-parameter "os_tenant_name"',
+        %'--set-parameter "target-role" --parameter-value "Stopped" --meta',
       ]
 
       provider.run_action :create

@@ -120,24 +120,39 @@ def create_resource(name)
 end
 
 def modify_resource(name)
-  configure_cmd_prefix = "crm_resource --resource keystone"
-
   cmds = []
-  new_resource.params.each do |k, v|
-    if @current_resource.params[k] == v
-      Chef::Log.debug("#{name}'s #{k} param didn't change")
-    else
-      Chef::Log.info("#{name}'s #{k} param changed to #{v}")
-      cmds << configure_cmd_prefix + " --set-parameter #{k} --parameter-value #{v}"
-    end
-  end
+  modify_params(name, cmds, :params)
+  modify_params(name, cmds, :meta)
 
   cmds.each do |cmd|
-    converge_by("execute #{cmd}") do
-      result = shell_out!(cmd)
-      Chef::Log.info("#{cmd} ran successfully")
-    end
+    execute cmd do
+      action :nothing
+    end.run_action(:run)
   end
 
   new_resource.updated_by_last_action(true) unless cmds.empty?
+end
+
+def modify_params(name, cmds, data_type)
+  configure_cmd_prefix = "crm_resource --resource #{name}"
+
+  new_resource.send(data_type).each do |k, v|
+    if @current_resource.send(data_type)[k] == v
+      Chef::Log.debug("#{name}'s #{k} #{data_type} didn't change")
+    else
+      Chef::Log.info("#{name}'s #{k} #{data_type} changed to #{v}")
+      cmd = configure_cmd_prefix + %' --set-parameter "#{k}" --parameter-value "#{v}"'
+      cmd += " --meta" if data_type == :meta
+      cmds << cmd
+    end
+  end
+
+  @current_resource.send(data_type).each do |k, v|
+    unless new_resource.send(data_type).has_key? k
+      Chef::Log.info("#{name}'s #{k} #{data_type} was removed")
+      cmd = configure_cmd_prefix + %' --delete-parameter "#{k}"'
+      cmd += " --meta" if data_type == :meta
+      cmds << cmd
+    end
+  end
 end
