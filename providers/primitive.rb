@@ -47,7 +47,6 @@ action :delete do
     raise "Cannot delete running resource primitive #{name}"
   end
   execute "crm configure delete #{name}" do
-    command cmd
     action :nothing
   end.run_action(:run)
   new_resource.updated_by_last_action(true)
