@@ -60,7 +60,9 @@ action :start do
     raise "Cannot start non-existent resource primitive '#{name}'"
   end
   next if pacemaker_resource_running?(name)
-  shell_out! %w(crm resource start) + [name]
+  execute "crm resource start #{name}" do
+    action :nothing
+  end.run_action(:run)
   Chef::Log.info "Successfully started primitive '#{name}'."
 end
 
@@ -70,7 +72,9 @@ action :stop do
     raise "Cannot stop non-existent resource primitive '#{name}'"
   end
   next unless pacemaker_resource_running?(name)
-  shell_out! %w(crm resource stop) + [name]
+  execute "crm resource stop #{name}" do
+    action :nothing
+  end.run_action(:run)
   Chef::Log.info "Successfully stopped primitive '#{name}'."
 end
 
