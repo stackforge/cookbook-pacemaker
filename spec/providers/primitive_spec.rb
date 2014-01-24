@@ -78,7 +78,7 @@ describe "Chef::Provider::PacemakerPrimitive" do
       expect(provider).to receive(:get_cib_object_definition).and_return(config)
 
       expected_error = \
-        "Existing primitive '#{ra[:name]}' has agent '#{existing_agent}' " \
+        "Existing resource primitive '#{ra[:name]}' has agent '#{existing_agent}' " \
         "but recipe wanted '#{@resource.agent}'"
       expect { provider.run_action :create }.to \
         raise_error(RuntimeError, expected_error)
@@ -102,7 +102,7 @@ describe "Chef::Provider::PacemakerPrimitive" do
       expect(provider).to receive(:get_cib_object_definition).once.and_return(ra[:config])
       expect(provider).to receive(:pacemaker_resource_running?).once.and_return(true)
       cmd = "crm configure delete #{ra[:name]}"
-      expected_error = "Cannot delete running resource #{ra[:name]}"
+      expected_error = "Cannot delete running resource primitive #{ra[:name]}"
       expect { provider.run_action :delete }.to \
         raise_error(RuntimeError, expected_error)
       expect(@chef_run).not_to run_execute(cmd)

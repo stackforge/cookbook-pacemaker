@@ -31,8 +31,9 @@ action :create do
     create_resource(name)
   else
     if @current_resource.agent != new_resource.agent
-      raise "Existing primitive '#{name}' has agent '#{@current_resource.agent}' " \
-            "but recipe wanted '#{new_resource.agent}'"
+      raise "Existing resource primitive '%s' has agent '%s' " \
+            "but recipe wanted '%s'" % \
+            [ name, @current_resource.agent, new_resource.agent ]
     end
 
     modify_resource(name)
@@ -42,8 +43,9 @@ end
 action :delete do
   name = new_resource.name
   next unless @current_resource
-  raise "Cannot delete running resource #{name}" if pacemaker_resource_running?(name)
-  cmd = "crm resource stop #{name}; crm configure delete #{name}"
+  if pacemaker_resource_running?(name)
+    raise "Cannot delete running resource primitive #{name}"
+  end
   execute "crm configure delete #{name}" do
     command cmd
     action :nothing
@@ -54,7 +56,9 @@ end
 
 action :start do
   name = new_resource.name
-  raise "no such resource #{name}" unless @current_resource
+  unless @current_resource
+    raise "Cannot start non-existent resource primitive '#{name}'"
+  end
   next if pacemaker_resource_running?(name)
   shell_out! %w(crm resource start) + [name]
   Chef::Log.info "Successfully started primitive '#{name}'."
@@ -62,7 +66,9 @@ end
 
 action :stop do
   name = new_resource.name
-  raise "no such resource #{name}" unless @current_resource
+  unless @current_resource
+    raise "Cannot stop non-existent resource primitive '#{name}'"
+  end
   next unless pacemaker_resource_running?(name)
   shell_out! %w(crm resource stop) + [name]
   Chef::Log.info "Successfully stopped primitive '#{name}'."
