@@ -115,7 +115,7 @@ def create_resource(name)
   cmd << resource_meta_string(new_resource.meta)
   cmd << resource_op_string(new_resource.op)
 
-  Chef::Log.debug "creating new primitive #{name} via #{cmd}"
+  Chef::Log.info "Creating new resource primitive #{name}"
 
   execute cmd do
     action :nothing
@@ -130,6 +130,8 @@ def create_resource(name)
 end
 
 def modify_resource(name)
+  Chef::Log.info "Checking existing resource primitive #{name} for modifications"
+
   cmds = []
   modify_params(name, cmds, :params)
   modify_params(name, cmds, :meta)
@@ -148,7 +150,7 @@ def modify_params(name, cmds, data_type)
 
   new_resource.send(data_type).each do |k, v|
     if @current_resource.send(data_type)[k] == v
-      Chef::Log.debug("#{name}'s #{k} #{data_type} didn't change")
+      Chef::Log.info("#{name}'s #{k} #{data_type} didn't change")
     else
       Chef::Log.info("#{name}'s #{k} #{data_type} changed to #{v}")
       cmd = configure_cmd_prefix + %' --set-parameter "#{k}" --parameter-value "#{v}"'
