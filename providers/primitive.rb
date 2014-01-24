@@ -63,6 +63,7 @@ action :start do
   execute "crm resource start #{name}" do
     action :nothing
   end.run_action(:run)
+  new_resource.updated_by_last_action(true)
   Chef::Log.info "Successfully started primitive '#{name}'."
 end
 
@@ -75,6 +76,7 @@ action :stop do
   execute "crm resource stop #{name}" do
     action :nothing
   end.run_action(:run)
+  new_resource.updated_by_last_action(true)
   Chef::Log.info "Successfully stopped primitive '#{name}'."
 end
 
