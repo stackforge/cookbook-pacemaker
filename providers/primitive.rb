@@ -148,21 +148,22 @@ end
 def modify_params(name, cmds, data_type)
   configure_cmd_prefix = "crm_resource --resource #{name}"
 
-  new_resource.send(data_type).each do |k, v|
-    if @current_resource.send(data_type)[k] == v
-      Chef::Log.info("#{name}'s #{k} #{data_type} didn't change")
+  new_resource.send(data_type).each do |param, new_value|
+    current_value = @current_resource.send(data_type)[param]
+    if current_value == new_value
+      Chef::Log.info("#{name}'s #{param} #{data_type} didn't change")
     else
-      Chef::Log.info("#{name}'s #{k} #{data_type} changed to #{v}")
-      cmd = configure_cmd_prefix + %' --set-parameter "#{k}" --parameter-value "#{v}"'
+      Chef::Log.info("#{name}'s #{param} #{data_type} changed to #{new_value}")
+      cmd = configure_cmd_prefix + %' --set-parameter "#{param}" --parameter-value "#{new_value}"'
       cmd += " --meta" if data_type == :meta
       cmds << cmd
     end
   end
 
-  @current_resource.send(data_type).each do |k, v|
-    unless new_resource.send(data_type).has_key? k
-      Chef::Log.info("#{name}'s #{k} #{data_type} was removed")
-      cmd = configure_cmd_prefix + %' --delete-parameter "#{k}"'
+  @current_resource.send(data_type).each do |param, value|
+    unless new_resource.send(data_type).has_key? param
+      Chef::Log.info("#{name}'s #{param} #{data_type} was removed")
+      cmd = configure_cmd_prefix + %' --delete-parameter "#{param}"'
       cmd += " --meta" if data_type == :meta
       cmds << cmd
     end
