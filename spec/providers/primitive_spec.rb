@@ -90,7 +90,10 @@ describe "Chef::Provider::PacemakerPrimitive" do
   describe ":delete action" do
     it "should not attempt to delete a non-existent resource" do
       provider = Chef::Provider::PacemakerPrimitive.new(@resource, @run_context)
+
+      # get_cib_object_definition is invoked by load_current_resource
       expect(provider).to receive(:get_cib_object_definition).once.and_return("")
+
       cmd = "crm configure delete #{ra[:name]}"
       provider.run_action :delete
       expect(@chef_run).not_to run_execute(cmd)
@@ -99,7 +102,10 @@ describe "Chef::Provider::PacemakerPrimitive" do
 
     it "should not delete a running resource" do
       provider = Chef::Provider::PacemakerPrimitive.new(@resource, @run_context)
+
+      # get_cib_object_definition is invoked by load_current_resource
       expect(provider).to receive(:get_cib_object_definition).once.and_return(ra[:config])
+
       expect(provider).to receive(:pacemaker_resource_running?).once.and_return(true)
       cmd = "crm configure delete #{ra[:name]}"
       expected_error = "Cannot delete running resource primitive #{ra[:name]}"
@@ -111,7 +117,10 @@ describe "Chef::Provider::PacemakerPrimitive" do
 
     it "should delete a non-running resource" do
       provider = Chef::Provider::PacemakerPrimitive.new(@resource, @run_context)
+
+      # get_cib_object_definition is invoked by load_current_resource
       expect(provider).to receive(:get_cib_object_definition).once.and_return(ra[:config])
+
       expect(provider).to receive(:pacemaker_resource_running?).once.and_return(false)
       cmd = "crm configure delete #{ra[:name]}"
       provider.run_action :delete
