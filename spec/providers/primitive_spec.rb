@@ -3,7 +3,10 @@ require_relative File.join(%w(.. spec_helper))
 require_relative File.join(%w(.. helpers keystone_config))
 
 describe "Chef::Provider::PacemakerPrimitive" do
+  # for use inside examples:
   let(:ra) { Chef::RSpec::Pacemaker::Config::RA }
+  # for use outside examples (e.g. when invoking shared_examples)
+  ra = Chef::RSpec::Pacemaker::Config::RA
 
   before(:each) do
     runner_opts = {
@@ -87,18 +90,28 @@ describe "Chef::Provider::PacemakerPrimitive" do
     end
   end
 
-  describe ":delete action" do
-    it "should not attempt to delete a non-existent resource" do
+  shared_examples "action on non-existent resource" do |action, cmd, expected_error|
+    it "should not attempt to #{action.to_s} a non-existent resource" do
       provider = Chef::Provider::PacemakerPrimitive.new(@resource, @run_context)
 
       # get_cib_object_definition is invoked by load_current_resource
       expect(provider).to receive(:get_cib_object_definition).once.and_return("")
 
-      cmd = "crm configure delete #{ra[:name]}"
-      provider.run_action :delete
+      if expected_error
+        expect { provider.run_action action }.to \
+          raise_error(RuntimeError, expected_error)
+      else
+        provider.run_action action
+      end
+
       expect(@chef_run).not_to run_execute(cmd)
       expect(@resource).not_to be_updated
     end
+  end
+
+  describe ":delete action" do
+    it_should_behave_like "action on non-existent resource", \
+      :delete, "crm configure delete #{ra[:name]}", nil
 
     it "should not delete a running resource" do
       provider = Chef::Provider::PacemakerPrimitive.new(@resource, @run_context)
@@ -128,4 +141,76 @@ describe "Chef::Provider::PacemakerPrimitive" do
       expect(@resource).to be_updated
     end
   end
+
+  describe ":start action" do
+    it_should_behave_like "action on non-existent resource", \
+      :start,
+      "crm resource start #{ra[:name]}", \
+      "Cannot start non-existent resource primitive '#{ra[:name]}'"
+
+    it "should do nothing to a started resource" do
+      provider = Chef::Provider::PacemakerPrimitive.new(@resource, @run_context)
+
+      # get_cib_object_definition is invoked by load_current_resource
+      expect(provider).to receive(:get_cib_object_definition).and_return(ra[:config])
+
+      expect(provider).to receive(:pacemaker_resource_running?).once.and_return(true)
+
+      cmd = "crm resource start #{ra[:name]}"
+      provider.run_action :start
+      expect(@chef_run).not_to run_execute(cmd)
+      expect(@resource).not_to be_updated
+    end
+
+    it "should start a stopped resource" do
+      provider = Chef::Provider::PacemakerPrimitive.new(@resource, @run_context)
+
+      config = ra[:config].sub("Started", "Stopped")
+      # get_cib_object_definition is invoked by load_current_resource
+      expect(provider).to receive(:get_cib_object_definition).and_return(config)
+
+      expect(provider).to receive(:pacemaker_resource_running?).once.and_return(false)
+
+      cmd = "crm resource start #{ra[:name]}"
+      provider.run_action :start
+      expect(@chef_run).to run_execute(cmd)
+      expect(@resource).to be_updated
+    end
+  end
+
+  describe ":stop action" do
+    it_should_behave_like "action on non-existent resource", \
+      :stop,
+      "crm resource stop #{ra[:name]}", \
+      "Cannot stop non-existent resource primitive '#{ra[:name]}'"
+
+    it "should do nothing to a stopped resource" do
+      provider = Chef::Provider::PacemakerPrimitive.new(@resource, @run_context)
+
+      # get_cib_object_definition is invoked by load_current_resource
+      expect(provider).to receive(:get_cib_object_definition).and_return(ra[:config])
+
+      expect(provider).to receive(:pacemaker_resource_running?).once.and_return(false)
+
+      cmd = "crm resource start #{ra[:name]}"
+      provider.run_action :stop
+      expect(@chef_run).not_to run_execute(cmd)
+      expect(@resource).not_to be_updated
+    end
+
+    it "should stop a started resource" do
+      provider = Chef::Provider::PacemakerPrimitive.new(@resource, @run_context)
+
+      # get_cib_object_definition is invoked by load_current_resource
+      expect(provider).to receive(:get_cib_object_definition).and_return(ra[:config])
+
+      expect(provider).to receive(:pacemaker_resource_running?).once.and_return(true)
+
+      cmd = "crm resource stop #{ra[:name]}"
+      provider.run_action :stop
+      expect(@chef_run).to run_execute(cmd)
+      expect(@resource).to be_updated
+    end
+  end
+
 end
