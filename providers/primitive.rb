@@ -153,7 +153,7 @@ def modify_params(name, cmds, data_type)
     if current_value == new_value
       Chef::Log.info("#{name}'s #{param} #{data_type} didn't change")
     else
-      Chef::Log.info("#{name}'s #{param} #{data_type} changed to #{new_value}")
+      Chef::Log.info("#{name}'s #{param} #{data_type} changed from #{current_value} to #{new_value}")
       cmd = configure_cmd_prefix + %' --set-parameter "#{param}" --parameter-value "#{new_value}"'
       cmd += " --meta" if data_type == :meta
       cmds << cmd
