@@ -150,7 +150,11 @@ def modify_params(name, cmds, data_type)
 
   new_resource.send(data_type).each do |param, new_value|
     current_value = @current_resource.send(data_type)[param]
-    if current_value == new_value
+    # Value from recipe might be a TrueClass instance, but the same
+    # value would be retrieved from the cluster resource as the String
+    # "true".  So we force a string-wise comparison to adhere to
+    # Postel's Law whilst minimising activity on the Chef client node.
+    if current_value.to_s == new_value.to_s
       Chef::Log.info("#{name}'s #{param} #{data_type} didn't change")
     else
       Chef::Log.info("#{name}'s #{param} #{data_type} changed from #{current_value} to #{new_value}")
