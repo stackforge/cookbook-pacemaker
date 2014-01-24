@@ -24,9 +24,10 @@ describe "Chef::Provider::PacemakerPrimitive" do
     @resource.op     Hash[ra[:op]]
   end
 
+  let (:provider) { Chef::Provider::PacemakerPrimitive.new(@resource, @run_context) }
+
   describe ":create action" do
     it "should modify the primitive if it already exists" do
-      provider = Chef::Provider::PacemakerPrimitive.new(@resource, @run_context)
       new_params = Hash[ra[:params]].merge("os_password" => "newpasswd")
       new_params.delete("os_tenant_name")
       @resource.params new_params
@@ -52,8 +53,6 @@ describe "Chef::Provider::PacemakerPrimitive" do
     end
 
     it "should create a primitive if it doesn't already exist" do
-      provider = Chef::Provider::PacemakerPrimitive.new(@resource, @run_context)
-
       # get_cib_object_definition is invoked by load_current_resource
       # and later used to see whether to create or modify.
       expect(provider).to receive(:get_cib_object_definition).and_return("")
@@ -74,7 +73,6 @@ describe "Chef::Provider::PacemakerPrimitive" do
     it "should barf if the primitive has the wrong agent" do
       existing_agent = "ocf:openstack:something-else"
       config = ra[:config].sub(ra[:agent], existing_agent)
-      provider = Chef::Provider::PacemakerPrimitive.new(@resource, @run_context)
 
       # get_cib_object_definition is invoked by load_current_resource
       # and later used to see whether to create or modify.
@@ -92,8 +90,6 @@ describe "Chef::Provider::PacemakerPrimitive" do
 
   shared_examples "action on non-existent resource" do |action, cmd, expected_error|
     it "should not attempt to #{action.to_s} a non-existent resource" do
-      provider = Chef::Provider::PacemakerPrimitive.new(@resource, @run_context)
-
       # get_cib_object_definition is invoked by load_current_resource
       expect(provider).to receive(:get_cib_object_definition).once.and_return("")
 
@@ -114,8 +110,6 @@ describe "Chef::Provider::PacemakerPrimitive" do
       :delete, "crm configure delete #{ra[:name]}", nil
 
     it "should not delete a running resource" do
-      provider = Chef::Provider::PacemakerPrimitive.new(@resource, @run_context)
-
       # get_cib_object_definition is invoked by load_current_resource
       expect(provider).to receive(:get_cib_object_definition).once.and_return(ra[:config])
 
@@ -129,8 +123,6 @@ describe "Chef::Provider::PacemakerPrimitive" do
     end
 
     it "should delete a non-running resource" do
-      provider = Chef::Provider::PacemakerPrimitive.new(@resource, @run_context)
-
       # get_cib_object_definition is invoked by load_current_resource
       expect(provider).to receive(:get_cib_object_definition).once.and_return(ra[:config])
 
@@ -149,8 +141,6 @@ describe "Chef::Provider::PacemakerPrimitive" do
       "Cannot start non-existent resource primitive '#{ra[:name]}'"
 
     it "should do nothing to a started resource" do
-      provider = Chef::Provider::PacemakerPrimitive.new(@resource, @run_context)
-
       # get_cib_object_definition is invoked by load_current_resource
       expect(provider).to receive(:get_cib_object_definition).and_return(ra[:config])
 
@@ -163,8 +153,6 @@ describe "Chef::Provider::PacemakerPrimitive" do
     end
 
     it "should start a stopped resource" do
-      provider = Chef::Provider::PacemakerPrimitive.new(@resource, @run_context)
-
       config = ra[:config].sub("Started", "Stopped")
       # get_cib_object_definition is invoked by load_current_resource
       expect(provider).to receive(:get_cib_object_definition).and_return(config)
@@ -185,8 +173,6 @@ describe "Chef::Provider::PacemakerPrimitive" do
       "Cannot stop non-existent resource primitive '#{ra[:name]}'"
 
     it "should do nothing to a stopped resource" do
-      provider = Chef::Provider::PacemakerPrimitive.new(@resource, @run_context)
-
       # get_cib_object_definition is invoked by load_current_resource
       expect(provider).to receive(:get_cib_object_definition).and_return(ra[:config])
 
@@ -199,8 +185,6 @@ describe "Chef::Provider::PacemakerPrimitive" do
     end
 
     it "should stop a started resource" do
-      provider = Chef::Provider::PacemakerPrimitive.new(@resource, @run_context)
-
       # get_cib_object_definition is invoked by load_current_resource
       expect(provider).to receive(:get_cib_object_definition).and_return(ra[:config])
 
