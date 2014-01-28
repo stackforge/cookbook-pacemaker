@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-require ::File.join(::File.dirname(__FILE__), *%w(.. libraries cib_objects))
+require ::File.join(::File.dirname(__FILE__), *%w(.. libraries pacemaker cib_object))
 
 action :create do
   name = new_resource.name

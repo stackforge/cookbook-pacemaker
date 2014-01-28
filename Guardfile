@@ -7,25 +7,24 @@ guard_opts = {
   all_after_pass: true,
 }
 
-def startup_guards
-  watch(%r{^Gemfile$})                      { yield }
-  watch(%r{^Gemfile.lock$})                 { yield }
-  watch(%r{^spec/spec_helper\.rb$})         { yield }
-end
-
 def all_specs
   'spec'
 end
 
 group :rspec do
   guard 'rspec', guard_opts do
-    startup_guards                { all_specs }
-    watch(%r{^spec_helper\.rb$})  { all_specs }
-    watch(%r{^helpers/(.+)\.rb$}) { all_specs }
+    watch(%r{^Gemfile$})                 { all_specs }
+    watch(%r{^Gemfile.lock$})            { all_specs }
+    watch(%r{^spec/spec_helper\.rb$})    { all_specs }
+    watch(%r{^spec/helpers/(.+)\.rb$})   { all_specs }
+    watch(%r{^libraries/pacemaker\.rb$}) { all_specs }
     watch(%r{^spec/.+_spec\.rb$})
-    watch(%r{^(libraries|providers)/(.+)\.rb$}) do |m|
-      "spec/#{m[1]}/#{m[2]}_spec.rb"
-    end
+    watch(%r{^libraries/pacemaker/(.+)\.rb$})  { |m|
+      "spec/libraries/#{m[1]}_spec.rb"
+    }
+    watch(%r{^(resources|providers)/(.+)\.rb$}) { |m|
+      "spec/providers/#{m[1]}_spec.rb"
+    }
   end
 end
 

@@ -17,9 +17,7 @@
 # limitations under the License.
 #
 
-require ::File.join(::File.dirname(__FILE__), *%w(.. libraries cib_objects))
-
-include Chef::Libraries::Pacemaker::CIBObjects
+require ::File.join(::File.dirname(__FILE__), *%w(.. libraries pacemaker cib_object))
 
 # For vagrant env, switch to the following 'require' command.
 #require "/srv/chef/file_store/cookbooks/pacemaker/providers/helper"
@@ -43,10 +41,11 @@ end
 action :delete do
   name = new_resource.name
   next unless @current_resource
-  if pacemaker_resource_running?(name)
+  rsc = Pacemaker::Resource::Primitive.new(name)
+  if rsc.running?
     raise "Cannot delete running resource primitive #{name}"
   end
-  execute "crm configure delete #{name}" do
+  execute rsc.delete_command do
     action :nothing
   end.run_action(:run)
   new_resource.updated_by_last_action(true)
@@ -58,8 +57,9 @@ action :start do
   unless @current_resource
     raise "Cannot start non-existent resource primitive '#{name}'"
   end
-  next if pacemaker_resource_running?(name)
-  execute "crm resource start #{name}" do
+  rsc = Pacemaker::Resource::Primitive.new(name)
+  next if rsc.running?
+  execute rsc.start_command do
     action :nothing
   end.run_action(:run)
   new_resource.updated_by_last_action(true)
@@ -71,8 +71,9 @@ action :stop do
   unless @current_resource
     raise "Cannot stop non-existent resource primitive '#{name}'"
   end
-  next unless pacemaker_resource_running?(name)
-  execute "crm resource stop #{name}" do
+  rsc = Pacemaker::Resource::Primitive.new(name)
+  next unless rsc.running?
+  execute rsc.stop_command do
     action :nothing
   end.run_action(:run)
   new_resource.updated_by_last_action(true)
@@ -88,32 +89,36 @@ end
 def load_current_resource
   name = @new_resource.name
 
-  obj_definition = get_cib_object_definition(name)
-  return if ! obj_definition or obj_definition.empty?
-  Chef::Log.debug "CIB object definition #{obj_definition}"
-
-  unless obj_definition =~ /\Aprimitive #{name} (\S+)/
-    Chef::Log.warn "Resource '#{name}' was not a primitive"
+  primitive = Pacemaker::Resource::Primitive.new(name)
+  begin
+    primitive.load_definition
+  rescue Pacemaker::ObjectTypeMismatch => e
+    Chef::Log.warn e.message
     return
   end
-  agent = $1
 
-  @current_resource_definition = obj_definition
+  if ! primitive.definition or primitive.definition.empty?
+    Chef::Log.debug "CIB object definition nil or empty"
+    return
+  end
+  Chef::Log.debug "CIB object definition #{primitive.definition}"
+  @current_resource_definition = primitive.definition
+  primitive.parse_definition
+
+  @current_primitive = primitive
   @current_resource = Chef::Resource::PacemakerPrimitive.new(name)
-  @current_resource.agent(agent)
-
+  @current_resource.agent(primitive.agent)
   %w(params meta).each do |data_type|
-    h = extract_hash(name, obj_definition, data_type)
-    @current_resource.send(data_type.to_sym, h)
-    Chef::Log.debug "detected #{name} has #{data_type} #{h}"
+    method = data_type.to_sym
+    value = primitive.send(method)
+    @current_resource.send(method, value)
+    Chef::Log.debug "detected #{name} has #{data_type} #{value}"
   end
 end
 
 def create_resource(name)
-  cmd = "crm configure primitive #{name} #{new_resource.agent}"
-  cmd << resource_params_string(new_resource.params)
-  cmd << resource_meta_string(new_resource.meta)
-  cmd << resource_op_string(new_resource.op)
+  primitive = Pacemaker::Resource::Primitive.from_chef_resource(new_resource)
+  cmd = primitive.crm_configure_command
 
   Chef::Log.info "Creating new resource primitive #{name}"
 
@@ -121,7 +126,7 @@ def create_resource(name)
     action :nothing
   end.run_action(:run)
 
-  if cib_object_exists?(name)
+  if primitive.exists?
     new_resource.updated_by_last_action(true)
     Chef::Log.info "Successfully configured primitive '#{name}'."
   else
