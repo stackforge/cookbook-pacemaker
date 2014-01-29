@@ -1,9 +1,6 @@
 require 'mixlib/shellout'
 
 module Pacemaker
-  class ObjectTypeMismatch < StandardError
-  end
-
   class CIBObject
     attr_accessor :name, :definition
 
@@ -68,7 +65,8 @@ module Pacemaker
       @definition = self.class.get_definition(name)
 
       if @definition and ! @definition.empty? and type != self.class.object_type
-        raise ObjectTypeMismatch, "Expected #{self.class.object_type} type but loaded definition was type #{type}"
+        raise CIBObject::TypeMismatch, \
+          "Expected #{self.class.object_type} type but loaded definition was type #{type}"
       end
     end
 
@@ -87,5 +85,11 @@ module Pacemaker
     def delete_command
       "crm configure delete '#{name}'"
     end
+  end
+
+  class CIBObject::DefinitionParseError < StandardError
+  end
+
+  class CIBObject::TypeMismatch < StandardError
   end
 end

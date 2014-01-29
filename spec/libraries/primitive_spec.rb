@@ -14,7 +14,7 @@ describe Pacemaker::Resource::Primitive do
       .to receive(:stdout) \
       .and_return("clone foo blah blah")
     expect { @primitive.load_definition }.to \
-      raise_error(Pacemaker::ObjectTypeMismatch,
+      raise_error(Pacemaker::CIBObject::TypeMismatch,
                   "Expected primitive type but loaded definition was type clone")
   end
 

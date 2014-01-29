@@ -26,7 +26,8 @@ class Pacemaker::Resource::Primitive < Pacemaker::Resource
 
   def parse_definition
     unless definition =~ /\Aprimitive (\S+) (\S+)/
-      raise RuntimeError, "Couldn't parse definition '#{definition}'"
+      raise Pacemaker::CIBObject::DefinitionParseError, \
+        "Couldn't parse definition '#{definition}'"
     end
     self.name  = $1
     self.agent = $2
