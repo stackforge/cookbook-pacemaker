@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-require ::File.join(::File.dirname(__FILE__), *%w(.. libraries pacemaker cib_object))
+require ::File.join(::File.dirname(__FILE__), *%w(.. libraries pacemaker))
 
 # For vagrant env, switch to the following 'require' command.
 #require "/srv/chef/file_store/cookbooks/pacemaker/providers/helper"
@@ -89,18 +89,17 @@ end
 def load_current_resource
   name = @new_resource.name
 
-  primitive = Pacemaker::Resource::Primitive.new(name)
-  begin
-    primitive.load_definition
-  rescue Pacemaker::ObjectTypeMismatch => e
-    Chef::Log.warn e.message
-    return
-  end
-
-  if ! primitive.definition or primitive.definition.empty?
+  primitive = Pacemaker::CIBObject.from_name(name)
+  unless primitive
     Chef::Log.debug "CIB object definition nil or empty"
     return
   end
+
+  unless primitive.is_a? Pacemaker::Resource::Primitive
+    Chef::Log.warn "CIB object '#{name}' was a #{primitive.type} not a resource primitive"
+    return
+  end
+
   Chef::Log.debug "CIB object definition #{primitive.definition}"
   @current_resource_definition = primitive.definition
   primitive.parse_definition
