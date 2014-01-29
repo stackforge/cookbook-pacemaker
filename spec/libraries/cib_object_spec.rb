@@ -68,13 +68,6 @@ describe Pacemaker::CIBObject do
         end
       end
     end
-
-    describe "::from_name" do
-      it "should instantiate a Pacemaker::Resource::Primitive" do
-        obj = Pacemaker::CIBObject.from_name(cib_object.name)
-        expect(obj.is_a? Pacemaker::Resource::Primitive).to be_true
-      end
-    end
   end
 
   context "CIB object with unregistered type" do
