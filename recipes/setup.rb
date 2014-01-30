@@ -18,6 +18,12 @@
 # limitations under the License.
 #
 
+node[:pacemaker][:platform][:packages].each do |pkg|
+  package pkg do
+    action :install
+  end
+end
+
 crm_conf = node[:pacemaker][:crm][:initial_config_file]
 template crm_conf do
   source "crm-initial.conf.erb"
@@ -29,12 +35,6 @@ end
 execute "crm initial configuration" do
   user "root"
   command "crm configure load replace #{crm_conf}"
-end
-
-node[:pacemaker][:platform][:packages].each do |pkg|
-  package pkg do
-    action :install
-  end
 end
 
 if platform_family? "rhel"
