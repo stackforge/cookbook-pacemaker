@@ -16,7 +16,7 @@ group :rspec do
     watch(%r{^Gemfile$})                 { all_specs }
     watch(%r{^Gemfile.lock$})            { all_specs }
     watch(%r{^spec/spec_helper\.rb$})    { all_specs }
-    watch(%r{^spec/helpers/(.+)\.rb$})   { all_specs }
+    watch(%r{^spec/fixtures/(.+)\.rb$})  { all_specs }
     watch(%r{^libraries/pacemaker\.rb$}) { all_specs }
     watch(%r{^spec/.+_spec\.rb$})
     watch(%r{^libraries/(.+)\.rb$})  { |m|

@@ -1,6 +1,6 @@
 require 'chef/application'
 require_relative File.join(%w(.. spec_helper))
-require_relative File.join(%w(.. helpers keystone_primitive))
+require_relative File.join(%w(.. fixtures keystone_primitive))
 
 describe "Chef::Provider::PacemakerPrimitive" do
   # for use inside examples:
