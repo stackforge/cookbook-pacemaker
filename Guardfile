@@ -19,7 +19,7 @@ group :rspec do
     watch(%r{^spec/helpers/(.+)\.rb$})   { all_specs }
     watch(%r{^libraries/pacemaker\.rb$}) { all_specs }
     watch(%r{^spec/.+_spec\.rb$})
-    watch(%r{^libraries/pacemaker/(.+)\.rb$})  { |m|
+    watch(%r{^libraries/(.+)\.rb$})  { |m|
       "spec/libraries/#{m[1]}_spec.rb"
     }
     watch(%r{^(resources|providers)/(.+)\.rb$}) { |m|

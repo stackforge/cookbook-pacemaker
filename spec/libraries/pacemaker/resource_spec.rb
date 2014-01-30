@@ -1,5 +1,5 @@
 require 'spec_helper'
-require_relative File.join(%w(.. .. libraries pacemaker resource))
+require_relative File.join(%w(.. .. .. libraries pacemaker resource))
 
 describe Pacemaker::Resource do
   describe "#running?" do

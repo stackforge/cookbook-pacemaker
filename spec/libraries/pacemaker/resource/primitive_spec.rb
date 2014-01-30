@@ -1,6 +1,6 @@
 require 'spec_helper'
-require_relative File.join(%w(.. .. libraries pacemaker resource primitive))
-require_relative File.join(%w(.. helpers keystone_primitive))
+require_relative File.join(%w(.. .. .. .. libraries pacemaker resource primitive))
+require_relative File.join(%w(.. .. .. helpers keystone_primitive))
 
 describe Pacemaker::Resource::Primitive do
   before(:each) do
