@@ -15,13 +15,7 @@ class Pacemaker::Resource::Primitive < Pacemaker::Resource
   end
 
   def self.from_chef_resource(resource)
-    primitive = new(resource.name)
-    %w(agent params meta op).each do |data|
-      value = resource.send(data.to_sym)
-      writer = (data + '=').to_sym
-      primitive.send(writer, value)
-    end
-    return primitive
+    new(resource.name).copy_attrs_from_chef_resource(resource, *%w(agent params meta op))
   end
 
   def parse_definition
