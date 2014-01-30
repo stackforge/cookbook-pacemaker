@@ -1,5 +1,8 @@
+[![Build Status](https://travis-ci.org/aspiers/barclamp-pacemaker.png?branch=master)](https://travis-ci.org/aspiers/barclamp-pacemaker)
+
 DESCRIPTION
 ===========
+
 This is a cookbook for installing and configuring pacemaker.
 
 Recipes
