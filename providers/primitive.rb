@@ -34,7 +34,7 @@ action :create do
             [ name, @current_resource.agent, new_resource.agent ]
     end
 
-    modify_resource(name)
+    maybe_modify_resource(name)
   end
 end
 
@@ -133,12 +133,22 @@ def create_resource(name)
   end
 end
 
-def modify_resource(name)
+def maybe_modify_resource(name)
   Chef::Log.info "Checking existing resource primitive #{name} for modifications"
 
   cmds = []
-  modify_params(name, cmds, :params)
-  modify_params(name, cmds, :meta)
+
+  desired_primitive = Pacemaker::Resource::Primitive.from_chef_resource(new_resource)
+  if desired_primitive.op_string != @current_primitive.op_string
+    Chef::Log.debug "op changed from [#{@current_primitive.op_string}] to [#{desired_primitive.op_string}]"
+    to_echo = desired_primitive.definition_string.chomp
+    to_echo.gsub!('\\') { '\\\\' }
+    to_echo.gsub!("'", "\\'")
+    cmds = ["echo '#{to_echo}' | crm configure load update -"]
+  else
+    maybe_configure_params(name, cmds, :params)
+    maybe_configure_params(name, cmds, :meta)
+  end
 
   cmds.each do |cmd|
     execute cmd do
@@ -149,7 +159,7 @@ def modify_resource(name)
   new_resource.updated_by_last_action(true) unless cmds.empty?
 end
 
-def modify_params(name, cmds, data_type)
+def maybe_configure_params(name, cmds, data_type)
   configure_cmd_prefix = "crm_resource --resource #{name}"
 
   new_resource.send(data_type).each do |param, new_value|

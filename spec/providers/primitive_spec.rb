@@ -100,6 +100,21 @@ describe "Chef::Provider::PacemakerPrimitive" do
       end
     end
 
+    it "should modify the primitive if it has different op values" do
+      echo_string = rsc.definition_string.chomp
+      echo_string.gsub!('\\') { '\\\\' }.gsub!('60', '120')
+      expected_configure_cmd_args = [
+        "echo '#{echo_string}' | crm configure load update -"
+      ]
+      test_modify(expected_configure_cmd_args) do
+        new_op = Hash[rsc.op]
+        # Ensure we're not modifying our expectation as well as the input
+        new_op['monitor'] = new_op['monitor'].dup
+        new_op['monitor']['timeout'] = '120'
+        @resource.op new_op
+      end
+    end
+
     it "should create a primitive if it doesn't already exist" do
       expect_definition("")
       # Later, the :create action calls Pacemaker::Resource::Primitive#exists? to check
