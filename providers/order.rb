@@ -25,7 +25,7 @@ action :create do
   resources = new_resource.resources
 
   unless resource_exists?(name)
-    cmd = "crm configure order #{name} #{priority}:" 
+    cmd = "crm configure order #{name} #{priority}:"
     resources.each do |rsc|
       cmd << " #{rsc}"
     end
