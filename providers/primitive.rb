@@ -18,6 +18,9 @@
 #
 
 require ::File.join(::File.dirname(__FILE__), *%w(.. libraries pacemaker))
+require ::File.join(::File.dirname(__FILE__), 'common')
+
+include Chef::Mixin::PacemakerCommon
 
 # For vagrant env, switch to the following 'require' command.
 #require "/srv/chef/file_store/cookbooks/pacemaker/providers/helper"
@@ -80,36 +83,17 @@ action :stop do
   Chef::Log.info "Successfully stopped primitive '#{name}'."
 end
 
-# Instantiate @current_resource and read details about the existing
-# primitive (if any) via "crm configure show" into it, so that we
-# can compare it against the resource requested by the recipe, and
-# create / delete / modify as necessary.
+def cib_object_class
+  Pacemaker::Resource::Primitive
+end
 
-# http://docs.opscode.com/lwrp_custom_provider_ruby.html#load-current-resource
-def load_current_resource
+def init_current_resource
   name = @new_resource.name
-
-  primitive = Pacemaker::CIBObject.from_name(name)
-  unless primitive
-    Chef::Log.debug "CIB object definition nil or empty"
-    return
-  end
-
-  unless primitive.is_a? Pacemaker::Resource::Primitive
-    Chef::Log.warn "CIB object '#{name}' was a #{primitive.type} not a resource primitive"
-    return
-  end
-
-  Chef::Log.debug "CIB object definition #{primitive.definition}"
-  @current_resource_definition = primitive.definition
-  primitive.parse_definition
-
-  @current_primitive = primitive
   @current_resource = Chef::Resource::PacemakerPrimitive.new(name)
-  @current_resource.agent(primitive.agent)
+  @current_resource.agent(@current_cib_object.agent)
   %w(params meta).each do |data_type|
     method = data_type.to_sym
-    value = primitive.send(method)
+    value = @current_cib_object.send(method)
     @current_resource.send(method, value)
     Chef::Log.debug "detected #{name} has #{data_type} #{value}"
   end
@@ -139,8 +123,8 @@ def maybe_modify_resource(name)
   cmds = []
 
   desired_primitive = Pacemaker::Resource::Primitive.from_chef_resource(new_resource)
-  if desired_primitive.op_string != @current_primitive.op_string
-    Chef::Log.debug "op changed from [#{@current_primitive.op_string}] to [#{desired_primitive.op_string}]"
+  if desired_primitive.op_string != @current_cib_object.op_string
+    Chef::Log.debug "op changed from [#{@current_cib_object.op_string}] to [#{desired_primitive.op_string}]"
     to_echo = desired_primitive.definition_string.chomp
     to_echo.gsub!('\\') { '\\\\' }
     to_echo.gsub!("'", "\\'")

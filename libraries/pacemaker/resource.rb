@@ -5,6 +5,11 @@ module Pacemaker
   class Resource < Pacemaker::CIBObject
     include Chef::Mixin::ShellOut
 
+    def self.description
+      type = self.to_s.split('::').last
+      "#{type} resource"
+    end
+
     def running?
       cmd = shell_out! "crm", "resource", "status", name
       Chef::Log.info cmd.stdout

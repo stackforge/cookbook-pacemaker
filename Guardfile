@@ -23,6 +23,7 @@ group :rspec do
     watch(%r{^libraries/(.+)\.rb$})  { |m|
       "spec/libraries/#{m[1]}_spec.rb"
     }
+    watch(%r{^providers/common\.rb$})    { all_specs }
     watch(%r{^(resources|providers)/(.+)\.rb$}) { |m|
       "spec/providers/#{m[1]}_spec.rb"
     }
