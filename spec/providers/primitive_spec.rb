@@ -50,28 +50,54 @@ describe "Chef::Provider::PacemakerPrimitive" do
   end
 
   describe ":create action" do
-    it "should modify the primitive if it already exists" do
-      new_params = Hash[rsc.params].merge("os_password" => "newpasswd")
-      new_params.delete("os_tenant_name")
-      @resource.params new_params
-      @resource.meta Hash[rsc.meta].merge("target-role" => "Stopped")
+    def test_modify(expected_cmds)
+      yield
 
       expect_definition(rsc.definition_string)
 
-      configure_cmd_prefix = "crm_resource --resource #{rsc.name}"
+      provider.run_action :create
+
+      expected_cmds.each do |cmd|
+        expect(@chef_run).to run_execute(cmd)
+      end
+      expect(@resource).to be_updated
+    end
+
+    it "should modify the primitive if it has different params" do
+      expected_configure_cmd_args = [
+        %'--set-parameter "os_password" --parameter-value "newpasswd"',
+        %'--delete-parameter "os_tenant_name"',
+      ].map { |args| "crm_resource --resource #{rsc.name} #{args}" }
+      test_modify(expected_configure_cmd_args) do
+        new_params = Hash[rsc.params].merge("os_password" => "newpasswd")
+        new_params.delete("os_tenant_name")
+        @resource.params new_params
+        @resource.meta Hash[rsc.meta].merge("target-role" => "Stopped")
+      end
+    end
+
+    it "should modify the primitive if it has different meta" do
+      expected_configure_cmd_args = [
+        %'--set-parameter "target-role" --parameter-value "Stopped" --meta',
+      ].map { |args| "crm_resource --resource #{rsc.name} #{args}" }
+      test_modify(expected_configure_cmd_args) do
+        @resource.params Hash[rsc.params]
+        @resource.meta Hash[rsc.meta].merge("target-role" => "Stopped")
+      end
+    end
+
+    it "should modify the primitive if it has different params and meta" do
       expected_configure_cmd_args = [
         %'--set-parameter "os_password" --parameter-value "newpasswd"',
         %'--delete-parameter "os_tenant_name"',
         %'--set-parameter "target-role" --parameter-value "Stopped" --meta',
-      ]
-
-      provider.run_action :create
-
-      expected_configure_cmd_args.each do |args|
-        cmd = configure_cmd_prefix + " " + args
-        expect(@chef_run).to run_execute(cmd)
+      ].map { |args| "crm_resource --resource #{rsc.name} #{args}" }
+      test_modify(expected_configure_cmd_args) do
+        new_params = Hash[rsc.params].merge("os_password" => "newpasswd")
+        new_params.delete("os_tenant_name")
+        @resource.params new_params
+        @resource.meta Hash[rsc.meta].merge("target-role" => "Stopped")
       end
-      expect(@resource).to be_updated
     end
 
     it "should create a primitive if it doesn't already exist" do
