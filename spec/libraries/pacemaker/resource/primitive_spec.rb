@@ -18,6 +18,11 @@ describe Pacemaker::Resource::Primitive do
     expect(obj.is_a? Pacemaker::Resource::Primitive).to be_true
   end
 
+  it "should be instantiated via Pacemaker::CIBObject.from_definition" do
+    obj = Pacemaker::CIBObject.from_definition(@primitive.definition_string)
+    expect(obj.is_a? Pacemaker::Resource::Primitive).to be_true
+  end
+
   it "should barf if the loaded definition's type is not primitive" do
     Mixlib::ShellOut.any_instance.stub(:error!)
     expect_any_instance_of(Mixlib::ShellOut) \

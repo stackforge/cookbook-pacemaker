@@ -36,24 +36,28 @@ module Pacemaker
       def from_name(name)
         definition = get_definition(name)
         return nil unless definition and ! definition.empty?
-        obj_type = type(definition)
-        subclass = @@subclasses[obj_type]
-        unless subclass
-          raise "No subclass of #{self.name} was registered with type '#{obj_type}'"
-        end
-        obj = subclass.from_definition(definition)
-        return nil unless obj
-        unless name == obj.name
-          raise "Name '#{obj.name}' in definition didn't match name '#{name}' used for retrieval"
-        end
-        obj
+        from_definition(definition)
       end
 
       def from_definition(definition)
-        obj = new(name)
-        obj.definition = definition
-        obj.parse_definition
-        obj
+        if method(__method__).owner == self.singleton_class
+          # Invoked via (this) base class
+          obj_type = type(definition)
+          subclass = @@subclasses[obj_type]
+          unless subclass
+            raise "No subclass of #{self.name} was registered with type '#{obj_type}'"
+          end
+          return subclass.from_definition(definition)
+        else
+          # Invoked via subclass
+          obj = new(name)
+          unless name == obj.name
+            raise "Name '#{obj.name}' in definition didn't match name '#{name}' used for retrieval"
+          end
+          obj.definition = definition
+          obj.parse_definition
+          obj
+        end
       end
     end
 
