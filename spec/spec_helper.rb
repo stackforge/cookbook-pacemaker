@@ -37,3 +37,10 @@ RSpec.configure do |config|
   config.run_all_when_everything_filtered = true
   config.filter_run :focus => true
 end
+
+# FIXME
+#running_guard = ENV['GUARD_NOTIFY'] && ! ENV['GUARD_NOTIFY'].empty?
+
+if false # ! running_guard
+  at_exit { ChefSpec::Coverage.report! }
+end
