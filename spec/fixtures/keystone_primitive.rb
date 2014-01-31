@@ -1,4 +1,5 @@
-require ::File.join(::File.dirname(__FILE__), *%w(.. .. libraries pacemaker resource primitive))
+require ::File.join(::File.dirname(__FILE__),
+                    *%w(.. .. libraries pacemaker resource primitive))
 
 module Chef::RSpec
   module Pacemaker

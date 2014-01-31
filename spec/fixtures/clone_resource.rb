@@ -1,4 +1,5 @@
-require ::File.join(::File.dirname(__FILE__), *%w(.. .. libraries pacemaker resource clone))
+require ::File.join(::File.dirname(__FILE__),
+                    *%w(.. .. libraries pacemaker resource clone))
 require_relative 'keystone_primitive'
 
 module Chef::RSpec
