@@ -32,7 +32,10 @@ class Pacemaker::Resource::Primitive < Pacemaker::Resource
       send(writer, hash)
     end
 
-    # FIXME: deal with op
+    self.op = {}
+    %w(start stop monitor).each do |op|
+      self.op[op] = self.class.extract_hash(definition, "op #{op}")
+    end
   end
 
   def params_string
@@ -50,9 +53,9 @@ class Pacemaker::Resource::Primitive < Pacemaker::Resource
   def definition_string
     return <<EOF
 primitive #{name} #{agent} \\
-        #{params_string} \\
-        #{meta_string} \\
-        #{op_string}
+         #{params_string} \\
+         #{meta_string} \\
+         #{op_string}
 EOF
   end
 
@@ -64,32 +67,28 @@ EOF
 
   def self.params_string(params)
     return "" if ! params or params.empty?
-    s = " params"
-    params.sort.each do |key, value|
-      s << %' #{key}="#{value}"'
-    end
-    s
+    "params " +
+    params.sort.map do |key, value|
+      %'#{key}="#{value}"'
+    end.join(' ')
   end
 
   def self.meta_string(meta)
     return "" if ! meta or meta.empty?
-    s = " meta"
-    meta.sort.each do |key, value|
-      s << %' #{key}="#{value}"'
-    end
-    s
+    "meta " +
+    meta.sort.map do |key, value|
+      %'#{key}="#{value}"'
+    end.join(' ')
   end
 
   def self.op_string(ops)
     return "" if ! ops or ops.empty?
-    s = " op"
-    ops.sort.each do |op, attrs|
-      s << " #{op}"
-      attrs.sort.each do |key, value|
-        s << %' #{key}="#{value}"'
-      end
-    end
-    s
+    ops.sort.map do |op, attrs|
+      attrs.empty? ? nil : "op #{op} " + \
+      attrs.sort.map do |key, value|
+        %'#{key}="#{value}"'
+      end.join(' ')
+    end.compact.join(' ')
   end
 
   # CIB object definitions look something like:
@@ -102,14 +101,16 @@ EOF
   #
   # This method extracts a Hash from one of the params / meta / op lines.
   def self.extract_hash(obj_definition, data_type)
-    unless obj_definition =~ /^\s+#{data_type} (.+?)(\s*\\)?$/
-      raise "Couldn't retrieve #{data_type} for '#{name}' CIB object from [#{obj_definition}]"
+    unless obj_definition =~ /\s+#{data_type} (.+?)\s*\\?$/
+      return {}
     end
 
     h = {}
     Shellwords.split($1).each do |kvpair|
+      break if kvpair == 'op'
       unless kvpair =~ /^(.+?)=(.+)$/
-        raise "Couldn't understand '#{kvpair}' for #{data_type} section of '#{name}' primitive"
+        raise "Couldn't understand '#{kvpair}' for '#{data_type}' section "\
+          "of #{name} primitive (definition was [#{obj_definition}])"
       end
       h[$1] = $2.sub(/^"(.*)"$/, "\1")
     end
