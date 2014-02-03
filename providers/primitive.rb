@@ -22,9 +22,6 @@ require ::File.join(::File.dirname(__FILE__), 'common')
 
 include Chef::Mixin::PacemakerCommon
 
-# For vagrant env, switch to the following 'require' command.
-#require "/srv/chef/file_store/cookbooks/pacemaker/providers/helper"
-
 action :create do
   name = new_resource.name
 
