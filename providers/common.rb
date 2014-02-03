@@ -32,5 +32,24 @@ class Chef
       @current_cib_object = cib_object
       init_current_resource
     end
+
+    def standard_create_resource
+      cib_object = cib_object_class.from_chef_resource(new_resource)
+      cmd = cib_object.crm_configure_command
+
+      ::Chef::Log.info "Creating new #{cib_object}"
+
+      execute cmd do
+        action :nothing
+      end.run_action(:run)
+
+      if cib_object.exists?
+        new_resource.updated_by_last_action(true)
+        ::Chef::Log.info "Successfully configured #{cib_object}"
+      else
+        ::Chef::Log.error "Failed to configure #{cib_object}"
+      end
+    end
+
   end
 end
