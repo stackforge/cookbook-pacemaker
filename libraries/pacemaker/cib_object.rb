@@ -104,6 +104,10 @@ module Pacemaker
       self.class.type(definition)
     end
 
+    def to_s
+      "%s '%s'" % [self.class.description, name]
+    end
+
     def delete_command
       "crm configure delete '#{name}'"
     end

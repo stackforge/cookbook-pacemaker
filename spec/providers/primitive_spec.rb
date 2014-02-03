@@ -133,7 +133,7 @@ describe "Chef::Provider::PacemakerPrimitive" do
       expect_definition(definition)
 
       expected_error = \
-        "Existing resource primitive '#{rsc.name}' has agent '#{existing_agent}' " \
+        "Existing primitive resource '#{rsc.name}' has agent '#{existing_agent}' " \
         "but recipe wanted '#{@resource.agent}'"
       expect { provider.run_action :create }.to \
         raise_error(RuntimeError, expected_error)
@@ -166,7 +166,7 @@ describe "Chef::Provider::PacemakerPrimitive" do
       expect_definition(rsc.definition_string)
       expect_running(true)
 
-      expected_error = "Cannot delete running resource primitive #{rsc.name}"
+      expected_error = "Cannot delete running primitive resource '#{rsc.name}'"
       expect { provider.run_action :delete }.to \
         raise_error(RuntimeError, expected_error)
 

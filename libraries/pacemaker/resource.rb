@@ -6,7 +6,7 @@ module Pacemaker
     include Chef::Mixin::ShellOut
 
     def self.description
-      type = self.to_s.split('::').last
+      type = self.to_s.split('::').last.downcase
       "#{type} resource"
     end
 

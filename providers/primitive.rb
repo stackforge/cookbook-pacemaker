@@ -29,9 +29,9 @@ action :create do
     create_resource(name)
   else
     if @current_resource.agent != new_resource.agent
-      raise "Existing resource primitive '%s' has agent '%s' " \
+      raise "Existing %s has agent '%s' " \
             "but recipe wanted '%s'" % \
-            [ name, @current_resource.agent, new_resource.agent ]
+            [ @current_cib_object, @current_resource.agent, new_resource.agent ]
     end
 
     maybe_modify_resource(name)
@@ -43,13 +43,13 @@ action :delete do
   next unless @current_resource
   rsc = Pacemaker::Resource::Primitive.new(name)
   if rsc.running?
-    raise "Cannot delete running resource primitive #{name}"
+    raise "Cannot delete running #{@current_cib_object}"
   end
   execute rsc.delete_command do
     action :nothing
   end.run_action(:run)
   new_resource.updated_by_last_action(true)
-  Chef::Log.info "Deleted primitive '#{name}'."
+  Chef::Log.info "Deleted #{@current_cib_object}"
 end
 
 action :start do
@@ -63,7 +63,7 @@ action :start do
     action :nothing
   end.run_action(:run)
   new_resource.updated_by_last_action(true)
-  Chef::Log.info "Successfully started primitive '#{name}'."
+  Chef::Log.info "Successfully started #{@current_cib_object}"
 end
 
 action :stop do
@@ -77,7 +77,7 @@ action :stop do
     action :nothing
   end.run_action(:run)
   new_resource.updated_by_last_action(true)
-  Chef::Log.info "Successfully stopped primitive '#{name}'."
+  Chef::Log.info "Successfully stopped #{@current_cib_object}"
 end
 
 def cib_object_class
@@ -95,7 +95,7 @@ def create_resource(name)
   primitive = Pacemaker::Resource::Primitive.from_chef_resource(new_resource)
   cmd = primitive.crm_configure_command
 
-  Chef::Log.info "Creating new resource primitive #{name}"
+  Chef::Log.info "Creating new #{primitive}"
 
   execute cmd do
     action :nothing
@@ -103,14 +103,14 @@ def create_resource(name)
 
   if primitive.exists?
     new_resource.updated_by_last_action(true)
-    Chef::Log.info "Successfully configured primitive '#{name}'."
+    Chef::Log.info "Successfully configured #{primitive}"
   else
-    Chef::Log.error "Failed to configure primitive #{name}."
+    Chef::Log.error "Failed to configure #{primitive}"
   end
 end
 
 def maybe_modify_resource(name)
-  Chef::Log.info "Checking existing resource primitive #{name} for modifications"
+  Chef::Log.info "Checking existing #{@current_cib_object} for modifications"
 
   cmds = []
 
