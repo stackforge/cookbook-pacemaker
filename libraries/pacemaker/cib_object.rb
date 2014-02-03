@@ -75,6 +75,14 @@ module Pacemaker
       self
     end
 
+    def copy_attrs_to_chef_resource(resource, *attrs)
+      attrs.each do |attr|
+        value = send(attr.to_sym)
+        writer = attr.to_sym
+        resource.send(writer, value)
+      end
+    end
+
     def load_definition
       @definition = self.class.get_definition(name)
 

@@ -87,13 +87,8 @@ end
 def init_current_resource
   name = @new_resource.name
   @current_resource = Chef::Resource::PacemakerPrimitive.new(name)
-  @current_resource.agent(@current_cib_object.agent)
-  %w(params meta).each do |data_type|
-    method = data_type.to_sym
-    value = @current_cib_object.send(method)
-    @current_resource.send(method, value)
-    Chef::Log.debug "detected #{name} has #{data_type} #{value}"
-  end
+  @current_cib_object.copy_attrs_to_chef_resource(@current_resource,
+                                                  :agent, :params, :meta)
 end
 
 def create_resource(name)
