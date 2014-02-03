@@ -41,7 +41,7 @@ end
 action :delete do
   name = new_resource.name
   next unless @current_resource
-  rsc = Pacemaker::Resource::Primitive.new(name)
+  rsc = cib_object_class.new(name)
   if rsc.running?
     raise "Cannot delete running #{@current_cib_object}"
   end
@@ -57,7 +57,7 @@ action :start do
   unless @current_resource
     raise "Cannot start non-existent resource primitive '#{name}'"
   end
-  rsc = Pacemaker::Resource::Primitive.new(name)
+  rsc = cib_object_class.new(name)
   next if rsc.running?
   execute rsc.start_command do
     action :nothing
@@ -71,7 +71,7 @@ action :stop do
   unless @current_resource
     raise "Cannot stop non-existent resource primitive '#{name}'"
   end
-  rsc = Pacemaker::Resource::Primitive.new(name)
+  rsc = cib_object_class.new(name)
   next unless rsc.running?
   execute rsc.stop_command do
     action :nothing
@@ -92,7 +92,7 @@ def init_current_resource
 end
 
 def create_resource(name)
-  primitive = Pacemaker::Resource::Primitive.from_chef_resource(new_resource)
+  primitive = cib_object_class.from_chef_resource(new_resource)
   cmd = primitive.crm_configure_command
 
   Chef::Log.info "Creating new #{primitive}"
@@ -114,7 +114,7 @@ def maybe_modify_resource(name)
 
   cmds = []
 
-  desired_primitive = Pacemaker::Resource::Primitive.from_chef_resource(new_resource)
+  desired_primitive = cib_object_class.from_chef_resource(new_resource)
   if desired_primitive.op_string != @current_cib_object.op_string
     Chef::Log.debug "op changed from [#{@current_cib_object.op_string}] to [#{desired_primitive.op_string}]"
     to_echo = desired_primitive.definition_string.chomp
