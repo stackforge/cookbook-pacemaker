@@ -92,20 +92,20 @@ def init_current_resource
 end
 
 def create_resource(name)
-  primitive = cib_object_class.from_chef_resource(new_resource)
-  cmd = primitive.crm_configure_command
+  cib_object = cib_object_class.from_chef_resource(new_resource)
+  cmd = cib_object.crm_configure_command
 
-  Chef::Log.info "Creating new #{primitive}"
+  Chef::Log.info "Creating new #{cib_object}"
 
   execute cmd do
     action :nothing
   end.run_action(:run)
 
-  if primitive.exists?
+  if cib_object.exists?
     new_resource.updated_by_last_action(true)
-    Chef::Log.info "Successfully configured #{primitive}"
+    Chef::Log.info "Successfully configured #{cib_object}"
   else
-    Chef::Log.error "Failed to configure #{primitive}"
+    Chef::Log.error "Failed to configure #{cib_object}"
   end
 end
 
