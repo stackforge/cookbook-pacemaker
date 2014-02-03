@@ -29,7 +29,7 @@ action :create do
     if multiple
       multiple_rscs = new_resource.multiple_rscs
 
-      cmd = "crm configure colocation #{name} #{priority}:" 
+      cmd = "crm configure colocation #{name} #{priority}:"
       multiple_rscs.each do |rsc|
         cmd << " #{rsc}"
       end
@@ -37,7 +37,7 @@ action :create do
       rsc = new_resource.rsc
       with_rsc = new_resource.with_rsc
 
-      cmd = "crm configure colocation #{name} #{priority}: #{rsc} #{with_rsc}" 
+      cmd = "crm configure colocation #{name} #{priority}: #{rsc} #{with_rsc}"
     end
 
     cmd_ = Mixlib::ShellOut.new(cmd)
