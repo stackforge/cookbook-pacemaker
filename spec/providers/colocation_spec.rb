@@ -46,10 +46,9 @@ describe "Chef::Provider::PacemakerColocation" do
     end
 
     it "should modify the constraint if it has a different score" do
-      echo_string = colo.definition_string.chomp.gsub('inf', '100')
-      echo_string.gsub!('\\') { '\\\\' }
+      echo_string = colo.quoted_definition_string.gsub('inf', '100')
       expected_configure_cmd_args = [
-        "echo '#{echo_string}' | crm configure load update -"
+        "echo #{echo_string} | crm configure load update -"
       ]
       test_modify(expected_configure_cmd_args) do
         @resource.score '100'
@@ -60,10 +59,9 @@ describe "Chef::Provider::PacemakerColocation" do
       new_resource = 'bar:Stopped'
       expected = colo.dup
       expected.resources = expected.resources.dup + [new_resource]
-      echo_string = expected.definition_string.chomp
-      echo_string.gsub!('\\') { '\\\\' }
+      echo_string = expected.quoted_definition_string
       expected_configure_cmd_args = [
-        "echo '#{echo_string}' | crm configure load update -"
+        "echo #{echo_string} | crm configure load update -"
       ]
       test_modify(expected_configure_cmd_args) do
         @resource.resources expected.resources
@@ -73,10 +71,9 @@ describe "Chef::Provider::PacemakerColocation" do
     it "should modify the constraint if it has a different resource" do
       new_resources = ['bar:Started']
       colo.resources = new_resources
-      echo_string = colo.definition_string.chomp
-      echo_string.gsub!('\\') { '\\\\' }
+      echo_string = colo.quoted_definition_string
       expected_configure_cmd_args = [
-        "echo '#{echo_string}' | crm configure load update -"
+        "echo #{echo_string} | crm configure load update -"
       ]
       test_modify(expected_configure_cmd_args) do
         @resource.resources new_resources

@@ -123,6 +123,21 @@ EOF
     end
   end
 
+  describe "#quoted_definition_string" do
+    it "should return the quoted definition string" do
+      primitive = Pacemaker::Resource::Primitive.new('foo')
+      primitive.definition = <<'EOF'.chomp
+primitive foo ocf:openstack:keystone \
+         params bar="baz\\qux" bar2="baz'qux"
+EOF
+      primitive.parse_definition
+      expect(primitive.quoted_definition_string).to eq(<<'EOF'.chomp)
+'primitive foo ocf:openstack:keystone \\
+         params bar="baz\\qux" bar2="baz\'qux"'
+EOF
+    end
+  end
+
   describe "#parse_definition" do
     before(:each) do
       @parsed = Pacemaker::Resource::Primitive.new(fixture.name)

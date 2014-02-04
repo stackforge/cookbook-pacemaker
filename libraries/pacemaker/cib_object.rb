@@ -108,6 +108,17 @@ module Pacemaker
       "%s '%s'" % [self.class.description, name]
     end
 
+    # Returns a single-quoted shell-escaped version of the definition
+    # string, suitable for use in a command like:
+    #
+    #     echo '...' | crm configure load update -
+    def quoted_definition_string
+      "'%s'" % \
+      definition_string \
+        .gsub('\\') { '\\\\' } \
+        .gsub("'")  { "\\'" }
+    end
+
     def delete_command
       "crm configure delete '#{name}'"
     end
