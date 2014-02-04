@@ -1,5 +1,5 @@
 require 'chef/mixin/shell_out'
-require_relative 'cib_object'
+require File::join(File.dirname(__FILE__), 'cib_object')
 
 module Pacemaker
   class Resource < Pacemaker::CIBObject

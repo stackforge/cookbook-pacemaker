@@ -1,4 +1,4 @@
-require_relative File::join(%w(.. resource))
+require File::join(File.dirname(__FILE__), %w(.. resource))
 
 class Pacemaker::Resource::Clone < Pacemaker::Resource
   register_type 'clone'

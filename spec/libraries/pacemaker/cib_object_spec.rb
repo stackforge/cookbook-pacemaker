@@ -1,8 +1,8 @@
 require 'spec_helper'
 require 'mixlib/shellout'
 
-require_relative File.join(%w(.. .. .. libraries pacemaker))
-require_relative File.join(%w(.. .. fixtures keystone_primitive))
+require File.join(File.dirname(__FILE__), %w(.. .. .. libraries pacemaker))
+require File.join(File.dirname(__FILE__), %w(.. .. fixtures keystone_primitive))
 
 describe Pacemaker::CIBObject do
 

@@ -1,5 +1,5 @@
 require 'shellwords'
-require_relative File::join(%w(.. resource))
+require File::join(File.dirname(__FILE__), %w(.. resource))
 
 class Pacemaker::Resource::Primitive < Pacemaker::Resource
   TYPE = 'primitive'

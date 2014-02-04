@@ -1,5 +1,5 @@
 require 'mixlib/shellout'
-require_relative File.join(%w(.. .. libraries pacemaker cib_object))
+require File.join(File.dirname(__FILE__), %w(.. .. libraries pacemaker cib_object))
 
 shared_examples "a CIB object" do
   def expect_to_match_fixture(obj)
