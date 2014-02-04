@@ -43,8 +43,12 @@ describe "Chef::Provider::PacemakerPrimitive" do
       .and_return(exists)
   end
 
+  def cib_object_class
+    Pacemaker::Resource::Primitive
+  end
+
   def expect_running(running)
-    expect_any_instance_of(Pacemaker::Resource::Primitive) \
+    expect_any_instance_of(cib_object_class) \
       .to receive(:running?) \
       .and_return(running)
   end
@@ -117,7 +121,7 @@ describe "Chef::Provider::PacemakerPrimitive" do
 
     it "should create a primitive if it doesn't already exist" do
       expect_definition("")
-      # Later, the :create action calls Pacemaker::Resource::Primitive#exists? to check
+      # Later, the :create action calls cib_object_class#exists? to check
       # that creation succeeded.
       expect_exists(true)
 
