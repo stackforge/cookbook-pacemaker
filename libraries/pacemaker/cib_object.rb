@@ -119,6 +119,10 @@ module Pacemaker
         .gsub("'")  { "\\'" }
     end
 
+    def reconfigure_command
+      "echo #{quoted_definition_string} | crm configure load update -"
+    end
+
     def delete_command
       "crm configure delete '#{name}'"
     end

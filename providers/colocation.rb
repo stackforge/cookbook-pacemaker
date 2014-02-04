@@ -64,8 +64,7 @@ def maybe_modify_resource(name)
   desired_colocation = cib_object_class.from_chef_resource(new_resource)
   if desired_colocation.definition_string != @current_cib_object.definition_string
     Chef::Log.debug "changed from [#{@current_cib_object.definition_string}] to [#{desired_colocation.definition_string}]"
-    to_echo = desired_colocation.quoted_definition_string
-    cmd = "echo #{to_echo} | crm configure load update -"
+    cmd = desired_colocation.reconfigure_command
     execute cmd do
       action :nothing
     end.run_action(:run)

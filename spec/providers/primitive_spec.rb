@@ -91,9 +91,8 @@ describe "Chef::Provider::PacemakerPrimitive" do
     end
 
     it "should modify the primitive if it has different op values" do
-      echo_string = rsc.quoted_definition_string.gsub!('60', '120')
       expected_configure_cmd_args = [
-        "echo #{echo_string} | crm configure load update -"
+        rsc.reconfigure_command.gsub('60', '120')
       ]
       test_modify(expected_configure_cmd_args) do
         new_op = Hash[rsc.op]

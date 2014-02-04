@@ -103,8 +103,7 @@ def maybe_modify_resource(name)
   desired_primitive = cib_object_class.from_chef_resource(new_resource)
   if desired_primitive.op_string != @current_cib_object.op_string
     Chef::Log.debug "op changed from [#{@current_cib_object.op_string}] to [#{desired_primitive.op_string}]"
-    to_echo = desired_primitive.quoted_definition_string
-    cmds = ["echo #{to_echo} | crm configure load update -"]
+    cmds = [desired_primitive.reconfigure_command]
   else
     maybe_configure_params(name, cmds, :params)
     maybe_configure_params(name, cmds, :meta)
