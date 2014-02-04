@@ -23,7 +23,7 @@ class Pacemaker::Constraint::Colocation < Pacemaker::Constraint
   end
 
   def definition_string
-    "colocation #{name} #{score}: " + resources.join(' ')
+    "#{TYPE} #{name} #{score}: " + resources.join(' ')
   end
 
   def crm_configure_command

@@ -52,7 +52,7 @@ class Pacemaker::Resource::Primitive < Pacemaker::Resource
 
   def definition_string
     return <<EOF
-primitive #{name} #{agent} \\
+#{TYPE} #{name} #{agent} \\
          #{params_string} \\
          #{meta_string} \\
          #{op_string}
