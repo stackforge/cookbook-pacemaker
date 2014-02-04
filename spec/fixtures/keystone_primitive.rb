@@ -21,7 +21,7 @@ module Chef::RSpec
         [ "monitor", { "timeout" =>  "60", "interval" => "10s" } ],
         [ "start",   { "timeout" => "240", "interval" => "10s" } ]
       ]
-      KEYSTONE_PRIMITIVE_DEFINITION = <<'EOF'
+      KEYSTONE_PRIMITIVE_DEFINITION = <<'EOF'.chomp
 primitive keystone ocf:openstack:keystone \
          params os_auth_url="http://node1:5000/v2.0" os_password="adminpw" os_tenant_name="openstack" os_username="admin" user="openstack-keystone" \
          meta is-managed="true" target-role="Started" \

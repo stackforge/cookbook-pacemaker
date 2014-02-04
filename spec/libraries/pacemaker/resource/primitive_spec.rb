@@ -110,6 +110,17 @@ describe Pacemaker::Resource::Primitive do
     it "should return the definition string" do
       expect(fixture.definition_string).to eq(fixture_definition)
     end
+
+    it "should return a short definition string" do
+      primitive = Pacemaker::Resource::Primitive.new('foo')
+      primitive.definition = \
+        %!primitive foo ocf:heartbeat:IPaddr2 params foo="bar"!
+      primitive.parse_definition
+      expect(primitive.definition_string).to eq(<<'EOF'.chomp)
+primitive foo ocf:heartbeat:IPaddr2 \
+         params foo="bar"
+EOF
+    end
   end
 
   describe "#parse_definition" do

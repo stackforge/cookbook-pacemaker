@@ -34,7 +34,8 @@ class Pacemaker::Resource::Primitive < Pacemaker::Resource
 
     self.op = {}
     %w(start stop monitor).each do |op|
-      self.op[op] = self.class.extract_hash(definition, "op #{op}")
+      h = self.class.extract_hash(definition, "op #{op}")
+      self.op[op] = h unless h.empty?
     end
   end
 
@@ -51,12 +52,16 @@ class Pacemaker::Resource::Primitive < Pacemaker::Resource
   end
 
   def definition_string
-    return <<EOF
-#{TYPE} #{name} #{agent} \\
-         #{params_string} \\
-         #{meta_string} \\
-         #{op_string}
-EOF
+    str = "#{TYPE} #{name} #{agent}"
+    indent = ' ' * 9
+    %w(params meta op).each do |data_type|
+      unless send(data_type).empty?
+        data_string = send("#{data_type}_string")
+        str << " \\\n#{indent}#{data_string}"
+      else
+      end
+    end
+    str
   end
 
   def crm_configure_command
