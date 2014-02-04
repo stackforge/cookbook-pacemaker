@@ -39,6 +39,12 @@ module Pacemaker
         from_definition(definition)
       end
 
+      # Make sure this works on Ruby 1.8.7 which is missing
+      # Object#singleton_class.
+      def singleton_class
+        class << self; self; end
+      end
+
       def from_definition(definition)
         calling_class = self.singleton_class
         this_class = method(__method__).owner
