@@ -1,5 +1,6 @@
 require 'chef/application'
 require_relative File.join(%w(.. spec_helper))
+require_relative File.join(%w(.. helpers common))
 require_relative File.join(%w(.. fixtures keystone_primitive))
 
 describe "Chef::Provider::PacemakerPrimitive" do
@@ -26,26 +27,11 @@ describe "Chef::Provider::PacemakerPrimitive" do
 
   let (:provider) { Chef::Provider::PacemakerPrimitive.new(@resource, @run_context) }
 
-  # "crm configure show" is executed by load_current_resource, and
-  # again later on for the :create action, to see whether to create or
-  # modify.
-  def expect_definition(definition)
-    Mixlib::ShellOut.any_instance.stub(:run_command)
-    Mixlib::ShellOut.any_instance.stub(:error!)
-    expect_any_instance_of(Mixlib::ShellOut) \
-      .to receive(:stdout) \
-      .and_return(definition)
-  end
-
-  def expect_exists(exists)
-    expect_any_instance_of(Pacemaker::Resource::Primitive) \
-      .to receive(:exists?) \
-      .and_return(exists)
-  end
-
   def cib_object_class
     Pacemaker::Resource::Primitive
   end
+
+  include Chef::RSpec::Pacemaker::Common
 
   def expect_running(running)
     expect_any_instance_of(cib_object_class) \
