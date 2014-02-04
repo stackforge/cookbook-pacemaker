@@ -1,6 +1,5 @@
 require 'chef/application'
-require ::File.join(::File.dirname(__FILE__),
-                    *%w(.. libraries pacemaker cib_object))
+require ::File.join(::File.dirname(__FILE__), *%w(.. libraries pacemaker))
 
 class Chef
   module Mixin::PacemakerCommon
