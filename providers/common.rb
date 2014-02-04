@@ -9,7 +9,7 @@ class Chef
     # create / delete / modify as necessary.
     #
     # http://docs.opscode.com/lwrp_custom_provider_ruby.html#load-current-resource
-    def load_current_resource
+    def standard_load_current_resource
       name = @new_resource.name
 
       cib_object = Pacemaker::CIBObject.from_name(name)

@@ -47,6 +47,10 @@ def cib_object_class
   Pacemaker::Constraint::Colocation
 end
 
+def load_current_resource
+  standard_load_current_resource
+end
+
 def init_current_resource
   name = @new_resource.name
   @current_resource = Chef::Resource::PacemakerColocation.new(name)
