@@ -40,7 +40,9 @@ module Pacemaker
       end
 
       def from_definition(definition)
-        if method(__method__).owner == self.singleton_class
+        calling_class = self.singleton_class
+        this_class = method(__method__).owner
+        if calling_class == this_class
           # Invoked via (this) base class
           obj_type = type(definition)
           subclass = @@subclasses[obj_type]
