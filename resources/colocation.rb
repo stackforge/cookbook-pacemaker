@@ -23,4 +23,7 @@ default_action :create
 
 attribute :name, :kind_of => String, :name_attribute => true
 attribute :score, :kind_of => String
+
+# If more than two resources are given, Pacemaker will treat this
+# as a resource set.
 attribute :resources, :kind_of => Array
