@@ -1,7 +1,7 @@
 require 'chef/application'
-require File.join(File.dirname(__FILE__), %w(.. spec_helper))
-require File.join(File.dirname(__FILE__), %w(.. helpers common))
-require File.join(File.dirname(__FILE__), %w(.. fixtures colocation_constraint))
+require File.expand_path('../spec_helper', File.dirname(__FILE__))
+require File.expand_path('../helpers/common', File.dirname(__FILE__))
+require File.expand_path('../fixtures/colocation_constraint', File.dirname(__FILE__))
 
 describe "Chef::Provider::PacemakerColocation" do
   # for use inside examples:

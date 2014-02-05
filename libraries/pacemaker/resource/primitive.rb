@@ -1,5 +1,5 @@
 require 'shellwords'
-require File::join(File.dirname(__FILE__), %w(.. resource))
+require File.expand_path('../resource', File.dirname(__FILE__))
 
 class Pacemaker::Resource::Primitive < Pacemaker::Resource
   TYPE = 'primitive'

@@ -1,5 +1,6 @@
 require 'mixlib/shellout'
-require File.join(File.dirname(__FILE__), %w(.. .. libraries pacemaker cib_object))
+require File.expand_path('../../libraries/pacemaker/cib_object',
+                         File.dirname(__FILE__))
 
 shared_examples "a CIB object" do
   def expect_to_match_fixture(obj)

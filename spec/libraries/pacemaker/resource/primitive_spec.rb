@@ -1,7 +1,7 @@
 require 'spec_helper'
-require File.join(File.dirname(__FILE__), %w(.. .. .. .. libraries pacemaker resource primitive))
-require File.join(File.dirname(__FILE__), %w(.. .. .. fixtures keystone_primitive))
-require File.join(File.dirname(__FILE__), %w(.. .. .. helpers common_object_examples))
+require File.expand_path('../../../../libraries/pacemaker/resource/primitive', File.dirname(__FILE__))
+require File.expand_path('../../../fixtures/keystone_primitive', File.dirname(__FILE__))
+require File.expand_path('../../../helpers/common_object_examples', File.dirname(__FILE__))
 
 describe Pacemaker::Resource::Primitive do
   let(:fixture) { Chef::RSpec::Pacemaker::Config::KEYSTONE_PRIMITIVE.dup }

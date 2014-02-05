@@ -1,5 +1,6 @@
 require 'spec_helper'
-require File.join(File.dirname(__FILE__), %w(.. .. .. libraries pacemaker resource))
+require File.expand_path('../../../libraries/pacemaker/resource',
+                         File.dirname(__FILE__))
 
 describe Pacemaker::Resource do
   describe "#running?" do

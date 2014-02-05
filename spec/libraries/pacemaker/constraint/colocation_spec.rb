@@ -1,8 +1,8 @@
 require 'spec_helper'
-require File.join(File.dirname(__FILE__), %w(.. .. .. ..
-                              libraries pacemaker constraint colocation))
-require File.join(File.dirname(__FILE__), %w(.. .. .. fixtures colocation_constraint))
-require File.join(File.dirname(__FILE__), %w(.. .. .. helpers common_object_examples))
+require File.expand_path('../../../../libraries/pacemaker/constraint/colocation',
+                         File.dirname(__FILE__))
+require File.expand_path('../../../fixtures/colocation_constraint', File.dirname(__FILE__))
+require File.expand_path('../../../helpers/common_object_examples', File.dirname(__FILE__))
 
 describe Pacemaker::Constraint::Colocation do
   let(:fixture) { Chef::RSpec::Pacemaker::Config::COLOCATION_CONSTRAINT.dup }

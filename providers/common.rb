@@ -1,5 +1,5 @@
 require 'chef/application'
-require ::File.join(::File.dirname(__FILE__), *%w(.. libraries pacemaker))
+require ::File.expand_path('../libraries/pacemaker', ::File.dirname(__FILE__))
 
 class Chef
   module Mixin::PacemakerCommon

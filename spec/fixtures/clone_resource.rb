@@ -1,6 +1,6 @@
-require ::File.join(::File.dirname(__FILE__),
-                    *%w(.. .. libraries pacemaker resource clone))
-require ::File.join(::File.dirname(__FILE__), 'keystone_primitive')
+require ::File.expand_path('../../libraries/pacemaker/resource/clone',
+                           ::File.dirname(__FILE__))
+require ::File.expand_path('keystone_primitive', ::File.dirname(__FILE__))
 
 module Chef::RSpec
   module Pacemaker

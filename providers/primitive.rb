@@ -17,8 +17,8 @@
 # limitations under the License.
 #
 
-require ::File.join(::File.dirname(__FILE__), *%w(.. libraries pacemaker))
-require ::File.join(::File.dirname(__FILE__), 'common')
+require ::File.expand_path('../libraries/pacemaker', ::File.dirname(__FILE__))
+require ::File.expand_path('common', ::File.dirname(__FILE__))
 
 include Chef::Mixin::PacemakerCommon
 

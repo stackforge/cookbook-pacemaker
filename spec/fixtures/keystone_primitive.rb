@@ -1,5 +1,5 @@
-require ::File.join(::File.dirname(__FILE__),
-                    *%w(.. .. libraries pacemaker resource primitive))
+require ::File.expand_path('../../libraries/pacemaker/resource/primitive',
+                           ::File.dirname(__FILE__))
 
 module Chef::RSpec
   module Pacemaker

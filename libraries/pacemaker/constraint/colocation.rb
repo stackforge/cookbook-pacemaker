@@ -1,4 +1,4 @@
-require File::join(File.dirname(__FILE__), %w(.. constraint))
+require File.expand_path('../constraint', File.dirname(__FILE__))
 
 class Pacemaker::Constraint::Colocation < Pacemaker::Constraint
   TYPE = 'colocation'

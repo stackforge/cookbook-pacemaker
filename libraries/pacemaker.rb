@@ -1,3 +1,3 @@
-require File.join(File.dirname(__FILE__), %w(pacemaker resource   primitive))
-require File.join(File.dirname(__FILE__), %w(pacemaker resource   clone))
-require File.join(File.dirname(__FILE__), %w(pacemaker constraint colocation))
+require File.expand_path('pacemaker/resource/primitive', File.dirname(__FILE__))
+require File.expand_path('pacemaker/resource/clone', File.dirname(__FILE__))
+require File.expand_path('pacemaker/constraint/colocation', File.dirname(__FILE__))
