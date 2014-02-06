@@ -2,7 +2,7 @@ require 'spec_helper'
 require File.expand_path('../../../../libraries/pacemaker/constraint/colocation',
                          File.dirname(__FILE__))
 require File.expand_path('../../../fixtures/colocation_constraint', File.dirname(__FILE__))
-require File.expand_path('../../../helpers/common_object_examples', File.dirname(__FILE__))
+require File.expand_path('../../../helpers/cib_object', File.dirname(__FILE__))
 
 describe Pacemaker::Constraint::Colocation do
   let(:fixture) { Chef::RSpec::Pacemaker::Config::COLOCATION_CONSTRAINT.dup }

@@ -3,7 +3,7 @@ require File.expand_path('../../../../libraries/pacemaker/resource/primitive',
                          File.dirname(__FILE__))
 require File.expand_path('../../../fixtures/keystone_primitive',
                          File.dirname(__FILE__))
-require File.expand_path('../../../helpers/common_object_examples',
+require File.expand_path('../../../helpers/cib_object',
                          File.dirname(__FILE__))
 require File.expand_path('../../../helpers/meta_examples',
                          File.dirname(__FILE__))
