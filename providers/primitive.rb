@@ -18,9 +18,10 @@
 #
 
 require ::File.expand_path('../libraries/pacemaker', ::File.dirname(__FILE__))
-require ::File.expand_path('common', ::File.dirname(__FILE__))
+require ::File.expand_path('../libraries/chef/mixin/pacemaker',
+                           ::File.dirname(__FILE__))
 
-include Chef::Mixin::PacemakerCommon
+include Chef::Mixin::Pacemaker::StandardCIBObject
 
 action :create do
   name = new_resource.name
@@ -81,7 +82,7 @@ action :stop do
 end
 
 def cib_object_class
-  Pacemaker::Resource::Primitive
+  ::Pacemaker::Resource::Primitive
 end
 
 def load_current_resource
