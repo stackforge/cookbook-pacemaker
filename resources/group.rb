@@ -22,4 +22,4 @@ default_action :create
 
 attribute :name, :kind_of => String, :name_attribute => true
 attribute :members, :kind_of => Array
-attribute :meta, :kind_of => Hash
+attribute :meta, :kind_of => Hash, :default => {}
