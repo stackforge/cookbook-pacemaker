@@ -22,6 +22,19 @@ class Chef
         Chef::Log.info "Successfully started #{@current_cib_object}"
       end
 
+      def stop_runnable_resource
+        name = new_resource.name
+        unless @current_resource
+          raise "Cannot stop non-existent #{cib_object_class.description} '#{name}'"
+        end
+        return unless @current_cib_object.running?
+        execute @current_cib_object.stop_command do
+          action :nothing
+        end.run_action(:run)
+        new_resource.updated_by_last_action(true)
+        Chef::Log.info "Successfully stopped #{@current_cib_object}"
+      end
+
       def delete_runnable_resource
         return unless @current_resource
         if @current_cib_object.running?

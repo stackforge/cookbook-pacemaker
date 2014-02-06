@@ -48,16 +48,7 @@ action :start do
 end
 
 action :stop do
-  name = new_resource.name
-  unless @current_resource
-    raise "Cannot stop non-existent #{cib_object_class.description} '#{name}'"
-  end
-  next unless @current_cib_object.running?
-  execute @current_cib_object.stop_command do
-    action :nothing
-  end.run_action(:run)
-  new_resource.updated_by_last_action(true)
-  Chef::Log.info "Successfully stopped #{@current_cib_object}"
+  stop_runnable_resource
 end
 
 def cib_object_class
