@@ -55,7 +55,7 @@ end
 action :start do
   name = new_resource.name
   unless @current_resource
-    raise "Cannot start non-existent resource primitive '#{name}'"
+    raise "Cannot start non-existent #{cib_object_class.description} '#{name}'"
   end
   rsc = cib_object_class.new(name)
   next if rsc.running?
@@ -69,7 +69,7 @@ end
 action :stop do
   name = new_resource.name
   unless @current_resource
-    raise "Cannot stop non-existent resource primitive '#{name}'"
+    raise "Cannot stop non-existent #{cib_object_class.description} '#{name}'"
   end
   rsc = cib_object_class.new(name)
   next unless rsc.running?

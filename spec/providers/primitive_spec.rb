@@ -121,7 +121,7 @@ describe "Chef::Provider::PacemakerPrimitive" do
       expect_definition(definition)
 
       expected_error = \
-        "Existing primitive resource '#{fixture.name}' has agent '#{existing_agent}' " \
+        "Existing #{fixture} has agent '#{existing_agent}' " \
         "but recipe wanted '#{@resource.agent}'"
       expect { provider.run_action :create }.to \
         raise_error(RuntimeError, expected_error)
@@ -138,7 +138,7 @@ describe "Chef::Provider::PacemakerPrimitive" do
       expect_definition(fixture.definition_string)
       expect_running(true)
 
-      expected_error = "Cannot delete running primitive resource '#{fixture.name}'"
+      expected_error = "Cannot delete running #{fixture}"
       expect { provider.run_action :delete }.to \
         raise_error(RuntimeError, expected_error)
 
@@ -163,7 +163,7 @@ describe "Chef::Provider::PacemakerPrimitive" do
     it_should_behave_like "action on non-existent resource", \
       :start,
       "crm resource start #{fixture.name}", \
-      "Cannot start non-existent resource primitive '#{fixture.name}'"
+      "Cannot start non-existent #{fixture}"
 
     it "should do nothing to a started resource" do
       expect_definition(fixture.definition_string)
@@ -193,7 +193,7 @@ describe "Chef::Provider::PacemakerPrimitive" do
     it_should_behave_like "action on non-existent resource", \
       :stop,
       "crm resource stop #{fixture.name}", \
-      "Cannot stop non-existent resource primitive '#{fixture.name}'"
+      "Cannot stop non-existent #{fixture}"
 
     it "should do nothing to a stopped resource" do
       expect_definition(fixture.definition_string)
