@@ -89,23 +89,6 @@ describe Pacemaker::Resource::Primitive do
     end
   end
 
-  describe "::extract_hash" do
-    it "should extract a params hash from config" do
-      expect(fixture.class.extract_hash(fixture.definition_string, "params")).to \
-        eq(Hash[fixture.params])
-    end
-
-    it "should extract an op start hash from config" do
-      expect(fixture.class.extract_hash(fixture.definition_string, 'op start')).to \
-        eq(Hash[fixture.op]['start'])
-    end
-
-    it "should extract an op monitor hash from config" do
-      expect(fixture.class.extract_hash(fixture.definition_string, 'op monitor')).to \
-        eq(Hash[fixture.op]['monitor'])
-    end
-  end
-
   describe "#definition_string" do
     it "should return the definition string" do
       expect(fixture.definition_string).to eq(fixture_definition)
