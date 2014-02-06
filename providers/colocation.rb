@@ -36,8 +36,7 @@ end
 action :delete do
   name = new_resource.name
   next unless @current_resource
-  rsc = cib_object_class.new(name)
-  execute rsc.delete_command do
+  execute @current_cib_object.delete_command do
     action :nothing
   end.run_action(:run)
   new_resource.updated_by_last_action(true)

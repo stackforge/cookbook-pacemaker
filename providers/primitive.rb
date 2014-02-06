@@ -42,11 +42,10 @@ end
 action :delete do
   name = new_resource.name
   next unless @current_resource
-  rsc = cib_object_class.new(name)
-  if rsc.running?
+  if @current_cib_object.running?
     raise "Cannot delete running #{@current_cib_object}"
   end
-  execute rsc.delete_command do
+  execute @current_cib_object.delete_command do
     action :nothing
   end.run_action(:run)
   new_resource.updated_by_last_action(true)
@@ -58,9 +57,8 @@ action :start do
   unless @current_resource
     raise "Cannot start non-existent #{cib_object_class.description} '#{name}'"
   end
-  rsc = cib_object_class.new(name)
-  next if rsc.running?
-  execute rsc.start_command do
+  next if @current_cib_object.running?
+  execute @current_cib_object.start_command do
     action :nothing
   end.run_action(:run)
   new_resource.updated_by_last_action(true)
@@ -72,9 +70,8 @@ action :stop do
   unless @current_resource
     raise "Cannot stop non-existent #{cib_object_class.description} '#{name}'"
   end
-  rsc = cib_object_class.new(name)
-  next unless rsc.running?
-  execute rsc.stop_command do
+  next unless @current_cib_object.running?
+  execute @current_cib_object.stop_command do
     action :nothing
   end.run_action(:run)
   new_resource.updated_by_last_action(true)
