@@ -44,16 +44,7 @@ action :delete do
 end
 
 action :start do
-  name = new_resource.name
-  unless @current_resource
-    raise "Cannot start non-existent #{cib_object_class.description} '#{name}'"
-  end
-  next if @current_cib_object.running?
-  execute @current_cib_object.start_command do
-    action :nothing
-  end.run_action(:run)
-  new_resource.updated_by_last_action(true)
-  Chef::Log.info "Successfully started #{@current_cib_object}"
+  start_runnable_resource
 end
 
 action :stop do
