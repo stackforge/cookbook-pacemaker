@@ -20,7 +20,7 @@ end
 
 module Chef::RSpec
   module Pacemaker
-    module Common
+    module CIBObject
       # "crm configure show" is executed by load_current_resource, and
       # again later on for the :create action, to see whether to create or
       # modify.

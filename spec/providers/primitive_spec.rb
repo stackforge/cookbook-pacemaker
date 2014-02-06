@@ -32,7 +32,7 @@ describe "Chef::Provider::PacemakerPrimitive" do
     Pacemaker::Resource::Primitive
   end
 
-  include Chef::RSpec::Pacemaker::Common
+  include Chef::RSpec::Pacemaker::CIBObject
 
   describe ":create action" do
     def test_modify(expected_cmds)

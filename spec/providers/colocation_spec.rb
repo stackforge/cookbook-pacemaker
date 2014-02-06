@@ -29,7 +29,7 @@ describe "Chef::Provider::PacemakerColocation" do
     Pacemaker::Constraint::Colocation
   end
 
-  include Chef::RSpec::Pacemaker::Common
+  include Chef::RSpec::Pacemaker::CIBObject
 
   describe ":create action" do
     def test_modify(expected_cmds)
