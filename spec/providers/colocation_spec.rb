@@ -5,9 +5,9 @@ require File.join(File.dirname(__FILE__), %w(.. fixtures colocation_constraint))
 
 describe "Chef::Provider::PacemakerColocation" do
   # for use inside examples:
-  let(:colo) { Chef::RSpec::Pacemaker::Config::COLOCATION_CONSTRAINT.dup }
+  let(:fixture) { Chef::RSpec::Pacemaker::Config::COLOCATION_CONSTRAINT.dup }
   # for use outside examples (e.g. when invoking shared_examples)
-  colo = Chef::RSpec::Pacemaker::Config::COLOCATION_CONSTRAINT.dup
+  fixture = Chef::RSpec::Pacemaker::Config::COLOCATION_CONSTRAINT.dup
 
   before(:each) do
     runner_opts = {
@@ -18,9 +18,9 @@ describe "Chef::Provider::PacemakerColocation" do
     @node = @chef_run.node
     @run_context = @chef_run.run_context
 
-    @resource = Chef::Resource::PacemakerColocation.new(colo.name, @run_context)
-    @resource.score     colo.score
-    @resource.resources colo.resources.dup
+    @resource = Chef::Resource::PacemakerColocation.new(fixture.name, @run_context)
+    @resource.score     fixture.score
+    @resource.resources fixture.resources.dup
   end
 
   let (:provider) { Chef::Provider::PacemakerColocation.new(@resource, @run_context) }
@@ -35,7 +35,7 @@ describe "Chef::Provider::PacemakerColocation" do
     def test_modify(expected_cmds)
       yield
 
-      expect_definition(colo.definition_string)
+      expect_definition(fixture.definition_string)
 
       provider.run_action :create
 
@@ -47,8 +47,8 @@ describe "Chef::Provider::PacemakerColocation" do
 
     it "should modify the constraint if it has a different score" do
       new_score = '100'
-      colo.score = new_score
-      expected_configure_cmd_args = [colo.reconfigure_command]
+      fixture.score = new_score
+      expected_configure_cmd_args = [fixture.reconfigure_command]
       test_modify(expected_configure_cmd_args) do
         @resource.score new_score
       end
@@ -56,7 +56,7 @@ describe "Chef::Provider::PacemakerColocation" do
 
     it "should modify the constraint if it has a resource added" do
       new_resource = 'bar:Stopped'
-      expected = colo.dup
+      expected = fixture.dup
       expected.resources = expected.resources.dup + [new_resource]
       expected_configure_cmd_args = [expected.reconfigure_command]
       test_modify(expected_configure_cmd_args) do
@@ -66,8 +66,8 @@ describe "Chef::Provider::PacemakerColocation" do
 
     it "should modify the constraint if it has a different resource" do
       new_resources = ['bar:Started']
-      colo.resources = new_resources
-      expected_configure_cmd_args = [colo.reconfigure_command]
+      fixture.resources = new_resources
+      expected_configure_cmd_args = [fixture.reconfigure_command]
       test_modify(expected_configure_cmd_args) do
         @resource.resources new_resources
       end
@@ -77,7 +77,7 @@ describe "Chef::Provider::PacemakerColocation" do
 
   describe ":delete action" do
     it_should_behave_like "action on non-existent resource", \
-      :delete, "crm configure delete #{colo.name}", nil
+      :delete, "crm configure delete #{fixture.name}", nil
   end
 
 end
