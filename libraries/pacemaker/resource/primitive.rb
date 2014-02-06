@@ -1,12 +1,14 @@
 require 'shellwords'
 require File.expand_path('../resource', File.dirname(__FILE__))
+require File.expand_path('../mixins/resource_meta', File.dirname(__FILE__))
 
 class Pacemaker::Resource::Primitive < Pacemaker::Resource
   TYPE = 'primitive'
-
   register_type TYPE
 
-  attr_accessor :agent, :params, :meta, :op
+  include Pacemaker::Resource::Meta
+
+  attr_accessor :agent, :params, :op
 
   def initialize(*args)
     super(*args)
@@ -43,10 +45,6 @@ class Pacemaker::Resource::Primitive < Pacemaker::Resource
     self.class.params_string(params)
   end
 
-  def meta_string
-    self.class.meta_string(meta)
-  end
-
   def op_string
     self.class.op_string(op)
   end
@@ -74,14 +72,6 @@ class Pacemaker::Resource::Primitive < Pacemaker::Resource
     return "" if ! params or params.empty?
     "params " +
     params.sort.map do |key, value|
-      %'#{key}="#{value}"'
-    end.join(' ')
-  end
-
-  def self.meta_string(meta)
-    return "" if ! meta or meta.empty?
-    "meta " +
-    meta.sort.map do |key, value|
       %'#{key}="#{value}"'
     end.join(' ')
   end
