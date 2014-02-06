@@ -21,7 +21,7 @@ require ::File.expand_path('../libraries/pacemaker', ::File.dirname(__FILE__))
 require ::File.expand_path('../libraries/chef/mixin/pacemaker',
                            ::File.dirname(__FILE__))
 
-include Chef::Mixin::Pacemaker::StandardCIBObject
+include Chef::Mixin::Pacemaker::RunnableResource
 
 action :create do
   name = new_resource.name
@@ -40,12 +40,7 @@ action :create do
 end
 
 action :delete do
-  name = new_resource.name
-  next unless @current_resource
-  if @current_cib_object.running?
-    raise "Cannot delete running #{@current_cib_object}"
-  end
-  standard_delete_resource
+  delete_runnable_resource
 end
 
 action :start do
