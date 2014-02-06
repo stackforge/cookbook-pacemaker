@@ -55,7 +55,6 @@ class Pacemaker::Resource::Primitive < Pacemaker::Resource
       unless send(data_type).empty?
         data_string = send("#{data_type}_string")
         str << continuation_line(data_string)
-      else
       end
     end
     str
