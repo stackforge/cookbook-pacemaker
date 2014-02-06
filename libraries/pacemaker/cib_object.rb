@@ -4,7 +4,7 @@ module Pacemaker
   class CIBObject
     attr_accessor :name, :definition
 
-    @@subclasses = { }
+    @@subclasses = { } unless class_variable_defined?(:@@subclasses)
 
     class << self
       attr_reader :object_type
