@@ -1,6 +1,8 @@
 require 'chef/application'
 require ::File.expand_path('../../../pacemaker', ::File.dirname(__FILE__))
 
+# Common code used by Pacemaker LWRP providers
+
 class Chef
   module Mixin::Pacemaker
     module StandardCIBObject
