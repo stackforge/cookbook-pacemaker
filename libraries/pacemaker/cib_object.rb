@@ -116,6 +116,14 @@ module Pacemaker
       "%s '%s'" % [self.class.description, name]
     end
 
+    def definition_indent
+      ' ' * 9
+    end
+
+    def continuation_line(text)
+      " \\\n#{definition_indent}#{text}"
+    end
+
     # Returns a single-quoted shell-escaped version of the definition
     # string, suitable for use in a command like:
     #

@@ -51,11 +51,10 @@ class Pacemaker::Resource::Primitive < Pacemaker::Resource
 
   def definition_string
     str = "#{TYPE} #{name} #{agent}"
-    indent = ' ' * 9
     %w(params meta op).each do |data_type|
       unless send(data_type).empty?
         data_string = send("#{data_type}_string")
-        str << " \\\n#{indent}#{data_string}"
+        str << continuation_line(data_string)
       else
       end
     end
