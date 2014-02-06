@@ -36,11 +36,7 @@ end
 action :delete do
   name = new_resource.name
   next unless @current_resource
-  execute @current_cib_object.delete_command do
-    action :nothing
-  end.run_action(:run)
-  new_resource.updated_by_last_action(true)
-  Chef::Log.info "Deleted #{@current_cib_object}'."
+  standard_delete_resource
 end
 
 def cib_object_class

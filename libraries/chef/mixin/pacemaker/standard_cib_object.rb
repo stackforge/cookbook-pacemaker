@@ -52,6 +52,14 @@ class Chef
           ::Chef::Log.error "Failed to configure #{cib_object}"
         end
       end
+
+      def standard_delete_resource
+        execute @current_cib_object.delete_command do
+          action :nothing
+        end.run_action(:run)
+        new_resource.updated_by_last_action(true)
+        Chef::Log.info "Deleted #{@current_cib_object}'."
+      end
     end
   end
 end

@@ -45,11 +45,7 @@ action :delete do
   if @current_cib_object.running?
     raise "Cannot delete running #{@current_cib_object}"
   end
-  execute @current_cib_object.delete_command do
-    action :nothing
-  end.run_action(:run)
-  new_resource.updated_by_last_action(true)
-  Chef::Log.info "Deleted #{@current_cib_object}"
+  standard_delete_resource
 end
 
 action :start do
