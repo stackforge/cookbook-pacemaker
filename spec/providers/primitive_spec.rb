@@ -1,6 +1,6 @@
 require 'chef/application'
 require File.expand_path('../spec_helper', File.dirname(__FILE__))
-require File.expand_path('../helpers/common', File.dirname(__FILE__))
+require File.expand_path('../helpers/cib_object', File.dirname(__FILE__))
 require File.expand_path('../fixtures/keystone_primitive', File.dirname(__FILE__))
 
 describe "Chef::Provider::PacemakerPrimitive" do
