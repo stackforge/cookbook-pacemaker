@@ -38,7 +38,7 @@ describe "Chef::Provider::PacemakerPrimitive" do
     def test_modify(expected_cmds)
       yield
 
-      expect_definition(fixture.definition_string)
+      expect_definitions(fixture.definition_string)
 
       provider.run_action :create
 
@@ -99,10 +99,10 @@ describe "Chef::Provider::PacemakerPrimitive" do
     end
 
     it "should create a primitive if it doesn't already exist" do
-      expect_definition("")
-      # Later, the :create action calls cib_object_class#exists? to check
-      # that creation succeeded.
-      expect_exists(true)
+      # The first time, Mixlib::ShellOut needs to return an empty definition.
+      # Then the resource gets created so the second time it needs to return
+      # the definition used for creation.
+      expect_definitions("", fixture.definition_string)
 
       provider.run_action :create
 
@@ -113,7 +113,7 @@ describe "Chef::Provider::PacemakerPrimitive" do
     it "should barf if the primitive is already defined with the wrong agent" do
       existing_agent = "ocf:openstack:something-else"
       definition = fixture.definition_string.sub(fixture.agent, existing_agent)
-      expect_definition(definition)
+      expect_definitions(definition)
 
       expected_error = \
         "Existing #{fixture} has agent '#{existing_agent}' " \

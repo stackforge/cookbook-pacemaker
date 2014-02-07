@@ -35,7 +35,7 @@ describe "Chef::Provider::PacemakerColocation" do
     def test_modify(expected_cmds)
       yield
 
-      expect_definition(fixture.definition_string)
+      expect_definitions(fixture.definition_string)
 
       provider.run_action :create
 

@@ -21,7 +21,7 @@ shared_examples "a runnable resource" do |fixture|
       :delete, "crm configure delete #{fixture.name}", nil
 
     it "should not delete a running resource" do
-      expect_definition(fixture.definition_string)
+      expect_definitions(fixture.definition_string)
       expect_running(true)
 
       expected_error = "Cannot delete running #{fixture}"
@@ -34,7 +34,7 @@ shared_examples "a runnable resource" do |fixture|
     end
 
     it "should delete a non-running resource" do
-      expect_definition(fixture.definition_string)
+      expect_definitions(fixture.definition_string)
       expect_running(false)
 
       provider.run_action :delete
@@ -52,7 +52,7 @@ shared_examples "a runnable resource" do |fixture|
       "Cannot start non-existent #{fixture}"
 
     it "should do nothing to a started resource" do
-      expect_definition(fixture.definition_string)
+      expect_definitions(fixture.definition_string)
       expect_running(true)
 
       provider.run_action :start
@@ -64,7 +64,7 @@ shared_examples "a runnable resource" do |fixture|
 
     it "should start a stopped resource" do
       config = fixture.definition_string.sub("Started", "Stopped")
-      expect_definition(config)
+      expect_definitions(config)
       expect_running(false)
 
       provider.run_action :start
@@ -82,7 +82,7 @@ shared_examples "a runnable resource" do |fixture|
       "Cannot stop non-existent #{fixture}"
 
     it "should do nothing to a stopped resource" do
-      expect_definition(fixture.definition_string)
+      expect_definitions(fixture.definition_string)
       expect_running(false)
 
       provider.run_action :stop
@@ -93,7 +93,7 @@ shared_examples "a runnable resource" do |fixture|
     end
 
     it "should stop a started resource" do
-      expect_definition(fixture.definition_string)
+      expect_definitions(fixture.definition_string)
       expect_running(true)
 
       provider.run_action :stop

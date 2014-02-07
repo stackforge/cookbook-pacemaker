@@ -14,10 +14,6 @@ describe Pacemaker::Resource::Primitive do
     Chef::RSpec::Pacemaker::Config::KEYSTONE_PRIMITIVE_DEFINITION
   }
 
-  before(:each) do
-    Mixlib::ShellOut.any_instance.stub(:run_command)
-  end
-
   def object_type
     'primitive'
   end

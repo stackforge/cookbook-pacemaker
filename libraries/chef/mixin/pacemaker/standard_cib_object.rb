@@ -45,6 +45,7 @@ class Chef
           action :nothing
         end.run_action(:run)
 
+        cib_object = Pacemaker::CIBObject.from_name(new_resource.name)
         if cib_object.exists?
           new_resource.updated_by_last_action(true)
           ::Chef::Log.info "Successfully configured #{cib_object}"
