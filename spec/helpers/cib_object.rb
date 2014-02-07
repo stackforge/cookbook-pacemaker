@@ -5,7 +5,32 @@ require 'mixlib/shellout'
 require File.expand_path('../../libraries/pacemaker/cib_object',
                          File.dirname(__FILE__))
 
+module Chef::RSpec
+  module Pacemaker
+    module CIBObject
+      # "crm configure show" is executed by load_current_resource, and
+      # again later on for the :create action, to see whether to create or
+      # modify.
+      def shellout_double(definition)
+        shellout = double(Mixlib::ShellOut)
+        shellout.stub(:environment).and_return({})
+        shellout.stub(:run_command)
+        shellout.stub(:error!)
+        expect(shellout).to receive(:stdout).and_return(definition)
+        shellout
+      end
+
+      def expect_definitions(*definitions)
+        doubles = definitions.map { |d| shellout_double(d) }
+        Mixlib::ShellOut.stub(:new).and_return(*doubles)
+      end
+    end
+  end
+end
+
 shared_examples "a CIB object" do
+  include Chef::RSpec::Pacemaker::CIBObject
+
   def expect_to_match_fixture(obj)
     expect(obj.is_a? pacemaker_object_class).to eq(true)
     fields.each do |field|
@@ -34,6 +59,8 @@ shared_examples "a CIB object" do
 end
 
 shared_examples "action on non-existent resource" do |action, cmd, expected_error|
+  include Chef::RSpec::Pacemaker::CIBObject
+
   it "should not attempt to #{action.to_s} a non-existent resource" do
     expect_definitions("")
 
@@ -46,28 +73,5 @@ shared_examples "action on non-existent resource" do |action, cmd, expected_erro
 
     expect(@chef_run).not_to run_execute(cmd)
     expect(@resource).not_to be_updated
-  end
-end
-
-module Chef::RSpec
-  module Pacemaker
-    module CIBObject
-      # "crm configure show" is executed by load_current_resource, and
-      # again later on for the :create action, to see whether to create or
-      # modify.
-      def shellout_double(definition)
-        shellout = double(Mixlib::ShellOut)
-        shellout.stub(:environment).and_return({})
-        shellout.stub(:run_command)
-        shellout.stub(:error!)
-        expect(shellout).to receive(:stdout).and_return(definition)
-        shellout
-      end
-
-      def expect_definitions(*definitions)
-        doubles = definitions.map { |d| shellout_double(d) }
-        Mixlib::ShellOut.stub(:new).and_return(*doubles)
-      end
-    end
   end
 end
