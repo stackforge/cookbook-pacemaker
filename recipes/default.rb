@@ -41,3 +41,12 @@ end
 if node[:pacemaker][:founder]
   include_recipe "pacemaker::setup"
 end
+
+if platform_family? "rhel"
+  execute "sleep 2"
+
+  service "pacemaker" do
+    action [ :enable, :start ]
+    notifies :restart, "service[clvm]", :immediately
+  end
+end
