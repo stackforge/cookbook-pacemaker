@@ -19,7 +19,7 @@ when 'suse'
 
   # pacemaker-mgmt-client provides hb_gui, which it's useful
   # to run over ssh.
-  default[:pacemaker][:platform][:packages] += %w(
+  default[:pacemaker][:platform][:graphical_packages] = %w(
     pacemaker-mgmt-client xorg-x11-xauth
   )
 else
