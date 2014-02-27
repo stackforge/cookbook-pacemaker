@@ -18,6 +18,20 @@
 # limitations under the License.
 #
 
+node[:pacemaker][:platform][:packages].each do |pkg|
+  package pkg
+end
+
+# required to run hb_gui
+if platform_family? "suse"
+  cmd = "SuSEconfig --module gtk2"
+  execute cmd do
+    user "root"
+    command cmd
+    not_if { File.exists? "/etc/gtk-2.0/gdk-pixbuf64.loaders" }
+  end
+end
+
 if Chef::Config[:solo]
   ::Chef::Log.warn "Using Chef Solo, you are expected to manually include the corosync default recipe!"
 else
