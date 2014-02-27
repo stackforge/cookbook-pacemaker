@@ -11,10 +11,6 @@ default
 -------
 Installs and start `pacemaker`. 
 
-config
--------
-Configures pacemaker resources such as primitive, location, colocation and order.
-
 Resources/Providers
 ===================
 There are 7 LWRPs for interacting with pacemaker.
