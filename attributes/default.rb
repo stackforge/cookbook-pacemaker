@@ -27,4 +27,5 @@ else
   return
 end
 
+default[:pacemaker][:founder] = false
 default[:pacemaker][:crm][:initial_config_file] = "/etc/corosync/crm-initial.conf"

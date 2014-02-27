@@ -18,4 +18,12 @@
 # limitations under the License.
 #
 
-include_recipe "pacemaker::setup"
+if Chef::Config[:solo]
+  ::Chef::Log.warn "Using Chef Solo, you are expected to manually include the corosync default recipe!"
+else
+  include_recipe "corosync::default"
+end
+
+if node[:pacemaker][:founder]
+  include_recipe "pacemaker::setup"
+end
