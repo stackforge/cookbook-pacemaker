@@ -35,8 +35,4 @@ class Pacemaker::Resource::Group < Pacemaker::Resource
     str
   end
 
-  def crm_configure_command
-    "crm configure " + definition_string
-  end
-
 end

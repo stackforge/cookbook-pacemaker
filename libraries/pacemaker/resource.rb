@@ -24,6 +24,10 @@ module Pacemaker
       "crm resource stop '#{name}'"
     end
 
+    def crm_configure_command
+      "crm configure " + definition_string
+    end
+
     # CIB object definitions look something like:
     #
     # primitive keystone ocf:openstack:keystone \
