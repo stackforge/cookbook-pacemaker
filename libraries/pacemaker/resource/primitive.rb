@@ -16,8 +16,8 @@ class Pacemaker::Resource::Primitive < Pacemaker::Resource
     @agent = nil
   end
 
-  def self.from_chef_resource(resource)
-    new(resource.name).copy_attrs_from_chef_resource(resource, *%w(agent params meta op))
+  def self.attrs_to_copy_from_chef
+    %w(agent params meta op)
   end
 
   def parse_definition

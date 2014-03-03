@@ -49,6 +49,5 @@ module Pacemaker
       end
       h
     end
-
   end
 end

@@ -67,6 +67,15 @@ module Pacemaker
           obj
         end
       end
+
+      def from_chef_resource(resource)
+        new(resource.name).copy_attrs_from_chef_resource(resource,
+                                                         *attrs_to_copy_from_chef)
+      end
+
+      def attrs_to_copy_from_chef
+        raise NotImplementedError, "#{self.class} didn't implement attrs_to_copy_from_chef"
+      end
     end
 
     def initialize(name)

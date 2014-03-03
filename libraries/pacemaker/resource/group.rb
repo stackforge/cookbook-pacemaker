@@ -9,9 +9,8 @@ class Pacemaker::Resource::Group < Pacemaker::Resource
 
   attr_accessor :members
 
-  def self.from_chef_resource(resource)
-    attrs = %w(members meta)
-    new(resource.name).copy_attrs_from_chef_resource(resource, *attrs)
+  def self.attrs_to_copy_from_chef
+    %w(members meta)
   end
 
   def parse_definition
