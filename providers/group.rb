@@ -55,8 +55,7 @@ end
 def init_current_resource
   name = @new_resource.name
   @current_resource = Chef::Resource::PacemakerGroup.new(name)
-  attrs = [:members]
-  @current_cib_object.copy_attrs_to_chef_resource(@current_resource, *attrs)
+  @current_cib_object.copy_attrs_to_chef_resource(@current_resource, :members)
 end
 
 def create_resource(name)
