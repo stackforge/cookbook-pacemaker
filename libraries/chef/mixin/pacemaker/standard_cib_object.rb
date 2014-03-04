@@ -7,6 +7,16 @@ require ::File.expand_path('../../../pacemaker/cib_object',
 class Chef
   module Mixin::Pacemaker
     module StandardCIBObject
+      def standard_create_action
+        name = new_resource.name
+
+        if @current_resource_definition.nil?
+          create_resource(name)
+        else
+          maybe_modify_resource(name)
+        end
+      end
+
       # Instantiate @current_resource and read details about the existing
       # primitive (if any) via "crm configure show" into it, so that we
       # can compare it against the resource requested by the recipe, and

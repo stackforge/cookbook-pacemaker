@@ -23,13 +23,7 @@ require ::File.expand_path('../libraries/chef/mixin/pacemaker',
 include Chef::Mixin::Pacemaker::RunnableResource
 
 action :create do
-  name = new_resource.name
-
-  if @current_resource_definition.nil?
-    create_resource(name)
-  else
-    maybe_modify_resource(name)
-  end
+  standard_create_action
 end
 
 action :delete do
