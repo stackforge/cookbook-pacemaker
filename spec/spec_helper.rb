@@ -43,6 +43,11 @@ end
 # FIXME
 #running_guard = ENV['GUARD_NOTIFY'] && ! ENV['GUARD_NOTIFY'].empty?
 
+if ENV['RUBYDEPS']
+  require 'rubydeps'
+  Rubydeps.start
+end
+
 if false # ! running_guard
   at_exit { ChefSpec::Coverage.report! }
 end
