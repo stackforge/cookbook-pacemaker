@@ -11,7 +11,6 @@ class Pacemaker::Constraint::Colocation < Pacemaker::Constraint
   end
 
   def parse_definition
-    rsc_re = /(\S+?)(?::(Started|Stopped))?/
     unless definition =~ /^#{TYPE} (\S+) (\d+|[-+]?inf): (.+?)\s*$/
       raise Pacemaker::CIBObject::DefinitionParseError, \
         "Couldn't parse definition '#{definition}'"

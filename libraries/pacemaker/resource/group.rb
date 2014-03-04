@@ -14,7 +14,6 @@ class Pacemaker::Resource::Group < Pacemaker::Resource
   end
 
   def parse_definition
-    rsc_re = /(\S+?)(?::(Started|Stopped))?/
     unless definition =~ /^#{TYPE} (\S+) (.+?)(\s+\\)?$/
       raise Pacemaker::CIBObject::DefinitionParseError, \
         "Couldn't parse definition '#{definition}'"
