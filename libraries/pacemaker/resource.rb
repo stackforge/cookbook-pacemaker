@@ -16,11 +16,11 @@ module Pacemaker
       !! cmd.stdout.include?("resource #{name} is running")
     end
 
-    def start_command
+    def crm_start_command
       "crm resource start '#{name}'"
     end
 
-    def stop_command
+    def crm_stop_command
       "crm resource stop '#{name}'"
     end
 

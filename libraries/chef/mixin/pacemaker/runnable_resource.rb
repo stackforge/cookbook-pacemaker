@@ -15,7 +15,7 @@ class Chef
           raise "Cannot start non-existent #{cib_object_class.description} '#{name}'"
         end
         return if @current_cib_object.running?
-        execute @current_cib_object.start_command do
+        execute @current_cib_object.crm_start_command do
           action :nothing
         end.run_action(:run)
         new_resource.updated_by_last_action(true)
@@ -28,7 +28,7 @@ class Chef
           raise "Cannot stop non-existent #{cib_object_class.description} '#{name}'"
         end
         return unless @current_cib_object.running?
-        execute @current_cib_object.stop_command do
+        execute @current_cib_object.crm_stop_command do
           action :nothing
         end.run_action(:run)
         new_resource.updated_by_last_action(true)
