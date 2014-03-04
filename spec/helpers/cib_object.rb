@@ -94,11 +94,11 @@ shared_examples "a CIB object" do
     expect_to_match_fixture(obj)
   end
 
-  it "should barf if the loaded definition's type is not colocation" do
-    stub_shellout("clone foo blah blah")
+  it "should barf if the loaded definition's type is not right" do
+    stub_shellout("sometype foo blah blah")
     expect { fixture.load_definition }.to \
       raise_error(Pacemaker::CIBObject::TypeMismatch,
-                  "Expected #{object_type} type but loaded definition was type clone")
+                  "Expected #{object_type} type but loaded definition was type sometype")
   end
 end
 
