@@ -26,7 +26,7 @@ group :rspec do
     }
     watch(%r{^providers/common\.rb$})      { provider_specs }
     watch(%r{^providers/(.*mixin.*)\.rb$}) { provider_specs }
-    watch(%r{^(resources|providers)/(.+)\.rb$}) { |m|
+    watch(%r{^(?:resources|providers)/(.+)\.rb$}) { |m|
       "spec/providers/#{m[1]}_spec.rb"
     }
   end
