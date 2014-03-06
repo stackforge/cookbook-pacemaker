@@ -39,7 +39,12 @@ if node[:pacemaker][:setup_hb_gui]
 end
 
 if Chef::Config[:solo]
-  ::Chef::Log.warn "Using Chef Solo, you are expected to manually include the corosync default recipe!"
+  unless ENV['RSPEC_RUNNING']
+    Chef::Application.fatal! \
+      "pacemaker::default needs corosync::default which uses search, " \
+      "but Chef Solo does not support search."
+    return
+  end
 else
   include_recipe "corosync::default"
 end

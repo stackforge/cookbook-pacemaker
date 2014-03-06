@@ -1,5 +1,7 @@
 require 'chefspec'
 
+ENV['RSPEC_RUNNING'] = 'true'
+
 RSpec.configure do |config|
   # config.mock_with :rspec do |mocks|
   #   # This option should be set when all dependencies are being loaded
