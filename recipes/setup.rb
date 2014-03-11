@@ -26,7 +26,7 @@ template crm_conf do
   group "root"
   mode 0600
   variables(
-    :stonith_enabled => node[:pacemaker][:crm][:stonith_enabled],
+    :stonith_enabled => (node[:pacemaker][:stonith][:mode] != "disabled"),
     :no_quorum_policy => node[:pacemaker][:crm][:no_quorum_policy]
   )
 end

@@ -32,5 +32,22 @@ end
 
 default[:pacemaker][:founder] = false
 default[:pacemaker][:crm][:initial_config_file] = "/etc/corosync/crm-initial.conf"
-default[:pacemaker][:crm][:stonith_enabled] = false
 default[:pacemaker][:crm][:no_quorum_policy] = "ignore"
+
+# Values can be "disabled", "manual", "clone", "per_node"
+default[:pacemaker][:stonith][:mode] = "disabled"
+
+default[:pacemaker][:stonith][:clone][:plugin] = ""
+# This can be either a string (containing a list of parameters) or a hash.
+# For instance:
+#   default[:pacemaker][:stonith][:clone][:params] = 'hostname="foo" password="bar"'
+# will give the same result as:
+#   default[:pacemaker][:stonith][:clone][:params] = {"hostname" => "foo", "password" => "bar"}
+default[:pacemaker][:stonith][:clone][:params] = {}
+
+default[:pacemaker][:stonith][:per_node][:plugin] = ""
+# This hash will contain parameters for each node. See documentation for
+# default[:pacemaker][:stonith][:clone][:params] about the format.
+# For instance:
+#  default[:pacemaker][:stonith][:per_node][:nodes][$node][:params] = 'hostname="foo" password="bar"'
+default[:pacemaker][:stonith][:per_node][:nodes] = {}

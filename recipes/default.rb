@@ -61,3 +61,5 @@ if platform_family? "rhel"
     notifies :restart, "service[clvm]", :immediately
   end
 end
+
+include_recipe "pacemaker::stonith"
