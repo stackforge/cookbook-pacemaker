@@ -20,7 +20,7 @@ when 'suse'
   # pacemaker-mgmt-client provides hb_gui, which it's useful
   # to run over ssh.
   default[:pacemaker][:platform][:graphical_packages] = %w(
-    pacemaker-mgmt-client xorg-x11-xauth
+    pacemaker-mgmt-client xorg-x11-xauth xorg-x11-fonts
   )
 else
   Chef::Application.fatal! "FIXME: #{node.platform} platform not supported yet"
