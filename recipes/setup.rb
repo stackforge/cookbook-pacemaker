@@ -19,6 +19,7 @@
 #
 
 crm_conf = node[:pacemaker][:crm][:initial_config_file]
+
 template crm_conf do
   source "crm-initial.conf.erb"
   owner "root"
@@ -29,4 +30,6 @@ end
 execute "crm initial configuration" do
   user "root"
   command "crm configure load replace #{crm_conf}"
+  subscribes :run, resources(:template => crm_conf), :immediately
+  action :nothing
 end
