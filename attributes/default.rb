@@ -32,3 +32,5 @@ end
 
 default[:pacemaker][:founder] = false
 default[:pacemaker][:crm][:initial_config_file] = "/etc/corosync/crm-initial.conf"
+default[:pacemaker][:crm][:stonith_enabled] = false
+default[:pacemaker][:crm][:no_quorum_policy] = "ignore"

@@ -25,6 +25,10 @@ template crm_conf do
   owner "root"
   group "root"
   mode 0600
+  variables(
+    :stonith_enabled => node[:pacemaker][:crm][:stonith_enabled],
+    :no_quorum_policy => node[:pacemaker][:crm][:no_quorum_policy]
+  )
 end
 
 execute "crm initial configuration" do
