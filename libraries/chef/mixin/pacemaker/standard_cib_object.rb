@@ -1,5 +1,6 @@
 require 'chef/application'
-require ::File.expand_path('../../../pacemaker', ::File.dirname(__FILE__))
+require ::File.expand_path('../../../pacemaker/cib_object',
+                           ::File.dirname(__FILE__))
 
 # Common code used by Pacemaker LWRP providers
 
