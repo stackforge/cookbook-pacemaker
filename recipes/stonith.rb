@@ -19,7 +19,23 @@
 #
 
 # FIXME: delete old resources when switching mode (or plugin!)
-# FIXME: check that the stonith plugin to use exists with stonith -L
+
+@stonith_plugins = nil
+
+def stonith_plugin_valid?(plugin)
+  if plugin.nil? || plugin.empty?
+    false
+  else
+    if @stonith_plugins.nil?
+      out = %x{stonith -L}
+      if $?.success?
+        @stonith_plugins = out.split("\n")
+      end
+    end
+
+    !@stonith_plugins.nil? && @stonith_plugins.include?(plugin)
+  end
+end
 
 case node[:pacemaker][:stonith][:mode]
 when "disabled"
@@ -29,6 +45,12 @@ when "manual"
 when "clone"
   plugin = node[:pacemaker][:stonith][:clone][:plugin]
   params = node[:pacemaker][:stonith][:clone][:params]
+
+  unless stonith_plugin_valid? plugin
+    message = "STONITH plugin #{plugin} is not available!"
+    Chef::Log.fatal(message)
+    raise message
+  end
 
   if params.respond_to?('to_hash')
     primitive_params = params.to_hash
@@ -59,6 +81,12 @@ when "clone"
 
 when "per_node"
   plugin = node[:pacemaker][:stonith][:per_node][:plugin]
+
+  unless stonith_plugin_valid? plugin
+    message = "STONITH plugin #{plugin} is not available!"
+    Chef::Log.fatal(message)
+    raise message
+  end
 
   node[:pacemaker][:stonith][:per_node][:nodes].keys.each do |node_name|
     stonith_resource = "stonith-#{node_name}"
