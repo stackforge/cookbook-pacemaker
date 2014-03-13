@@ -6,7 +6,7 @@ class Pacemaker::Resource::Primitive < Pacemaker::Resource
   TYPE = 'primitive'
   register_type TYPE
 
-  include Pacemaker::Resource::Meta
+  include Pacemaker::Mixins::Resource::Meta
 
   attr_accessor :agent, :params, :op
 

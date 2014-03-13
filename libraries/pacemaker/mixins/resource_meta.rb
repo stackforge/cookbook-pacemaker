@@ -2,25 +2,27 @@
 # (priority, target-role, is-managed)
 
 module Pacemaker
-  class Resource
-    module Meta
-      def self.included(base)
-        base.extend ClassMethods
-      end
+  module Mixins
+    module Resource
+      module Meta
+        def self.included(base)
+          base.extend ClassMethods
+        end
 
-      attr_accessor :meta
+        attr_accessor :meta
 
-      def meta_string
-        self.class.meta_string(meta)
-      end
+        def meta_string
+          self.class.meta_string(meta)
+        end
 
-      module ClassMethods
-        def meta_string(meta)
-          return "" if ! meta or meta.empty?
-          "meta " +
-            meta.sort.map do |key, value|
-            %'#{key}="#{value}"'
-          end.join(' ')
+        module ClassMethods
+          def meta_string(meta)
+            return "" if ! meta or meta.empty?
+            "meta " +
+              meta.sort.map do |key, value|
+              %'#{key}="#{value}"'
+            end.join(' ')
+          end
         end
       end
     end

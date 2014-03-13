@@ -5,7 +5,7 @@ class Pacemaker::Resource::Group < Pacemaker::Resource
   TYPE = 'group'
   register_type TYPE
 
-  include Pacemaker::Resource::Meta
+  include Pacemaker::Mixins::Resource::Meta
 
   attr_accessor :members
 
