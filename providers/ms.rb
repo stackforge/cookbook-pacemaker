@@ -1,8 +1,8 @@
-# Author:: Robert Choi
 # Cookbook Name:: pacemaker
-# Provider:: 
+# Provider:: ms
 #
 # Copyright:: 2013, Robert Choi
+# Copyright:: 2014, SUSE
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,49 +17,56 @@
 # limitations under the License.
 #
 
-require ::File.expand_path('../libraries/pacemaker/cib_object',
+require ::File.expand_path('../libraries/pacemaker', ::File.dirname(__FILE__))
+require ::File.expand_path('../libraries/chef/mixin/pacemaker',
                            ::File.dirname(__FILE__))
 
+include Chef::Mixin::Pacemaker::RunnableResource
+
 action :create do
-  name = new_resource.name
-  rsc = new_resource.rsc
-
-  unless resource_exists?(name)
-    cmd = "crm configure ms #{name} #{rsc}"
-
-    if new_resource.meta
-      cmd << " meta"
-      new_resource.meta.each do |key, value|
-        cmd << " #{key}=\"#{value}\""
-      end
-    end
-
-    cmd_ = Mixlib::ShellOut.new(cmd)
-    cmd_.environment['HOME'] = ENV.fetch('HOME', '/root')
-    cmd_.run_command
-    begin
-      cmd_.error!
-      if resource_exists?(name)
-        new_resource.updated_by_last_action(true)
-        Chef::Log.info "Successfully configured ms '#{name}'."
-      else
-        Chef::Log.error "Failed to configure ms #{name}."
-      end
-    rescue
-      Chef::Log.error "Failed to configure ms #{name}."
-    end
-  end
+  standard_create_action
 end
 
 action :delete do
-  name = new_resource.name
-  cmd = "crm resource stop #{name}; crm configure delete #{name}"
+  delete_runnable_resource
+end
 
-    e = execute "delete ms #{name}" do
-      command cmd
-      only_if { resource_exists?(name) }
-    end
+action :start do
+  start_runnable_resource
+end
 
+action :stop do
+  stop_runnable_resource
+end
+
+def cib_object_class
+  ::Pacemaker::Resource::MasterSlave
+end
+
+def load_current_resource
+  standard_load_current_resource
+end
+
+def init_current_resource
+  name = @new_resource.name
+  @current_resource = Chef::Resource::PacemakerMs.new(name)
+  @current_cib_object.copy_attrs_to_chef_resource(@current_resource, :rsc)
+end
+
+def create_resource(name)
+  standard_create_resource
+end
+
+def maybe_modify_resource(name)
+  Chef::Log.info "Checking existing #{@current_cib_object} for modifications"
+
+  desired_clone = cib_object_class.from_chef_resource(new_resource)
+  if desired_clone.definition_string != @current_cib_object.definition_string
+    Chef::Log.debug "changed from [#{@current_cib_object.definition_string}] to [#{desired_clone.definition_string}]"
+    cmd = desired_clone.reconfigure_command
+    execute cmd do
+      action :nothing
+    end.run_action(:run)
     new_resource.updated_by_last_action(true)
-    Chef::Log.info "Deleted ms '#{name}'."
+  end
 end

@@ -1,8 +1,7 @@
-# Author:: Robert Choi
 # Cookbook Name:: pacemaker
 # Resource:: ms
 #
-# Copyright:: 2013, Robert Choi
+# Copyright:: 2013, Robert Choi, SUSE
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,10 +16,10 @@
 # limitations under the License.
 #
 
-actions :create, :delete
+actions :create, :delete, :start, :stop
 
 default_action :create
 
 attribute :name, :kind_of => String, :name_attribute => true
-attribute :rsc, :kind_of => String
-attribute :meta, :kind_of => Hash
+attribute :rsc,  :kind_of => String
+attribute :meta, :kind_of => Hash, :default => {}
