@@ -11,7 +11,7 @@ class Pacemaker::Constraint::Colocation < Pacemaker::Constraint
   end
 
   def parse_definition
-    unless definition =~ /^#{TYPE} (\S+) (\d+|[-+]?inf): (.+?)\s*$/
+    unless definition =~ /^#{self.class::TYPE} (\S+) (\d+|[-+]?inf): (.+?)\s*$/
       raise Pacemaker::CIBObject::DefinitionParseError, \
         "Couldn't parse definition '#{definition}'"
     end
@@ -21,7 +21,7 @@ class Pacemaker::Constraint::Colocation < Pacemaker::Constraint
   end
 
   def definition_string
-    "#{TYPE} #{name} #{score}: " + resources.join(' ')
+    "#{self.class::TYPE} #{name} #{score}: " + resources.join(' ')
   end
 
   def crm_configure_command

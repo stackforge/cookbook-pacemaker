@@ -14,7 +14,7 @@ class Pacemaker::Resource::Group < Pacemaker::Resource
   end
 
   def parse_definition
-    unless definition =~ /^#{TYPE} (\S+) (.+?)(\s+\\)?$/
+    unless definition =~ /^#{self.class::TYPE} (\S+) (.+?)(\s+\\)?$/
       raise Pacemaker::CIBObject::DefinitionParseError, \
         "Couldn't parse definition '#{definition}'"
     end
@@ -27,7 +27,7 @@ class Pacemaker::Resource::Group < Pacemaker::Resource
   end
 
   def definition_string
-    str = "#{TYPE} #{name} " + members.join(' ')
+    str = "#{self.class::TYPE} #{name} " + members.join(' ')
     unless meta.empty?
       str << continuation_line(meta_string)
     end

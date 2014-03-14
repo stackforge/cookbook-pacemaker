@@ -21,7 +21,7 @@ class Pacemaker::Resource::Primitive < Pacemaker::Resource
   end
 
   def parse_definition
-    unless definition =~ /\A#{TYPE} (\S+) (\S+)/
+    unless definition =~ /\A#{self.class::TYPE} (\S+) (\S+)/
       raise Pacemaker::CIBObject::DefinitionParseError, \
         "Couldn't parse definition '#{definition}'"
     end
@@ -50,7 +50,7 @@ class Pacemaker::Resource::Primitive < Pacemaker::Resource
   end
 
   def definition_string
-    str = "#{TYPE} #{name} #{agent}"
+    str = "#{self.class::TYPE} #{name} #{agent}"
     %w(params meta op).each do |data_type|
       unless send(data_type).empty?
         data_string = send("#{data_type}_string")
