@@ -8,20 +8,32 @@ require File.expand_path('../../libraries/pacemaker/cib_object',
 module Chef::RSpec
   module Pacemaker
     module CIBObject
-      # "crm configure show" is executed by load_current_resource, and
-      # again later on for the :create action, to see whether to create or
-      # modify.
-      def shellout_double(definition)
+      # Return a Mixlib::ShellOut double which mimics successful
+      # execution of a command, returning the given string on STDOUT.
+      def shellout_double(string)
         shellout = double(Mixlib::ShellOut)
         shellout.stub(:environment).and_return({})
         shellout.stub(:run_command)
         shellout.stub(:error!)
-        expect(shellout).to receive(:stdout).and_return(definition)
+        expect(shellout).to receive(:stdout).and_return(string)
         shellout
       end
 
-      def expect_definitions(*definitions)
-        doubles = definitions.map { |d| shellout_double(d) }
+      # This stubs Mixlib::ShellOut.new with a sequence of doubles
+      # whose #stdout methods return a corresponding sequence of strings.
+      # This allows us to simulate the output of a series of shell
+      # commands being run via Mixlib::ShellOut.
+      #
+      # For example, "crm configure show" is executed by
+      # #load_current_resource, and again later on for the :create
+      # action, to see whether to create or modify.  So the first
+      # double in the sequence would return an empty definition if we
+      # wanted to test creation of a new CIB object, or an existing
+      # definition if we wanted to test modification of an existing
+      # one.  If the test needs subsequent doubles to return different
+      # values then stdout_strings can have more than one element.
+      def stub_shellout(*stdout_strings)
+        doubles = stdout_strings.map { |string| shellout_double(string) }
         Mixlib::ShellOut.stub(:new).and_return(*doubles)
       end
     end
@@ -40,7 +52,7 @@ shared_examples "a CIB object" do
   end
 
   it "should be instantiated via Pacemaker::CIBObject.from_name" do
-    expect_definitions(fixture.definition_string)
+    stub_shellout(fixture.definition_string)
     obj = Pacemaker::CIBObject.from_name(fixture.name)
     expect_to_match_fixture(obj)
   end
@@ -51,7 +63,7 @@ shared_examples "a CIB object" do
   end
 
   it "should barf if the loaded definition's type is not colocation" do
-    expect_definitions("clone foo blah blah")
+    stub_shellout("clone foo blah blah")
     expect { fixture.load_definition }.to \
       raise_error(Pacemaker::CIBObject::TypeMismatch,
                   "Expected #{object_type} type but loaded definition was type clone")
@@ -62,7 +74,7 @@ shared_examples "action on non-existent resource" do |action, cmd, expected_erro
   include Chef::RSpec::Pacemaker::CIBObject
 
   it "should not attempt to #{action.to_s} a non-existent resource" do
-    expect_definitions("")
+    stub_shellout("")
 
     if expected_error
       expect { provider.run_action action }.to \
