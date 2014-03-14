@@ -110,6 +110,28 @@ describe "Chef::Provider::PacemakerPrimitive" do
       expect(@resource).to be_updated
     end
 
+    it "should barf if crm fails to create the primitive" do
+      stub_shellout("", ["crm configure failed", "oh noes", 3])
+
+      expect { provider.run_action :create }.to \
+        raise_error(RuntimeError, "Failed to create #{fixture}")
+
+      expect(@chef_run).to run_execute(fixture.crm_configure_command)
+      expect(@resource).not_to be_updated
+    end
+
+    # This scenario seems rather artificial and unlikely, but it doesn't
+    # do any harm to test it.
+    it "should barf if crm creates a primitive with empty definition" do
+      stub_shellout("", "")
+
+      expect { provider.run_action :create }.to \
+        raise_error(RuntimeError, "Failed to create #{fixture}")
+
+      expect(@chef_run).to run_execute(fixture.crm_configure_command)
+      expect(@resource).not_to be_updated
+    end
+
     it "should barf if the primitive is already defined with the wrong agent" do
       existing_agent = "ocf:openstack:something-else"
       definition = fixture.definition_string.sub(fixture.agent, existing_agent)

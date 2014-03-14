@@ -46,13 +46,16 @@ class Chef
           action :nothing
         end.run_action(:run)
 
-        cib_object = Pacemaker::CIBObject.from_name(new_resource.name)
-        if cib_object.exists?
-          new_resource.updated_by_last_action(true)
-          ::Chef::Log.info "Successfully configured #{cib_object}"
-        else
-          ::Chef::Log.error "Failed to configure #{cib_object}"
+        created_cib_object = Pacemaker::CIBObject.from_name(new_resource.name)
+
+        raise "Failed to create #{cib_object}" if created_cib_object.nil?
+        unless created_cib_object.exists?
+          # This case seems pretty unlikely
+          raise "Definition missing for #{created_cib_object} after creation"
         end
+
+        new_resource.updated_by_last_action(true)
+        ::Chef::Log.info "Successfully configured #{created_cib_object}"
       end
 
       def standard_delete_resource
