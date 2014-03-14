@@ -26,7 +26,7 @@ module Pacemaker
         end
       end
 
-      def type(definition)
+      def definition_type(definition)
         unless definition =~ /\A(\w+)\s/
           raise "Couldn't extract CIB object type from '#{definition}'"
         end
@@ -50,7 +50,7 @@ module Pacemaker
         this_class = method(__method__).owner
         if calling_class == this_class
           # Invoked via (this) base class
-          obj_type = type(definition)
+          obj_type = definition_type(definition)
           subclass = @@subclasses[obj_type]
           unless subclass
             raise "No subclass of #{self.name} was registered with type '#{obj_type}'"
@@ -118,7 +118,7 @@ module Pacemaker
     end
 
     def type
-      self.class.type(definition)
+      self.class.definition_type(definition)
     end
 
     def to_s
