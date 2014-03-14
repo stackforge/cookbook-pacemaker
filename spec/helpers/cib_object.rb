@@ -76,7 +76,7 @@ shared_examples "a CIB object" do
   include Chef::RSpec::Pacemaker::CIBObject
 
   def expect_to_match_fixture(obj)
-    expect(obj.is_a? pacemaker_object_class).to eq(true)
+    expect(obj.class).to eq(pacemaker_object_class)
     fields.each do |field|
       method = field.to_sym
       expect(obj.send(method)).to eq(fixture.send(method))
