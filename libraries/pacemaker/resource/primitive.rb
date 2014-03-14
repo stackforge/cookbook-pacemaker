@@ -21,7 +21,7 @@ class Pacemaker::Resource::Primitive < Pacemaker::Resource
   end
 
   def parse_definition
-    unless definition =~ /\Aprimitive (\S+) (\S+)/
+    unless definition =~ /\A#{TYPE} (\S+) (\S+)/
       raise Pacemaker::CIBObject::DefinitionParseError, \
         "Couldn't parse definition '#{definition}'"
     end
