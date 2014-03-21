@@ -11,6 +11,9 @@ class Pacemaker::Constraint::Colocation < Pacemaker::Constraint
   end
 
   def parse_definition
+    # FIXME: this is incomplete.  It probably doesn't handle resource
+    # sets correctly, and certainly doesn't handle node attributes.
+    # See the crm(8) man page for the official BNF grammar.
     unless definition =~ /^#{self.class::TYPE} (\S+) (\d+|[-+]?inf): (.+?)\s*$/
       raise Pacemaker::CIBObject::DefinitionParseError, \
         "Couldn't parse definition '#{definition}'"
