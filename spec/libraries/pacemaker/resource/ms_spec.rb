@@ -38,7 +38,7 @@ describe Pacemaker::Resource::MasterSlave do
     end
 
     it "should return a short definition string" do
-      ms = Pacemaker::Resource::MasterSlave.new('foo')
+      ms = pacemaker_object_class.new('foo')
       ms.definition = \
         %!ms ms1 primitive1 meta globally-unique="true"!
       ms.parse_definition
@@ -51,7 +51,7 @@ EOF
 
   describe "#parse_definition" do
     before(:each) do
-      @parsed = Pacemaker::Resource::MasterSlave.new(fixture.name)
+      @parsed = pacemaker_object_class.new(fixture.name)
       @parsed.definition = fixture_definition
       @parsed.parse_definition
     end
