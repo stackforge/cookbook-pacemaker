@@ -20,23 +20,6 @@
 
 # FIXME: delete old resources when switching mode (or plugin!)
 
-@stonith_plugins = nil
-
-def stonith_plugin_valid?(plugin)
-  if plugin.nil? || plugin.empty?
-    false
-  else
-    if @stonith_plugins.nil?
-      out = %x{stonith -L}
-      if $?.success?
-        @stonith_plugins = out.split("\n")
-      end
-    end
-
-    !@stonith_plugins.nil? && @stonith_plugins.include?(plugin)
-  end
-end
-
 case node[:pacemaker][:stonith][:mode]
 when "disabled"
 when "manual"
@@ -46,10 +29,12 @@ when "clone"
   plugin = node[:pacemaker][:stonith][:clone][:plugin]
   params = node[:pacemaker][:stonith][:clone][:params]
 
-  unless stonith_plugin_valid? plugin
-    message = "STONITH plugin #{plugin} is not available!"
-    Chef::Log.fatal(message)
-    raise message
+  # This needs to be done in the second phase of chef, because we need
+  # cluster-glue to be installed first; hence ruby_block
+  ruby_block "Check if STONITH #{plugin} is available" do
+    block do
+      PacemakerStonithHelper.assert_stonith_plugin_valid plugin
+    end
   end
 
   if params.respond_to?('to_hash')
@@ -82,10 +67,12 @@ when "clone"
 when "per_node"
   plugin = node[:pacemaker][:stonith][:per_node][:plugin]
 
-  unless stonith_plugin_valid? plugin
-    message = "STONITH plugin #{plugin} is not available!"
-    Chef::Log.fatal(message)
-    raise message
+  # This needs to be done in the second phase of chef, because we need
+  # cluster-glue to be installed first; hence ruby_block
+  ruby_block "Check if STONITH #{plugin} is available" do
+    block do
+      PacemakerStonithHelper.assert_stonith_plugin_valid plugin
+    end
   end
 
   node[:pacemaker][:stonith][:per_node][:nodes].keys.each do |node_name|
