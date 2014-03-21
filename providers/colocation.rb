@@ -34,7 +34,6 @@ action :create do
 end
 
 action :delete do
-  name = new_resource.name
   next unless @current_resource
   standard_delete_resource
 end
