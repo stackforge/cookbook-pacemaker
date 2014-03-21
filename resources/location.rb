@@ -21,7 +21,7 @@ actions :create, :delete
 
 default_action :create
 
-attribute :name, :kind_of => String, :name_attribute => true
-attribute :rsc, :kind_of => String
-attribute :priority, :kind_of => String
-attribute :loc, :kind_of => String
+attribute :name,  :kind_of => String, :name_attribute => true
+attribute :rsc,   :kind_of => String
+attribute :score, :kind_of => String
+attribute :node,  :kind_of => String
