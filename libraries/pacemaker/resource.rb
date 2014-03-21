@@ -45,7 +45,7 @@ module Pacemaker
       h = {}
       Shellwords.split($1).each do |kvpair|
         break if kvpair == 'op'
-        unless kvpair =~ /^(.+?)=(.+)$/
+        unless kvpair =~ /^(.+?)=(.*)$/
           raise "Couldn't understand '#{kvpair}' for '#{data_type}' section "\
             "of #{name} primitive (definition was [#{obj_definition}])"
         end
