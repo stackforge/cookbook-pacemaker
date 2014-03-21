@@ -144,7 +144,7 @@ module Pacemaker
         .gsub("'")  { "\\'" }
     end
 
-    def crm_configure_command
+    def configure_command
       "crm configure " + definition_string
     end
 

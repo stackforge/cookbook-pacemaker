@@ -48,7 +48,7 @@ class Chef
 
       def standard_create_resource
         cib_object = cib_object_class.from_chef_resource(new_resource)
-        cmd = cib_object.crm_configure_command
+        cmd = cib_object.configure_command
 
         ::Chef::Log.info "Creating new #{cib_object}"
 

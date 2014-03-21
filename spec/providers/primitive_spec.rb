@@ -106,7 +106,7 @@ describe "Chef::Provider::PacemakerPrimitive" do
 
       provider.run_action :create
 
-      expect(@chef_run).to run_execute(fixture.crm_configure_command)
+      expect(@chef_run).to run_execute(fixture.configure_command)
       expect(@resource).to be_updated
     end
 
@@ -116,7 +116,7 @@ describe "Chef::Provider::PacemakerPrimitive" do
       expect { provider.run_action :create }.to \
         raise_error(RuntimeError, "Failed to create #{fixture}")
 
-      expect(@chef_run).to run_execute(fixture.crm_configure_command)
+      expect(@chef_run).to run_execute(fixture.configure_command)
       expect(@resource).not_to be_updated
     end
 
@@ -128,7 +128,7 @@ describe "Chef::Provider::PacemakerPrimitive" do
       expect { provider.run_action :create }.to \
         raise_error(RuntimeError, "Failed to create #{fixture}")
 
-      expect(@chef_run).to run_execute(fixture.crm_configure_command)
+      expect(@chef_run).to run_execute(fixture.configure_command)
       expect(@resource).not_to be_updated
     end
 
