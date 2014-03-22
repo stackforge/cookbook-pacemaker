@@ -1,3 +1,5 @@
+require 'mixlib/shellout'
+
 require 'spec_helper'
 
 this_dir = File.dirname(__FILE__)
