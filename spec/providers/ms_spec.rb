@@ -30,18 +30,7 @@ describe "Chef::Provider::PacemakerMs" do
   include Chef::RSpec::Pacemaker::CIBObject
 
   describe ":create action" do
-    def test_modify(expected_cmds)
-      yield
-
-      stub_shellout(fixture.definition_string)
-
-      provider.run_action :create
-
-      expected_cmds.each do |cmd|
-        expect(@chef_run).to run_execute(cmd)
-      end
-      expect(@resource).to be_updated
-    end
+    include Chef::RSpec::Pacemaker::CIBObject
 
     it "should modify the resource if it's changed" do
       expected = fixture.dup

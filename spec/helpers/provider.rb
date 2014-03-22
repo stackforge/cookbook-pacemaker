@@ -23,6 +23,25 @@ shared_context "a Pacemaker LWRP" do
   let (:provider) { @provider_class.new(@resource, @run_context) }
 end
 
+module Chef::RSpec
+  module Pacemaker
+    module CIBObject
+      def test_modify(expected_cmds)
+        yield
+
+        stub_shellout(fixture.definition_string)
+
+        provider.run_action :create
+
+        expected_cmds.each do |cmd|
+          expect(@chef_run).to run_execute(cmd)
+        end
+        expect(@resource).to be_updated
+      end
+    end
+  end
+end
+
 shared_examples "action on non-existent resource" do |action, cmd, expected_error|
   include Chef::RSpec::Pacemaker::CIBObject
 
