@@ -1,5 +1,4 @@
 require File.expand_path('../spec_helper', File.dirname(__FILE__))
-require File.expand_path('../helpers/cib_object', File.dirname(__FILE__))
 require File.expand_path('../helpers/runnable_resource', File.dirname(__FILE__))
 require File.expand_path('../fixtures/ms_resource', File.dirname(__FILE__))
 

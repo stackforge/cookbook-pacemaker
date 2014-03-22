@@ -1,4 +1,9 @@
-require File.expand_path('cib_object', File.dirname(__FILE__))
+# Shared code used to test providers of runnable Chef resources
+# representing Pacemaker CIB objects.  For example the provider
+# for primitives is runnable (since primitives can be started
+# and stopped) but constraints cannot.
+
+require File.expand_path('../helpers/provider', File.dirname(__FILE__))
 
 shared_examples "a runnable resource" do |fixture|
   def expect_running(running)

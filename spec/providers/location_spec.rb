@@ -1,5 +1,5 @@
 require File.expand_path('../spec_helper', File.dirname(__FILE__))
-require File.expand_path('../helpers/cib_object', File.dirname(__FILE__))
+require File.expand_path('../helpers/provider', File.dirname(__FILE__))
 require File.expand_path('../fixtures/location_constraint', File.dirname(__FILE__))
 
 describe "Chef::Provider::PacemakerLocation" do
