@@ -12,10 +12,6 @@ describe Pacemaker::Resource::Clone do
     Chef::RSpec::Pacemaker::Config::CLONE_RESOURCE_DEFINITION
   }
 
-  before(:each) do
-    Mixlib::ShellOut.any_instance.stub(:run_command)
-  end
-
   def object_type
     'clone'
   end

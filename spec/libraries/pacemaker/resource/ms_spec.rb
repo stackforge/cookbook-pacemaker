@@ -12,10 +12,6 @@ describe Pacemaker::Resource::MasterSlave do
     Chef::RSpec::Pacemaker::Config::MS_RESOURCE_DEFINITION
   }
 
-  before(:each) do
-    Mixlib::ShellOut.any_instance.stub(:run_command)
-  end
-
   def object_type
     'ms'
   end

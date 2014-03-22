@@ -13,10 +13,6 @@ describe Pacemaker::Resource::Group do
     Chef::RSpec::Pacemaker::Config::RESOURCE_GROUP_DEFINITION
   }
 
-  before(:each) do
-    Mixlib::ShellOut.any_instance.stub(:run_command)
-  end
-
   def object_type
     'group'
   end

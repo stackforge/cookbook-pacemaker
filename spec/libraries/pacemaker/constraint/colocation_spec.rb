@@ -12,10 +12,6 @@ describe Pacemaker::Constraint::Colocation do
     Chef::RSpec::Pacemaker::Config::COLOCATION_CONSTRAINT_DEFINITION
   }
 
-  before(:each) do
-    Mixlib::ShellOut.any_instance.stub(:run_command)
-  end
-
   def object_type
     'colocation'
   end
