@@ -1,7 +1,8 @@
 # Shared code used to test providers of CIB objects
 
 this_dir = File.dirname(__FILE__)
-require File.expand_path('../helpers/cib_object', this_dir)
+require File.expand_path('shellout',   this_dir)
+require File.expand_path('cib_object', this_dir)
 
 shared_context "a Pacemaker LWRP" do
   before(:each) do
@@ -26,6 +27,8 @@ end
 module Chef::RSpec
   module Pacemaker
     module CIBObject
+      include Chef::RSpec::Mixlib::ShellOut
+
       def test_modify(expected_cmds)
         yield
 
@@ -43,7 +46,7 @@ module Chef::RSpec
 end
 
 shared_examples "action on non-existent resource" do |action, cmd, expected_error|
-  include Chef::RSpec::Pacemaker::CIBObject
+  include Chef::RSpec::Mixlib::ShellOut
 
   it "should not attempt to #{action.to_s} a non-existent resource" do
     stub_shellout("")

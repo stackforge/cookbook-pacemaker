@@ -27,8 +27,6 @@ describe "Chef::Provider::PacemakerGroup" do
     Pacemaker::Resource::Group
   end
 
-  include Chef::RSpec::Pacemaker::CIBObject
-
   describe ":create action" do
     include Chef::RSpec::Pacemaker::CIBObject
 

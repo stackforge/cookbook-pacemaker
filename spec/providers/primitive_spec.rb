@@ -27,10 +27,9 @@ describe "Chef::Provider::PacemakerPrimitive" do
     Pacemaker::Resource::Primitive
   end
 
-  include Chef::RSpec::Pacemaker::CIBObject
-
   describe ":create action" do
     include Chef::RSpec::Pacemaker::CIBObject
+    include Chef::RSpec::Mixlib::ShellOut
 
     it "should modify the primitive if it has different params" do
       expected_configure_cmd_args = [

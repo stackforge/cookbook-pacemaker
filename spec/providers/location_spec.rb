@@ -27,8 +27,6 @@ describe "Chef::Provider::PacemakerLocation" do
     Pacemaker::Constraint::Location
   end
 
-  include Chef::RSpec::Pacemaker::CIBObject
-
   describe ":create action" do
     include Chef::RSpec::Pacemaker::CIBObject
 

@@ -27,8 +27,6 @@ describe "Chef::Provider::PacemakerClone" do
     Pacemaker::Resource::Clone
   end
 
-  include Chef::RSpec::Pacemaker::CIBObject
-
   describe ":create action" do
     include Chef::RSpec::Pacemaker::CIBObject
 

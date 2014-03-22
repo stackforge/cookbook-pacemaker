@@ -4,7 +4,8 @@
 # and stopped) but constraints cannot.
 
 this_dir = File.dirname(__FILE__)
-require File.expand_path('../helpers/provider', this_dir)
+require File.expand_path('provider', this_dir)
+require File.expand_path('shellout', this_dir)
 
 shared_examples "a runnable resource" do |fixture|
   def expect_running(running)
@@ -12,6 +13,8 @@ shared_examples "a runnable resource" do |fixture|
       .to receive(:running?) \
       .and_return(running)
   end
+
+  include Chef::RSpec::Mixlib::ShellOut
 
   describe ":delete action" do
     it_should_behave_like "action on non-existent resource", \

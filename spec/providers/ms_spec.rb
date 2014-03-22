@@ -27,8 +27,6 @@ describe "Chef::Provider::PacemakerMs" do
     Pacemaker::Resource::MasterSlave
   end
 
-  include Chef::RSpec::Pacemaker::CIBObject
-
   describe ":create action" do
     include Chef::RSpec::Pacemaker::CIBObject
 
