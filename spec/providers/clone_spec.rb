@@ -19,6 +19,8 @@ describe "Chef::Provider::PacemakerClone" do
   before(:each) do
     @resource.rsc  fixture.rsc.dup
     @resource.meta Hash[fixture.meta.dup]
+
+
   end
 
   def cib_object_class

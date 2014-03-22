@@ -20,6 +20,7 @@ describe "Chef::Provider::PacemakerLocation" do
     @resource.rsc   fixture.rsc
     @resource.score fixture.score
     @resource.node  fixture.node.dup
+
   end
 
   def cib_object_class

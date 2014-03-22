@@ -19,6 +19,8 @@ describe "Chef::Provider::PacemakerColocation" do
   before(:each) do
     @resource.score     fixture.score
     @resource.resources fixture.resources.dup
+
+
   end
 
   def cib_object_class

@@ -19,6 +19,8 @@ describe "Chef::Provider::PacemakerGroup" do
   before(:each) do
     @resource.members fixture.members.dup
     @resource.meta    Hash[fixture.meta.dup]
+
+
   end
 
   def cib_object_class
