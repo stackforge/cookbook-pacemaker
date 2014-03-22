@@ -14,12 +14,11 @@ shared_examples "a runnable resource" do |fixture|
       .and_return(running)
   end
 
+  it_should_behave_like "all Pacemaker LWRPs", fixture
+
   include Chef::RSpec::Mixlib::ShellOut
 
   describe ":delete action" do
-    it_should_behave_like "action on non-existent resource", \
-      :delete, "crm configure delete #{fixture.name}", nil
-
     it "should not delete a running resource" do
       stub_shellout(fixture.definition_string)
       expect_running(true)

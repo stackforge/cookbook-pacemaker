@@ -62,3 +62,10 @@ shared_examples "action on non-existent resource" do |action, cmd, expected_erro
     expect(@resource).not_to be_updated
   end
 end
+
+shared_examples "all Pacemaker LWRPs" do |fixture|
+  describe ":delete action" do
+    it_should_behave_like "action on non-existent resource", \
+      :delete, "crm configure delete #{fixture.name}", nil
+  end
+end

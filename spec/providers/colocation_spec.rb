@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 this_dir = File.dirname(__FILE__)
-require File.expand_path('../helpers/provider', this_dir)
+require File.expand_path('../helpers/provider',               this_dir)
+require File.expand_path('../helpers/non_runnable_resource',  this_dir)
 require File.expand_path('../fixtures/colocation_constraint', this_dir)
 
 describe "Chef::Provider::PacemakerColocation" do
@@ -60,9 +61,6 @@ describe "Chef::Provider::PacemakerColocation" do
 
   end
 
-  describe ":delete action" do
-    it_should_behave_like "action on non-existent resource", \
-      :delete, "crm configure delete #{fixture.name}", nil
-  end
+  it_should_behave_like "a non-runnable resource", fixture
 
 end
