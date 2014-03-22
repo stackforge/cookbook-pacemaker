@@ -1,20 +1,11 @@
 require File.expand_path('cib_object', File.dirname(__FILE__))
 
-module Chef::RSpec
-  module Pacemaker
-    module RunnableResource
-      def expect_running(running)
-        expect_any_instance_of(cib_object_class) \
-          .to receive(:running?) \
-          .and_return(running)
-      end
-    end
-  end
-end
-
 shared_examples "a runnable resource" do |fixture|
-
-  include Chef::RSpec::Pacemaker::RunnableResource
+  def expect_running(running)
+    expect_any_instance_of(cib_object_class) \
+      .to receive(:running?) \
+      .and_return(running)
+  end
 
   describe ":delete action" do
     it_should_behave_like "action on non-existent resource", \
