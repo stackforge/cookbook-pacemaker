@@ -3,7 +3,8 @@
 # for primitives is runnable (since primitives can be started
 # and stopped) but constraints cannot.
 
-require File.expand_path('../helpers/provider', File.dirname(__FILE__))
+this_dir = File.dirname(__FILE__)
+require File.expand_path('../helpers/provider', this_dir)
 
 shared_examples "a runnable resource" do |fixture|
   def expect_running(running)

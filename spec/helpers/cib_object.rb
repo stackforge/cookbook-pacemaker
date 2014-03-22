@@ -2,8 +2,8 @@
 
 require 'mixlib/shellout'
 
-require File.expand_path('../../libraries/pacemaker/cib_object',
-                         File.dirname(__FILE__))
+this_dir = File.dirname(__FILE__)
+require File.expand_path('../../libraries/pacemaker/cib_object', this_dir)
 
 module Chef::RSpec
   module Pacemaker

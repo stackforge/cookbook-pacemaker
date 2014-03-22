@@ -1,12 +1,11 @@
 require 'spec_helper'
+
+this_dir = File.dirname(__FILE__)
 require File.expand_path('../../../../libraries/pacemaker/resource/primitive',
-                         File.dirname(__FILE__))
-require File.expand_path('../../../fixtures/keystone_primitive',
-                         File.dirname(__FILE__))
-require File.expand_path('../../../helpers/cib_object',
-                         File.dirname(__FILE__))
-require File.expand_path('../../../helpers/meta_examples',
-                         File.dirname(__FILE__))
+                         this_dir)
+require File.expand_path('../../../fixtures/keystone_primitive', this_dir)
+require File.expand_path('../../../helpers/cib_object', this_dir)
+require File.expand_path('../../../helpers/meta_examples', this_dir)
 
 describe Pacemaker::Resource::Primitive do
   let(:fixture) { Chef::RSpec::Pacemaker::Config::KEYSTONE_PRIMITIVE.dup }

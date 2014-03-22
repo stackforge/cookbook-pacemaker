@@ -1,6 +1,8 @@
-require File.expand_path('../spec_helper', File.dirname(__FILE__))
-require File.expand_path('../helpers/provider', File.dirname(__FILE__))
-require File.expand_path('../fixtures/location_constraint', File.dirname(__FILE__))
+require 'spec_helper'
+
+this_dir = File.dirname(__FILE__)
+require File.expand_path('../helpers/provider', this_dir)
+require File.expand_path('../fixtures/location_constraint', this_dir)
 
 describe "Chef::Provider::PacemakerLocation" do
   # for use inside examples:

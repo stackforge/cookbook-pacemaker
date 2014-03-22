@@ -1,6 +1,7 @@
 # Shared code used to test providers of CIB objects
 
-require File.expand_path('../helpers/cib_object', File.dirname(__FILE__))
+this_dir = File.dirname(__FILE__)
+require File.expand_path('../helpers/cib_object', this_dir)
 
 shared_context "a Pacemaker LWRP" do
   before(:each) do

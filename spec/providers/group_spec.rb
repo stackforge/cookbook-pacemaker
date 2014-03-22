@@ -1,6 +1,8 @@
-require File.expand_path('../spec_helper', File.dirname(__FILE__))
-require File.expand_path('../helpers/runnable_resource', File.dirname(__FILE__))
-require File.expand_path('../fixtures/resource_group', File.dirname(__FILE__))
+require 'spec_helper'
+
+this_dir = File.dirname(__FILE__)
+require File.expand_path('../helpers/runnable_resource', this_dir)
+require File.expand_path('../fixtures/resource_group', this_dir)
 
 describe "Chef::Provider::PacemakerGroup" do
   # for use inside examples:

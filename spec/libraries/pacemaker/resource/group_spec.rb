@@ -1,4 +1,5 @@
 require 'spec_helper'
+
 require File.expand_path('../../../../libraries/pacemaker/resource/group',
                          File.dirname(__FILE__))
 require File.expand_path('../../../fixtures/resource_group', File.dirname(__FILE__))

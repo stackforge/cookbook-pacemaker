@@ -1,5 +1,5 @@
 require ::File.expand_path('../../libraries/pacemaker/constraint/colocation',
-                           ::File.dirname(__FILE__))
+                           File.dirname(__FILE__))
 
 module Chef::RSpec
   module Pacemaker
