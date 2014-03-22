@@ -27,7 +27,7 @@ group :rspec do
     watch(%r{^spec/fixtures/(.+)\.rb$})    { all_specs }
     watch(%r{^libraries/pacemaker\.rb$})   { all_specs }
     watch(%r{^libraries/(.*mixin.*)\.rb$}) { library_specs }
-    watch(%r{^spec/.+_spec\.rb$})
+    watch(%r{^(spec/.+_spec\.rb)$})        { |m| reload m[1] }
     watch(%r{^libraries/(.+)\.rb$})  { |m|
       reload "spec/libraries/#{m[1]}_spec.rb"
     }
