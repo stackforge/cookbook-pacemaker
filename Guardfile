@@ -7,9 +7,16 @@ guard_opts = {
   all_after_pass: true,
 }
 
-def all_specs;      'spec'           end
-def library_specs;  'spec/libraries' end
-def provider_specs; 'spec/providers' end
+DEBUG = false
+
+def reload(target)
+  puts "-> #{target}" if DEBUG
+  target
+end
+
+def all_specs;      reload 'all_specs';      'spec'           end
+def library_specs;  reload 'library_specs';  'spec/libraries' end
+def provider_specs; reload 'provider_specs'; 'spec/providers' end
 
 group :rspec do
   guard 'rspec', guard_opts do
@@ -22,12 +29,12 @@ group :rspec do
     watch(%r{^libraries/(.*mixin.*)\.rb$}) { library_specs }
     watch(%r{^spec/.+_spec\.rb$})
     watch(%r{^libraries/(.+)\.rb$})  { |m|
-      "spec/libraries/#{m[1]}_spec.rb"
+      reload "spec/libraries/#{m[1]}_spec.rb"
     }
     watch(%r{^providers/common\.rb$})      { provider_specs }
     watch(%r{^providers/(.*mixin.*)\.rb$}) { provider_specs }
     watch(%r{^(?:resources|providers)/(.+)\.rb$}) { |m|
-      "spec/providers/#{m[1]}_spec.rb"
+      reload "spec/providers/#{m[1]}_spec.rb"
     }
   end
 end
