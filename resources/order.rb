@@ -21,6 +21,6 @@ actions :create, :delete
 
 default_action :create
 
-attribute :name, :kind_of => String, :name_attribute => true
-attribute :priority, :kind_of => String
-attribute :resources, :kind_of => Array
+attribute :name,     :kind_of => String, :name_attribute => true
+attribute :score,    :kind_of => String
+attribute :ordering, :kind_of => String
