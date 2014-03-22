@@ -1,4 +1,3 @@
-require 'chef/application'
 require ::File.expand_path('../../../pacemaker/cib_object',
                            ::File.dirname(__FILE__))
 
