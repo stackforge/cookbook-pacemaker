@@ -8,22 +8,17 @@ describe "Chef::Provider::PacemakerLocation" do
   # for use outside examples (e.g. when invoking shared_examples)
   fixture = Chef::RSpec::Pacemaker::Config::LOCATION_CONSTRAINT.dup
 
-  before(:each) do
-    runner_opts = {
-      :step_into => ['pacemaker_location']
-    }
-    @chef_run = ::ChefSpec::Runner.new(runner_opts)
-    @chef_run.converge "pacemaker::default"
-    @node = @chef_run.node
-    @run_context = @chef_run.run_context
+  def lwrp_name
+    'location'
+  end
 
-    @resource = Chef::Resource::PacemakerLocation.new(fixture.name, @run_context)
+  include_context "a Pacemaker LWRP"
+
+  before(:each) do
     @resource.rsc   fixture.rsc
     @resource.score fixture.score
     @resource.node  fixture.node.dup
   end
-
-  let (:provider) { Chef::Provider::PacemakerLocation.new(@resource, @run_context) }
 
   def cib_object_class
     Pacemaker::Constraint::Location

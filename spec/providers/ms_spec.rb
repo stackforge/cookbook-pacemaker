@@ -8,21 +8,16 @@ describe "Chef::Provider::PacemakerMs" do
   # for use outside examples (e.g. when invoking shared_examples)
   fixture = Chef::RSpec::Pacemaker::Config::MS_RESOURCE.dup
 
-  before(:each) do
-    runner_opts = {
-      :step_into => ['pacemaker_ms']
-    }
-    @chef_run = ::ChefSpec::Runner.new(runner_opts)
-    @chef_run.converge "pacemaker::default"
-    @node = @chef_run.node
-    @run_context = @chef_run.run_context
+  def lwrp_name
+    'ms'
+  end
 
-    @resource = Chef::Resource::PacemakerMs.new(fixture.name, @run_context)
+  include_context "a Pacemaker LWRP"
+
+  before(:each) do
     @resource.rsc  fixture.rsc.dup
     @resource.meta Hash[fixture.meta.dup]
   end
-
-  let (:provider) { Chef::Provider::PacemakerMs.new(@resource, @run_context) }
 
   def cib_object_class
     Pacemaker::Resource::MasterSlave

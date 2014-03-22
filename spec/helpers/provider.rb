@@ -1,5 +1,27 @@
 # Shared code used to test providers of CIB objects
 
+require File.expand_path('../helpers/cib_object', File.dirname(__FILE__))
+
+shared_context "a Pacemaker LWRP" do
+  before(:each) do
+    runner_opts = {
+      :step_into => [lwrp_name]
+    }
+    @chef_run = ::ChefSpec::Runner.new(runner_opts)
+    @chef_run.converge "pacemaker::default"
+    @node = @chef_run.node
+    @run_context = @chef_run.run_context
+
+    camelized_subclass_name = "Pacemaker" + lwrp_name.capitalize
+    @resource_class = ::Chef::Resource.const_get(camelized_subclass_name)
+    @provider_class = ::Chef::Provider.const_get(camelized_subclass_name)
+
+    @resource = @resource_class.new(fixture.name, @run_context)
+  end
+
+  let (:provider) { @provider_class.new(@resource, @run_context) }
+end
+
 shared_examples "action on non-existent resource" do |action, cmd, expected_error|
   include Chef::RSpec::Pacemaker::CIBObject
 

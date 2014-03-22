@@ -8,21 +8,16 @@ describe "Chef::Provider::PacemakerGroup" do
   # for use outside examples (e.g. when invoking shared_examples)
   fixture = Chef::RSpec::Pacemaker::Config::RESOURCE_GROUP.dup
 
-  before(:each) do
-    runner_opts = {
-      :step_into => ['pacemaker_group']
-    }
-    @chef_run = ::ChefSpec::Runner.new(runner_opts)
-    @chef_run.converge "pacemaker::default"
-    @node = @chef_run.node
-    @run_context = @chef_run.run_context
+  def lwrp_name
+    'group'
+  end
 
-    @resource = Chef::Resource::PacemakerGroup.new(fixture.name, @run_context)
+  include_context "a Pacemaker LWRP"
+
+  before(:each) do
     @resource.members fixture.members.dup
     @resource.meta    Hash[fixture.meta.dup]
   end
-
-  let (:provider) { Chef::Provider::PacemakerGroup.new(@resource, @run_context) }
 
   def cib_object_class
     Pacemaker::Resource::Group

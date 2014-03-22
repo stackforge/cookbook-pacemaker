@@ -8,21 +8,16 @@ describe "Chef::Provider::PacemakerColocation" do
   # for use outside examples (e.g. when invoking shared_examples)
   fixture = Chef::RSpec::Pacemaker::Config::COLOCATION_CONSTRAINT.dup
 
-  before(:each) do
-    runner_opts = {
-      :step_into => ['pacemaker_colocation']
-    }
-    @chef_run = ::ChefSpec::Runner.new(runner_opts)
-    @chef_run.converge "pacemaker::default"
-    @node = @chef_run.node
-    @run_context = @chef_run.run_context
+  def lwrp_name
+    'colocation'
+  end
 
-    @resource = Chef::Resource::PacemakerColocation.new(fixture.name, @run_context)
+  include_context "a Pacemaker LWRP"
+
+  before(:each) do
     @resource.score     fixture.score
     @resource.resources fixture.resources.dup
   end
-
-  let (:provider) { Chef::Provider::PacemakerColocation.new(@resource, @run_context) }
 
   def cib_object_class
     Pacemaker::Constraint::Colocation
