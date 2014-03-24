@@ -60,7 +60,7 @@ class Pacemaker::Resource::Primitive < Pacemaker::Resource
     str
   end
 
-  def crm_configure_command
+  def configure_command
     args = %w(crm configure primitive)
     args << [name, agent, params_string, meta_string, op_string]
     args.join " "

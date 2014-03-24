@@ -78,7 +78,7 @@ describe Pacemaker::Resource::Primitive do
     end
 
     it "should return a short definition string" do
-      primitive = Pacemaker::Resource::Primitive.new('foo')
+      primitive = pacemaker_object_class.new('foo')
       primitive.definition = \
         %!primitive foo ocf:heartbeat:IPaddr2 params foo="bar"!
       primitive.parse_definition
@@ -91,7 +91,7 @@ EOF
 
   describe "#quoted_definition_string" do
     it "should return the quoted definition string" do
-      primitive = Pacemaker::Resource::Primitive.new('foo')
+      primitive = pacemaker_object_class.new('foo')
       primitive.definition = <<'EOF'.chomp
 primitive foo ocf:openstack:keystone \
          params bar="baz\\qux" bar2="baz'qux"
@@ -106,7 +106,7 @@ EOF
 
   describe "#parse_definition" do
     before(:each) do
-      @parsed = Pacemaker::Resource::Primitive.new(fixture.name)
+      @parsed = pacemaker_object_class.new(fixture.name)
       @parsed.definition = fixture_definition
       @parsed.parse_definition
     end

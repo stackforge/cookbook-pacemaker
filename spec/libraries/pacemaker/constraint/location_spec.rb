@@ -1,13 +1,13 @@
 require 'spec_helper'
-require File.expand_path('../../../../libraries/pacemaker/constraint/colocation',
+require File.expand_path('../../../../libraries/pacemaker/constraint/location',
                          File.dirname(__FILE__))
-require File.expand_path('../../../fixtures/colocation_constraint', File.dirname(__FILE__))
+require File.expand_path('../../../fixtures/location_constraint', File.dirname(__FILE__))
 require File.expand_path('../../../helpers/cib_object', File.dirname(__FILE__))
 
-describe Pacemaker::Constraint::Colocation do
-  let(:fixture) { Chef::RSpec::Pacemaker::Config::COLOCATION_CONSTRAINT.dup }
+describe Pacemaker::Constraint::Location do
+  let(:fixture) { Chef::RSpec::Pacemaker::Config::LOCATION_CONSTRAINT.dup }
   let(:fixture_definition) {
-    Chef::RSpec::Pacemaker::Config::COLOCATION_CONSTRAINT_DEFINITION
+    Chef::RSpec::Pacemaker::Config::LOCATION_CONSTRAINT_DEFINITION
   }
 
   before(:each) do
@@ -15,15 +15,15 @@ describe Pacemaker::Constraint::Colocation do
   end
 
   def object_type
-    'colocation'
+    'location'
   end
 
   def pacemaker_object_class
-    Pacemaker::Constraint::Colocation
+    Pacemaker::Constraint::Location
   end
 
   def fields
-    %w(name score resources)
+    %w(name rsc score node)
   end
 
   it_should_behave_like "a CIB object"
@@ -34,12 +34,12 @@ describe Pacemaker::Constraint::Colocation do
     end
 
     it "should return a short definition string" do
-      colocation = pacemaker_object_class.new('foo')
-      colocation.definition = \
-        %!colocation colocation1 -inf: rsc1 rsc2!
-      colocation.parse_definition
-      expect(colocation.definition_string).to eq(<<'EOF'.chomp)
-colocation colocation1 -inf: rsc1 rsc2
+      location = pacemaker_object_class.new('foo')
+      location.definition = \
+        %!location location1 primitive1 -inf: node1!
+      location.parse_definition
+      expect(location.definition_string).to eq(<<'EOF'.chomp)
+location location1 primitive1 -inf: node1
 EOF
     end
   end
@@ -51,13 +51,16 @@ EOF
       @parsed.parse_definition
     end
 
+    it "should parse the rsc" do
+      expect(@parsed.rsc).to eq(fixture.rsc)
+    end
+
     it "should parse the score" do
       expect(@parsed.score).to eq(fixture.score)
     end
 
-    it "should parse the resources" do
-      expect(@parsed.resources).to eq(fixture.resources)
+    it "should parse the node" do
+      expect(@parsed.node).to eq(fixture.node)
     end
-
   end
 end

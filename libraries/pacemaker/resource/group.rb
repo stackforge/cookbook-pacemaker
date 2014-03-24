@@ -7,6 +7,8 @@ class Pacemaker::Resource::Group < Pacemaker::Resource
 
   include Pacemaker::Mixins::Resource::Meta
 
+  # FIXME: need to handle params as well as meta
+
   attr_accessor :members
 
   def self.attrs_to_copy_from_chef

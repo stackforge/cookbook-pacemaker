@@ -17,44 +17,56 @@
 # limitations under the License.
 #
 
-require ::File.expand_path('../libraries/pacemaker/cib_object',
+require ::File.expand_path('../libraries/pacemaker', ::File.dirname(__FILE__))
+require ::File.expand_path('../libraries/chef/mixin/pacemaker',
                            ::File.dirname(__FILE__))
+
+include Chef::Mixin::Pacemaker::StandardCIBObject
 
 action :create do
   name = new_resource.name
-  rsc = new_resource.rsc
-  priority = new_resource.priority
-  loc = new_resource.loc
 
-  unless resource_exists?(name)
-    cmd = "crm configure location #{name} #{rsc} #{priority}: #{loc}" 
-
-    cmd_ = Mixlib::ShellOut.new(cmd)
-    cmd_.environment['HOME'] = ENV.fetch('HOME', '/root')
-    cmd_.run_command
-    begin
-      cmd_.error!
-      if resource_exists?(name)
-        new_resource.updated_by_last_action(true)
-        Chef::Log.info "Successfully configured location '#{name}'."
-      else
-        Chef::Log.error "Failed to configure location #{name}."
-      end
-    rescue
-      Chef::Log.error "Failed to configure location #{name}."
-    end
+  if @current_resource_definition.nil?
+    create_resource(name)
+  else
+    maybe_modify_resource(name)
   end
 end
 
 action :delete do
-  name = new_resource.name
-  cmd = "crm resource stop #{name}; crm configure delete #{name}"
+  next unless @current_resource
+  standard_delete_resource
+end
 
-    e = execute "delete location #{name}" do
-      command cmd
-      only_if { resource_exists?(name) }
-    end
+def cib_object_class
+  ::Pacemaker::Constraint::Location
+end
 
-    new_resource.updated_by_last_action(e.updated?)
-    Chef::Log.info "Deleted location '#{name}'."
+def load_current_resource
+  standard_load_current_resource
+end
+
+def init_current_resource
+  name = @new_resource.name
+  @current_resource = Chef::Resource::PacemakerLocation.new(name)
+  attrs = [:rsc, :score, :node]
+  @current_cib_object.copy_attrs_to_chef_resource(@current_resource, *attrs)
+end
+
+def create_resource(name)
+  standard_create_resource
+end
+
+def maybe_modify_resource(name)
+  Chef::Log.info "Checking existing #{@current_cib_object} for modifications"
+
+  desired_location = cib_object_class.from_chef_resource(new_resource)
+  if desired_location.definition_string != @current_cib_object.definition_string
+    Chef::Log.debug "changed from [#{@current_cib_object.definition_string}] to [#{desired_location.definition_string}]"
+    cmd = desired_location.reconfigure_command
+    execute cmd do
+      action :nothing
+    end.run_action(:run)
+    new_resource.updated_by_last_action(true)
+  end
 end
