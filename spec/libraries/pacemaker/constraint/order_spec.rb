@@ -1,27 +1,27 @@
 require 'spec_helper'
 
 this_dir = File.dirname(__FILE__)
-require File.expand_path('../../../../libraries/pacemaker/constraint/colocation',
+require File.expand_path('../../../../libraries/pacemaker/constraint/order',
                          this_dir)
-require File.expand_path('../../../fixtures/colocation_constraint', this_dir)
+require File.expand_path('../../../fixtures/order_constraint', this_dir)
 require File.expand_path('../../../helpers/cib_object', this_dir)
 
-describe Pacemaker::Constraint::Colocation do
-  let(:fixture) { Chef::RSpec::Pacemaker::Config::COLOCATION_CONSTRAINT.dup }
+describe Pacemaker::Constraint::Order do
+  let(:fixture) { Chef::RSpec::Pacemaker::Config::ORDER_CONSTRAINT.dup }
   let(:fixture_definition) {
-    Chef::RSpec::Pacemaker::Config::COLOCATION_CONSTRAINT_DEFINITION
+    Chef::RSpec::Pacemaker::Config::ORDER_CONSTRAINT_DEFINITION
   }
 
   def object_type
-    'colocation'
+    'order'
   end
 
   def pacemaker_object_class
-    Pacemaker::Constraint::Colocation
+    Pacemaker::Constraint::Order
   end
 
   def fields
-    %w(name score resources)
+    %w(name score ordering)
   end
 
   it_should_behave_like "a CIB object"
@@ -32,12 +32,12 @@ describe Pacemaker::Constraint::Colocation do
     end
 
     it "should return a short definition string" do
-      colocation = pacemaker_object_class.new('foo')
-      colocation.definition = \
-        %!colocation colocation1 -inf: rsc1 rsc2!
-      colocation.parse_definition
-      expect(colocation.definition_string).to eq(<<'EOF'.chomp)
-colocation colocation1 -inf: rsc1 rsc2
+      order = pacemaker_object_class.new('foo')
+      order.definition = \
+        %!order order1 Mandatory: rsc1 rsc2!
+      order.parse_definition
+      expect(order.definition_string).to eq(<<'EOF'.chomp)
+order order1 Mandatory: rsc1 rsc2
 EOF
     end
   end
@@ -53,8 +53,8 @@ EOF
       expect(@parsed.score).to eq(fixture.score)
     end
 
-    it "should parse the resources" do
-      expect(@parsed.resources).to eq(fixture.resources)
+    it "should parse the ordering" do
+      expect(@parsed.ordering).to eq(fixture.ordering)
     end
 
   end

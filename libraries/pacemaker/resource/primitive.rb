@@ -1,6 +1,8 @@
 require 'shellwords'
-require File.expand_path('../resource', File.dirname(__FILE__))
-require File.expand_path('../mixins/resource_meta', File.dirname(__FILE__))
+
+this_dir = File.dirname(__FILE__)
+require File.expand_path('../resource', this_dir)
+require File.expand_path('../mixins/resource_meta', this_dir)
 
 class Pacemaker::Resource::Primitive < Pacemaker::Resource
   TYPE = 'primitive'

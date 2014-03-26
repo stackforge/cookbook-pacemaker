@@ -1,4 +1,5 @@
 require 'spec_helper'
+
 require File.expand_path('../../../../libraries/pacemaker/resource/group',
                          File.dirname(__FILE__))
 require File.expand_path('../../../fixtures/resource_group', File.dirname(__FILE__))
@@ -11,10 +12,6 @@ describe Pacemaker::Resource::Group do
   let(:fixture_definition) {
     Chef::RSpec::Pacemaker::Config::RESOURCE_GROUP_DEFINITION
   }
-
-  before(:each) do
-    Mixlib::ShellOut.any_instance.stub(:run_command)
-  end
 
   def object_type
     'group'

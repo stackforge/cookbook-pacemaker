@@ -3,29 +3,29 @@ require 'spec_helper'
 this_dir = File.dirname(__FILE__)
 require File.expand_path('../helpers/provider',               this_dir)
 require File.expand_path('../helpers/non_runnable_resource',  this_dir)
-require File.expand_path('../fixtures/colocation_constraint', this_dir)
+require File.expand_path('../fixtures/order_constraint',      this_dir)
 
-describe "Chef::Provider::PacemakerColocation" do
+describe "Chef::Provider::PacemakerOrder" do
   # for use inside examples:
-  let(:fixture) { Chef::RSpec::Pacemaker::Config::COLOCATION_CONSTRAINT.dup }
+  let(:fixture) { Chef::RSpec::Pacemaker::Config::ORDER_CONSTRAINT.dup }
   # for use outside examples (e.g. when invoking shared_examples)
-  fixture = Chef::RSpec::Pacemaker::Config::COLOCATION_CONSTRAINT.dup
+  fixture = Chef::RSpec::Pacemaker::Config::ORDER_CONSTRAINT.dup
 
   def lwrp_name
-    'colocation'
+    'order'
   end
 
   include_context "a Pacemaker LWRP"
 
   before(:each) do
     @resource.score     fixture.score
-    @resource.resources fixture.resources.dup
+    @resource.ordering fixture.ordering.dup
 
 
   end
 
   def cib_object_class
-    Pacemaker::Constraint::Colocation
+    Pacemaker::Constraint::Order
   end
 
   describe ":create action" do
@@ -43,19 +43,19 @@ describe "Chef::Provider::PacemakerColocation" do
     it "should modify the constraint if it has a resource added" do
       new_resource = 'bar:Stopped'
       expected = fixture.dup
-      expected.resources = expected.resources.dup + [new_resource]
+      expected.ordering = expected.ordering.dup + ' ' + new_resource
       expected_configure_cmd_args = [expected.reconfigure_command]
       test_modify(expected_configure_cmd_args) do
-        @resource.resources expected.resources
+        @resource.ordering expected.ordering
       end
     end
 
-    it "should modify the constraint if it has a different resource" do
-      new_resources = ['bar:Started']
-      fixture.resources = new_resources
+    it "should modify the constraint if it has a different ordering" do
+      new_ordering = 'clone1 primitive1'
+      fixture.ordering = new_ordering
       expected_configure_cmd_args = [fixture.reconfigure_command]
       test_modify(expected_configure_cmd_args) do
-        @resource.resources new_resources
+        @resource.ordering new_ordering
       end
     end
 

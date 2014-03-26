@@ -1,20 +1,16 @@
 require 'spec_helper'
-require File.expand_path('../../../../libraries/pacemaker/resource/ms',
-                         File.dirname(__FILE__))
-require File.expand_path('../../../fixtures/ms_resource', File.dirname(__FILE__))
-require File.expand_path('../../../helpers/cib_object', File.dirname(__FILE__))
-require File.expand_path('../../../helpers/meta_examples',
-                         File.dirname(__FILE__))
+
+this_dir = File.dirname(__FILE__)
+require File.expand_path('../../../../libraries/pacemaker/resource/ms', this_dir)
+require File.expand_path('../../../fixtures/ms_resource', this_dir)
+require File.expand_path('../../../helpers/cib_object', this_dir)
+require File.expand_path('../../../helpers/meta_examples', this_dir)
 
 describe Pacemaker::Resource::MasterSlave do
   let(:fixture) { Chef::RSpec::Pacemaker::Config::MS_RESOURCE.dup }
   let(:fixture_definition) {
     Chef::RSpec::Pacemaker::Config::MS_RESOURCE_DEFINITION
   }
-
-  before(:each) do
-    Mixlib::ShellOut.any_instance.stub(:run_command)
-  end
 
   def object_type
     'ms'

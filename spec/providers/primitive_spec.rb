@@ -1,8 +1,8 @@
-require 'chef/application'
-require File.expand_path('../spec_helper', File.dirname(__FILE__))
-require File.expand_path('../helpers/cib_object', File.dirname(__FILE__))
-require File.expand_path('../helpers/runnable_resource', File.dirname(__FILE__))
-require File.expand_path('../fixtures/keystone_primitive', File.dirname(__FILE__))
+require 'spec_helper'
+
+this_dir = File.dirname(__FILE__)
+require File.expand_path('../helpers/runnable_resource', this_dir)
+require File.expand_path('../fixtures/keystone_primitive', this_dir)
 
 describe "Chef::Provider::PacemakerPrimitive" do
   # for use inside examples:
@@ -10,43 +10,26 @@ describe "Chef::Provider::PacemakerPrimitive" do
   # for use outside examples (e.g. when invoking shared_examples)
   fixture = Chef::RSpec::Pacemaker::Config::KEYSTONE_PRIMITIVE
 
-  before(:each) do
-    runner_opts = {
-      :step_into => ['pacemaker_primitive']
-    }
-    @chef_run = ::ChefSpec::Runner.new(runner_opts)
-    @chef_run.converge "pacemaker::default"
-    @node = @chef_run.node
-    @run_context = @chef_run.run_context
+  def lwrp_name
+    'primitive'
+  end
 
-    @resource = Chef::Resource::PacemakerPrimitive.new(fixture.name, @run_context)
+  include_context "a Pacemaker LWRP"
+
+  before(:each) do
     @resource.agent  fixture.agent
     @resource.params Hash[fixture.params]
     @resource.meta   Hash[fixture.meta]
     @resource.op     Hash[fixture.op]
   end
 
-  let (:provider) { Chef::Provider::PacemakerPrimitive.new(@resource, @run_context) }
-
   def cib_object_class
     Pacemaker::Resource::Primitive
   end
 
-  include Chef::RSpec::Pacemaker::CIBObject
-
   describe ":create action" do
-    def test_modify(expected_cmds)
-      yield
-
-      stub_shellout(fixture.definition_string)
-
-      provider.run_action :create
-
-      expected_cmds.each do |cmd|
-        expect(@chef_run).to run_execute(cmd)
-      end
-      expect(@resource).to be_updated
-    end
+    include Chef::RSpec::Pacemaker::CIBObject
+    include Chef::RSpec::Mixlib::ShellOut
 
     it "should modify the primitive if it has different params" do
       expected_configure_cmd_args = [

@@ -1,25 +1,24 @@
-require File.expand_path('cib_object', File.dirname(__FILE__))
+# Shared code used to test providers of runnable Chef resources
+# representing Pacemaker CIB objects.  For example the provider
+# for primitives is runnable (since primitives can be started
+# and stopped) but constraints cannot.
 
-module Chef::RSpec
-  module Pacemaker
-    module RunnableResource
-      def expect_running(running)
-        expect_any_instance_of(cib_object_class) \
-          .to receive(:running?) \
-          .and_return(running)
-      end
-    end
-  end
-end
+this_dir = File.dirname(__FILE__)
+require File.expand_path('provider', this_dir)
+require File.expand_path('shellout', this_dir)
 
 shared_examples "a runnable resource" do |fixture|
+  def expect_running(running)
+    expect_any_instance_of(cib_object_class) \
+      .to receive(:running?) \
+      .and_return(running)
+  end
 
-  include Chef::RSpec::Pacemaker::RunnableResource
+  it_should_behave_like "all Pacemaker LWRPs", fixture
+
+  include Chef::RSpec::Mixlib::ShellOut
 
   describe ":delete action" do
-    it_should_behave_like "action on non-existent resource", \
-      :delete, "crm configure delete #{fixture.name}", nil
-
     it "should not delete a running resource" do
       stub_shellout(fixture.definition_string)
       expect_running(true)
