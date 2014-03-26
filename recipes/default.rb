@@ -49,6 +49,24 @@ else
   include_recipe "corosync::default"
 end
 
+ruby_block "wait for cluster to be online" do
+  block do
+    require 'timeout'
+    begin
+      Timeout.timeout(60) do
+        cmd = "crm_mon -1 | grep -qi online"
+        while ! ::Kernel.system(cmd)
+          Chef::Log.debug("cluster not online yet")
+          sleep(5)
+        end
+      end
+    rescue Timeout::Error
+      message = "Pacemaker cluster not online yet; our first configuration changes might get lost (but will be reapplied on next chef run)."
+      Chef::Log.warn(message)
+    end
+  end # block
+end # ruby_block
+
 if node[:pacemaker][:founder]
   include_recipe "pacemaker::setup"
 end
