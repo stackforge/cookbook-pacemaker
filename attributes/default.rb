@@ -46,6 +46,12 @@ default[:pacemaker][:stonith][:clone][:plugin] = ""
 default[:pacemaker][:stonith][:clone][:params] = {}
 
 default[:pacemaker][:stonith][:per_node][:plugin] = ""
+# This can be "all" or "self":
+#   - if set to "all", then every node will configure the stonith resources for
+#     all nodes in the cluster
+#   - if set to "self", then every node will configure the stonith resource for
+#     itself only
+default[:pacemaker][:stonith][:per_node][:mode] = "all"
 # This hash will contain parameters for each node. See documentation for
 # default[:pacemaker][:stonith][:clone][:params] about the format.
 # For instance:

@@ -76,6 +76,10 @@ when "per_node"
   end
 
   node[:pacemaker][:stonith][:per_node][:nodes].keys.each do |node_name|
+    if node[:pacemaker][:stonith][:per_node][:mode] == "self"
+      next unless node_name == node[:hostname]
+    end
+
     stonith_resource = "stonith-#{node_name}"
     params = node[:pacemaker][:stonith][:per_node][:nodes][node_name][:params]
 
