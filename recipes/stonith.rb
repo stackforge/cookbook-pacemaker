@@ -93,11 +93,11 @@ when "per_node"
       raise message
     end
 
-    # Only set hostlist param if it's missing; we do not overwrite it as the
-    # user might have passed more information than just the hostname (some
-    # plugins accept hostname:data in hostlist)
-    unless primitive_params.has_key?("hostlist")
-      primitive_params["hostlist"] = node_name
+    # Only set one of hostname / hostlist param if none of them are present; we
+    # do not overwrite it as the user might have passed more information than
+    # just the hostname (some plugins accept hostname:data in hostlist)
+    unless primitive_params.has_key?("hostname") || primitive_params.has_key?("hostlist")
+      primitive_params["hostname"] = node_name
     end
 
     pacemaker_primitive stonith_resource do
