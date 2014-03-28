@@ -25,9 +25,9 @@ when "disabled"
 when "manual"
   # nothing!
 
-when "clone"
-  plugin = node[:pacemaker][:stonith][:clone][:plugin]
-  params = node[:pacemaker][:stonith][:clone][:params]
+when "shared"
+  plugin = node[:pacemaker][:stonith][:shared][:plugin]
+  params = node[:pacemaker][:stonith][:shared][:params]
 
   # This needs to be done in the second phase of chef, because we need
   # cluster-glue to be installed first; hence ruby_block
@@ -42,25 +42,20 @@ when "clone"
   elsif params.is_a?(String)
     primitive_params = ::Pacemaker::Resource.extract_hash("params #{params}", "params")
   else
-    message = "Unknown format for STONITH clone parameters: #{params.inspect}."
+    message = "Unknown format for STONITH shared parameters: #{params.inspect}."
     Chef::Log.fatal(message)
     raise message
   end
 
   unless primitive_params.has_key?("hostlist")
-    message = "Missing hostlist parameter for STONITH clone!"
+    message = "Missing hostlist parameter for STONITH shared!"
     Chef::Log.fatal(message)
     raise message
   end
 
-  pacemaker_primitive "stonith-clone" do
+  pacemaker_primitive "fencing" do
     agent "stonith:#{plugin}"
     params primitive_params
-    action :create
-  end
-
-  pacemaker_clone "fencing" do
-    rsc "stonith-clone"
     action :create
   end
 
