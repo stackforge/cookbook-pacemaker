@@ -18,7 +18,7 @@
 # limitations under the License.
 #
 
-# FIXME: delete old resources when switching mode (or plugin!)
+# FIXME: delete old resources when switching mode (or agent!)
 
 case node[:pacemaker][:stonith][:mode]
 when "disabled"
@@ -26,14 +26,14 @@ when "manual"
   # nothing!
 
 when "shared"
-  plugin = node[:pacemaker][:stonith][:shared][:plugin]
+  agent = node[:pacemaker][:stonith][:shared][:agent]
   params = node[:pacemaker][:stonith][:shared][:params]
 
   # This needs to be done in the second phase of chef, because we need
   # cluster-glue to be installed first; hence ruby_block
-  ruby_block "Check if STONITH #{plugin} is available" do
+  ruby_block "Check if STONITH fencing agent #{agent} is available" do
     block do
-      PacemakerStonithHelper.assert_stonith_plugin_valid plugin
+      PacemakerStonithHelper.assert_stonith_agent_valid agent
     end
   end
 
@@ -42,31 +42,31 @@ when "shared"
   elsif params.is_a?(String)
     primitive_params = ::Pacemaker::Resource.extract_hash("params #{params}", "params")
   else
-    message = "Unknown format for STONITH shared parameters: #{params.inspect}."
+    message = "Unknown format for shared fencing agent parameters: #{params.inspect}."
     Chef::Log.fatal(message)
     raise message
   end
 
   unless primitive_params.has_key?("hostlist")
-    message = "Missing hostlist parameter for STONITH shared!"
+    message = "Missing hostlist parameter for shared fencing agent!"
     Chef::Log.fatal(message)
     raise message
   end
 
   pacemaker_primitive "fencing" do
-    agent "stonith:#{plugin}"
+    agent "stonith:#{agent}"
     params primitive_params
     action :create
   end
 
 when "per_node"
-  plugin = node[:pacemaker][:stonith][:per_node][:plugin]
+  agent = node[:pacemaker][:stonith][:per_node][:agent]
 
   # This needs to be done in the second phase of chef, because we need
   # cluster-glue to be installed first; hence ruby_block
-  ruby_block "Check if STONITH #{plugin} is available" do
+  ruby_block "Check if STONITH fencing agent #{agent} is available" do
     block do
-      PacemakerStonithHelper.assert_stonith_plugin_valid plugin
+      PacemakerStonithHelper.assert_stonith_agent_valid agent
     end
   end
 
@@ -83,20 +83,20 @@ when "per_node"
     elsif params.is_a?(String)
       primitive_params = ::Pacemaker::Resource.extract_hash("params #{params}", "params")
     else
-      message = "Unknown format for STONITH per-node parameters of #{node_name}: #{params.inspect}."
+      message = "Unknown format for per-node fencing agent parameters of #{node_name}: #{params.inspect}."
       Chef::Log.fatal(message)
       raise message
     end
 
     # Only set one of hostname / hostlist param if none of them are present; we
     # do not overwrite it as the user might have passed more information than
-    # just the hostname (some plugins accept hostname:data in hostlist)
+    # just the hostname (some agents accept hostname:data in hostlist)
     unless primitive_params.has_key?("hostname") || primitive_params.has_key?("hostlist")
       primitive_params["hostname"] = node_name
     end
 
     pacemaker_primitive stonith_resource do
-      agent "stonith:#{plugin}"
+      agent "stonith:#{agent}"
       params primitive_params
       action :create
     end

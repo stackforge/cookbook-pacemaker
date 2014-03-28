@@ -37,7 +37,7 @@ default[:pacemaker][:crm][:no_quorum_policy] = "ignore"
 # Values can be "disabled", "manual", "shared", "per_node"
 default[:pacemaker][:stonith][:mode] = "disabled"
 
-default[:pacemaker][:stonith][:shared][:plugin] = ""
+default[:pacemaker][:stonith][:shared][:agent] = ""
 # This can be either a string (containing a list of parameters) or a hash.
 # For instance:
 #   default[:pacemaker][:stonith][:shared][:params] = 'hostname="foo" password="bar"'
@@ -45,7 +45,7 @@ default[:pacemaker][:stonith][:shared][:plugin] = ""
 #   default[:pacemaker][:stonith][:shared][:params] = {"hostname" => "foo", "password" => "bar"}
 default[:pacemaker][:stonith][:shared][:params] = {}
 
-default[:pacemaker][:stonith][:per_node][:plugin] = ""
+default[:pacemaker][:stonith][:per_node][:agent] = ""
 # This can be "all" or "self":
 #   - if set to "all", then every node will configure the stonith resources for
 #     all nodes in the cluster
