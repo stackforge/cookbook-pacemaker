@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/aspiers/barclamp-pacemaker.png?branch=master)](https://travis-ci.org/aspiers/barclamp-pacemaker)
+[![Build Status](https://travis-ci.org/crowbar/barclamp-pacemaker.png?branch=release/roxy/master)](https://travis-ci.org/crowbar/barclamp-pacemaker)
 
 DESCRIPTION
 ===========
@@ -9,7 +9,7 @@ Recipes
 =======
 default
 -------
-Installs and start `pacemaker`. 
+Installs and start `pacemaker`.
 
 Resources/Providers
 ===================
@@ -17,7 +17,7 @@ There are 7 LWRPs for interacting with pacemaker.
 
 primitive
 ----------
-Configure and delete primitive resource. 
+Configure and delete primitive resource.
 
 - `:create` configures a `primitive`
 - `:delete` deletes a `primitive`
