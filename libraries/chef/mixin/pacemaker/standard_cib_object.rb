@@ -45,8 +45,45 @@ class Chef
         init_current_resource
       end
 
+      # In Pacemaker, target-role defaults to 'Started', but we want
+      # to allow consumers of the LWRPs the choice whether their
+      # newly created resource gets started or not, and we also want
+      # to adhere to the Principle of Least Surprise.  Therefore we
+      # stick to the intuitive semantics that
+      #
+      #   action :create
+      #
+      # creates the resource with target-role="Stopped" in order to
+      # prevent it from starting immediately, whereas
+      #
+      #   action [:create, :start]
+      #
+      # creates the resource and then starts it.
+      #
+      # Consequently we deprecate setting target-role values directly
+      # via the meta attribute.
+      def deprecate_target_role
+        if new_resource.respond_to? :meta
+          meta = new_resource.meta
+          if meta && meta['target-role']
+            ::Chef::Log.warn "#{new_resource} used deprecated target-role " +
+              "#{meta['target-role']}; use action :start / :stop instead"
+          end
+        end
+      end
+
       def standard_create_resource
+        deprecate_target_role
+
         cib_object = cib_object_class.from_chef_resource(new_resource)
+
+        # We don't want resources to automatically start on creation;
+        # only when the :create action is invoked.  However Pacemaker
+        # defaults target-role to "Started", so we need to override it.
+        if cib_object.respond_to? :meta # might be a constraint
+          cib_object.meta['target-role'] = 'Stopped'
+        end
+
         cmd = cib_object.configure_command
 
         ::Chef::Log.info "Creating new #{cib_object}"

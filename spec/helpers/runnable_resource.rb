@@ -7,6 +7,15 @@ this_dir = File.dirname(__FILE__)
 require File.expand_path('provider', this_dir)
 require File.expand_path('shellout', this_dir)
 
+shared_context "stopped resource" do
+  def stopped_fixture
+    new_fixture = fixture.dup
+    new_fixture.meta = fixture.meta.dup
+    new_fixture.meta << ['target-role', 'Stopped']
+    new_fixture
+  end
+end
+
 shared_examples "a runnable resource" do |fixture|
   def expect_running(running)
     expect_any_instance_of(cib_object_class) \
@@ -17,6 +26,19 @@ shared_examples "a runnable resource" do |fixture|
   it_should_behave_like "all Pacemaker LWRPs", fixture
 
   include Chef::RSpec::Mixlib::ShellOut
+
+  describe ":create action" do
+    include_context "stopped resource"
+
+    it "should not start a newly-created resource" do
+      stub_shellout("", fixture.definition_string)
+
+      provider.run_action :create
+
+      expect(@chef_run).to run_execute(stopped_fixture.configure_command)
+      expect(@resource).to be_updated
+    end
+  end
 
   describe ":delete action" do
     it "should not delete a running resource" do
