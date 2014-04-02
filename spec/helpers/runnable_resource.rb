@@ -47,7 +47,7 @@ shared_examples "a runnable resource" do |fixture|
   describe ":start action" do
     it_should_behave_like "action on non-existent resource", \
       :start,
-      "crm resource start #{fixture.name}", \
+      "crm --force resource start #{fixture.name}", \
       "Cannot start non-existent #{fixture}"
 
     it "should do nothing to a started resource" do
@@ -56,7 +56,7 @@ shared_examples "a runnable resource" do |fixture|
 
       provider.run_action :start
 
-      cmd = "crm resource start #{fixture.name}"
+      cmd = "crm --force resource start #{fixture.name}"
       expect(@chef_run).not_to run_execute(cmd)
       expect(@resource).not_to be_updated
     end
@@ -68,7 +68,7 @@ shared_examples "a runnable resource" do |fixture|
 
       provider.run_action :start
 
-      cmd = "crm resource start '#{fixture.name}'"
+      cmd = "crm --force resource start '#{fixture.name}'"
       expect(@chef_run).to run_execute(cmd)
       expect(@resource).to be_updated
     end
@@ -77,7 +77,7 @@ shared_examples "a runnable resource" do |fixture|
   describe ":stop action" do
     it_should_behave_like "action on non-existent resource", \
       :stop,
-      "crm resource stop #{fixture.name}", \
+      "crm --force resource stop #{fixture.name}", \
       "Cannot stop non-existent #{fixture}"
 
     it "should do nothing to a stopped resource" do
@@ -86,7 +86,7 @@ shared_examples "a runnable resource" do |fixture|
 
       provider.run_action :stop
 
-      cmd = "crm resource start #{fixture.name}"
+      cmd = "crm --force resource start #{fixture.name}"
       expect(@chef_run).not_to run_execute(cmd)
       expect(@resource).not_to be_updated
     end
@@ -97,7 +97,7 @@ shared_examples "a runnable resource" do |fixture|
 
       provider.run_action :stop
 
-      cmd = "crm resource stop '#{fixture.name}'"
+      cmd = "crm --force resource stop '#{fixture.name}'"
       expect(@chef_run).to run_execute(cmd)
       expect(@resource).to be_updated
     end
