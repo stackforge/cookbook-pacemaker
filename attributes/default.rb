@@ -34,8 +34,13 @@ default[:pacemaker][:founder] = false
 default[:pacemaker][:crm][:initial_config_file] = "/etc/corosync/crm-initial.conf"
 default[:pacemaker][:crm][:no_quorum_policy] = "ignore"
 
-# Values can be "disabled", "manual", "shared", "per_node"
+# Values can be "disabled", "manual", "sbd", "shared", "per_node"
 default[:pacemaker][:stonith][:mode] = "disabled"
+
+# This hash will contain devices for each node.
+# For instance:
+#  default[:pacemaker][:stonith][:sbd][:nodes][$node][:devices] = ['/dev/disk/by-id/foo-part1', '/dev/disk/by-id/bar-part1']
+default[:pacemaker][:stonith][:sbd][:nodes] = {}
 
 default[:pacemaker][:stonith][:shared][:agent] = ""
 # This can be either a string (containing a list of parameters) or a hash.

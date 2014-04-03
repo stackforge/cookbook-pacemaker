@@ -25,6 +25,57 @@ when "disabled"
 when "manual"
   # nothing!
 
+when "sbd"
+  require 'shellwords'
+
+  sbd_devices = nil
+  sbd_devices ||= (node[:pacemaker][:stonith][:sbd][:nodes][node[:fqdn]][:devices] rescue nil)
+  sbd_devices ||= (node[:pacemaker][:stonith][:sbd][:nodes][node[:hostname]][:devices] rescue nil)
+  raise "No SBD devices defined!" if sbd_devices.nil? || sbd_devices.empty?
+
+  sbd_cmd = "sbd"
+  sbd_devices.each do |sbd_device|
+    sbd_cmd += " -d #{Shellwords.shellescape(sbd_device)}"
+  end
+
+  execute "Check if watchdog is present" do
+    command "test -c /dev/watchdog"
+  end
+
+  execute "Check SBD validity" do
+    command "#{sbd_cmd} dump &> /dev/null"
+  end
+
+  if node.platform == 'suse'
+    # We will want to explicitly allocate a slot the first time we come here
+    # (hence the use of a notification to trigger this execute).
+    # According to the man page, it should not be required, but apparently,
+    # I've hit bugs where I had to do that. So better be safe.
+    execute "Allocate SBD slot" do
+      command "#{sbd_cmd} allocate #{node[:hostname]}"
+      not_if "#{sbd_cmd} list | grep -q \" #{node[:hostname]} \""
+      action :nothing
+    end
+
+    template "/etc/sysconfig/sbd" do
+      source "sysconfig_sbd.erb"
+      owner "root"
+      group "root"
+      mode 0644
+      variables(
+        :sbd_devices => sbd_devices
+      )
+      # We want to allocate slots before restarting corosync
+      notifies :run, "execute[Allocate SBD slot]", :immediately
+      notifies :restart, "service[#{node[:corosync][:platform][:service_name]}]", :immediately
+    end
+  end
+
+  pacemaker_primitive "stonith-sbd" do
+    agent "stonith:external/sbd"
+    action :create
+  end
+
 when "shared"
   agent = node[:pacemaker][:stonith][:shared][:agent]
   params = node[:pacemaker][:stonith][:shared][:params]
