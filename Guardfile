@@ -31,6 +31,7 @@ group :rspec do
     watch(%r{^libraries/(.+)\.rb$})  { |m|
       reload "spec/libraries/#{m[1]}_spec.rb"
     }
+    watch(%r{^recipes/.+\.rb$})            { provider_specs }
     watch(%r{^providers/common\.rb$})      { provider_specs }
     watch(%r{^providers/(.*mixin.*)\.rb$}) { provider_specs }
     watch(%r{^(?:resources|providers)/(.+)\.rb$}) { |m|
