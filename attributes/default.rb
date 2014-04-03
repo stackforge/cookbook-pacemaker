@@ -57,3 +57,10 @@ default[:pacemaker][:stonith][:per_node][:mode] = "all"
 # For instance:
 #  default[:pacemaker][:stonith][:per_node][:nodes][$node][:params] = 'hostname="foo" password="bar"'
 default[:pacemaker][:stonith][:per_node][:nodes] = {}
+
+default[:pacemaker][:notifications][:agent] = "ocf:heartbeat:ClusterMon"
+default[:pacemaker][:notifications][:smtp][:enabled] = false
+default[:pacemaker][:notifications][:smtp][:to] = ""
+default[:pacemaker][:notifications][:smtp][:from] = ""
+default[:pacemaker][:notifications][:smtp][:server] = ""
+default[:pacemaker][:notifications][:smtp][:prefix] = ""

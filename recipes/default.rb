@@ -81,3 +81,4 @@ if platform_family? "rhel"
 end
 
 include_recipe "pacemaker::stonith"
+include_recipe "pacemaker::notifications"

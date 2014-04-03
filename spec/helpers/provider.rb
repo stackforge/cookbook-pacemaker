@@ -6,6 +6,9 @@ require File.expand_path('cib_object', this_dir)
 
 shared_context "a Pacemaker LWRP" do
   before(:each) do
+    stub_command("crm configure show smtp-notifications")
+    stub_command("crm configure show cl-smtp-notifications")
+
     runner_opts = {
       :step_into => [lwrp_name]
     }
