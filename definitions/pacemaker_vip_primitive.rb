@@ -1,6 +1,12 @@
 define :pacemaker_vip_primitive, :cb_network => nil, :hostname => nil, :domain => nil, :op => nil do
-  net_db = data_bag_item('crowbar', "#{params[:cb_network]}_network")
-  ip_addr = net_db["allocated_by_name"]["#{params[:hostname]}.#{params[:domain]}"]["address"]
+  network = params[:cb_network]
+  net_db = data_bag_item('crowbar', "#{network}_network")
+  raise "#{network}_network data bag missing?!" unless net_db
+  fqdn = "#{params[:hostname]}.#{params[:domain]}"
+  unless net_db["allocated_by_name"][fqdn]
+    raise "Missing allocation for #{fqdn} in #{network} network"
+  end
+  ip_addr = net_db["allocated_by_name"][fqdn]["address"]
 
   primitive_name = "#{params[:hostname]}-vip-#{params[:cb_network]}"
 
