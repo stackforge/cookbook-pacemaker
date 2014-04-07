@@ -8,7 +8,7 @@ define :pacemaker_vip_primitive, :cb_network => nil, :hostname => nil, :domain =
   end
   ip_addr = net_db["allocated_by_name"][fqdn]["address"]
 
-  primitive_name = "#{params[:hostname]}-vip-#{params[:cb_network]}"
+  primitive_name = "vip-#{params[:cb_network]}-#{params[:hostname]}"
 
   # Allow one retry, to avoid races where two nodes create the primitive at the
   # same time when it wasn't created yet (only one can obviously succeed)
