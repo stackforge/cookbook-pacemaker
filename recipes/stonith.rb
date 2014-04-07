@@ -53,7 +53,7 @@ when "shared"
     raise message
   end
 
-  pacemaker_primitive "fencing" do
+  pacemaker_primitive "stonith-shared" do
     agent "stonith:#{agent}"
     params primitive_params
     action :create
