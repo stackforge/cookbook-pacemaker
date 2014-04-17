@@ -33,6 +33,7 @@ end
 default[:pacemaker][:founder] = false
 default[:pacemaker][:crm][:initial_config_file] = "/etc/corosync/crm-initial.conf"
 default[:pacemaker][:crm][:no_quorum_policy] = "ignore"
+default[:pacemaker][:crm][:op_default_timeout] = 60
 
 # Values can be "disabled", "manual", "sbd", "shared", "per_node"
 default[:pacemaker][:stonith][:mode] = "disabled"

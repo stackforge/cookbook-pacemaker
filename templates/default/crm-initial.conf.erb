@@ -3,7 +3,7 @@ property $id="cib-bootstrap-options" \
         no-quorum-policy="<%= @no_quorum_policy %>" \
         placement-strategy="balanced"
 op_defaults $id="op-options" \
-        timeout="600" \
+        timeout="<%= @op_default_timeout %>" \
         record-pending="true"
 rsc_defaults $id="rsc-options" \
         resource-stickiness="1" \
