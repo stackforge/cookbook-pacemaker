@@ -46,11 +46,11 @@ describe "Chef::Provider::PacemakerPrimitive" do
 
     it "should modify the primitive if it has different meta" do
       expected_configure_cmd_args = [
-        %'--set-parameter "target-role" --parameter-value "Stopped" --meta',
+        %'--set-parameter "is-managed" --parameter-value "false" --meta',
       ].map { |args| "crm_resource --resource #{fixture.name} #{args}" }
       test_modify(expected_configure_cmd_args) do
         @resource.params Hash[fixture.params]
-        @resource.meta Hash[fixture.meta].merge("target-role" => "Stopped")
+        @resource.meta Hash[fixture.meta].merge("is-managed" => "false")
       end
     end
 
@@ -58,13 +58,13 @@ describe "Chef::Provider::PacemakerPrimitive" do
       expected_configure_cmd_args = [
         %'--set-parameter "os_password" --parameter-value "newpasswd"',
         %'--delete-parameter "os_tenant_name"',
-        %'--set-parameter "target-role" --parameter-value "Stopped" --meta',
+        %'--set-parameter "is-managed" --parameter-value "false" --meta',
       ].map { |args| "crm_resource --resource #{fixture.name} #{args}" }
       test_modify(expected_configure_cmd_args) do
         new_params = Hash[fixture.params].merge("os_password" => "newpasswd")
         new_params.delete("os_tenant_name")
         @resource.params new_params
-        @resource.meta Hash[fixture.meta].merge("target-role" => "Stopped")
+        @resource.meta Hash[fixture.meta].merge("is-managed" => "false")
       end
     end
 
@@ -81,38 +81,42 @@ describe "Chef::Provider::PacemakerPrimitive" do
       end
     end
 
-    it "should create a primitive if it doesn't already exist" do
-      # The first time, Mixlib::ShellOut needs to return an empty definition.
-      # Then the resource gets created so the second time it needs to return
-      # the definition used for creation.
-      stub_shellout("", fixture.definition_string)
+    context "creation from scratch" do
+      include_context "stopped resource"
 
-      provider.run_action :create
+      it "should create a primitive if it doesn't already exist" do
+        # The first time, Mixlib::ShellOut needs to return an empty definition.
+        # Then the resource gets created so the second time it needs to return
+        # the definition used for creation.
+        stub_shellout("", fixture.definition_string)
 
-      expect(@chef_run).to run_execute(fixture.configure_command)
-      expect(@resource).to be_updated
-    end
+        provider.run_action :create
 
-    it "should barf if crm fails to create the primitive" do
-      stub_shellout("", ["crm configure failed", "oh noes", 3])
+        expect(@chef_run).to run_execute(stopped_fixture.configure_command)
+        expect(@resource).to be_updated
+      end
 
-      expect { provider.run_action :create }.to \
-        raise_error(RuntimeError, "Failed to create #{fixture}")
+      it "should barf if crm fails to create the primitive" do
+        stub_shellout("", ["crm configure failed", "oh noes", 3])
 
-      expect(@chef_run).to run_execute(fixture.configure_command)
-      expect(@resource).not_to be_updated
-    end
+        expect { provider.run_action :create }.to \
+          raise_error(RuntimeError, "Failed to create #{fixture}")
 
-    # This scenario seems rather artificial and unlikely, but it doesn't
-    # do any harm to test it.
-    it "should barf if crm creates a primitive with empty definition" do
-      stub_shellout("", "")
+        expect(@chef_run).to run_execute(stopped_fixture.configure_command)
+        expect(@resource).not_to be_updated
+      end
 
-      expect { provider.run_action :create }.to \
-        raise_error(RuntimeError, "Failed to create #{fixture}")
+      # This scenario seems rather artificial and unlikely, but it doesn't
+      # do any harm to test it.
+      it "should barf if crm creates a primitive with empty definition" do
+        stub_shellout("", "")
 
-      expect(@chef_run).to run_execute(fixture.configure_command)
-      expect(@resource).not_to be_updated
+        expect { provider.run_action :create }.to \
+          raise_error(RuntimeError, "Failed to create #{fixture}")
+
+        expect(@chef_run).to run_execute(stopped_fixture.configure_command)
+        expect(@resource).not_to be_updated
+      end
     end
 
     it "should barf if the primitive is already defined with the wrong agent" do

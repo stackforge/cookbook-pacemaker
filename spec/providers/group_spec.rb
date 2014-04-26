@@ -40,10 +40,11 @@ describe "Chef::Provider::PacemakerGroup" do
     end
 
     it "should modify the group if it has different member resources" do
-      fixture.members = %w(resource1 resource3)
-      expected_configure_cmd_args = [fixture.reconfigure_command]
+      expected = fixture.dup
+      expected.members = %w(resource1 resource3)
+      expected_configure_cmd_args = [expected.reconfigure_command]
       test_modify(expected_configure_cmd_args) do
-        @resource.members fixture.members
+        @resource.members expected.members
       end
     end
 

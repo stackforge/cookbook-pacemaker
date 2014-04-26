@@ -1,5 +1,5 @@
 # A mixin for Pacemaker::Resource subclasses which support meta attributes
-# (priority, target-role, is-managed)
+# (priority, target-role, is-managed, etc.)
 
 module Pacemaker
   module Mixins
