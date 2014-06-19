@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 
 group :test, :development do
   gem 'chefspec', '~> 3.0'
+  gem 'rspec-expectations', '~> 2.14.0'
   gem 'rubydeps'
 end
 
