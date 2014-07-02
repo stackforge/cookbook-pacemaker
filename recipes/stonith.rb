@@ -42,7 +42,7 @@ when "sbd"
     command "test -c /dev/watchdog"
   end
 
-  execute "Check SBD validity" do
+  execute "Check that SBD was initialized using '#{sbd_cmd} create'." do
     command "#{sbd_cmd} dump &> /dev/null"
   end
 
