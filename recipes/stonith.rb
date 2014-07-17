@@ -93,7 +93,7 @@ when "shared"
   if params.respond_to?('to_hash')
     primitive_params = params.to_hash
   elsif params.is_a?(String)
-    primitive_params = ::Pacemaker::Resource.extract_hash("params #{params}", "params")
+    primitive_params = ::Pacemaker::Resource.extract_hash(" params #{params}", "params")
   else
     message = "Unknown format for shared fencing agent parameters: #{params.inspect}."
     Chef::Log.fatal(message)
@@ -134,7 +134,7 @@ when "per_node"
     if params.respond_to?('to_hash')
       primitive_params = params.to_hash
     elsif params.is_a?(String)
-      primitive_params = ::Pacemaker::Resource.extract_hash("params #{params}", "params")
+      primitive_params = ::Pacemaker::Resource.extract_hash(" params #{params}", "params")
     else
       message = "Unknown format for per-node fencing agent parameters of #{node_name}: #{params.inspect}."
       Chef::Log.fatal(message)
