@@ -75,7 +75,7 @@ when "sbd"
 
   pacemaker_primitive "stonith-sbd" do
     agent "stonith:external/sbd"
-    action :create
+    action [:create, :start]
   end
 
 when "shared"
@@ -109,7 +109,7 @@ when "shared"
   pacemaker_primitive "stonith-shared" do
     agent "stonith:#{agent}"
     params primitive_params
-    action :create
+    action [:create, :start]
   end
 
 when "per_node"
@@ -151,7 +151,7 @@ when "per_node"
     pacemaker_primitive stonith_resource do
       agent "stonith:#{agent}"
       params primitive_params
-      action :create
+      action [:create, :start]
     end
 
     pacemaker_location "l-#{stonith_resource}" do
