@@ -17,11 +17,11 @@ module Pacemaker
     end
 
     def crm_start_command
-      "crm --force resource start '#{name}'"
+      "crm --force --wait resource start '#{name}'"
     end
 
     def crm_stop_command
-      "crm --force resource stop '#{name}'"
+      "crm --force --wait resource stop '#{name}'"
     end
 
     # CIB object definitions look something like:
