@@ -71,11 +71,34 @@ def create_resource(name)
 end
 
 def maybe_modify_resource(name)
+  deprecate_target_role
+
   Chef::Log.info "Checking existing #{@current_cib_object} for modifications"
 
   cmds = []
 
   desired_primitive = cib_object_class.from_chef_resource(new_resource)
+
+  # We deprecated setting target-role values via the meta attribute, in favor
+  # of :start/:stop actions on the resource. So this should not be relied upon
+  # anymore, and it's safe to drop this if we want to.
+  #
+  # There is one racy case where this matters:
+  #   - node1 and node2 try to create a primitive with the chef resource;
+  #     on initial creation, we set target-role='Stopped' because we do not
+  #     want to autostart primitives.
+  #   - because they can't create it at the same time, node2 will fail on
+  #     creation. If the chef resource is configured to retry, then node2 will
+  #     then try to update the primitive (since it now exists); but the chef
+  #     resource is not reloaded so still has target-role='Stopped'.
+  #   - if node1 had also started the primitive before node2 retries the
+  #     :create, then the target-role will be changed from 'Started' to
+  #     'Stopped' with the update.
+  #
+  # This can result in a primitive not being started with [:create, :start].
+  # Therefore, we just delete this deprecated bit from meta to avoid any issue.
+  desired_primitive.meta.delete('target-role')
+
   if desired_primitive.op_string != @current_cib_object.op_string
     Chef::Log.debug "op changed from [#{@current_cib_object.op_string}] to [#{desired_primitive.op_string}]"
     cmds = [desired_primitive.reconfigure_command]
