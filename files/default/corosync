@@ -1,3 +1,0 @@
-# managed by Chef
-# start corosync at boot [yes|no]
-START=yes
